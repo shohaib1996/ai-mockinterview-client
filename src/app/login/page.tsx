@@ -1,7 +1,6 @@
 "use client"
 
 import type React from "react"
-
 import { useState } from "react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -10,15 +9,28 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Separator } from "@/components/ui/separator"
 import { Checkbox } from "@/components/ui/checkbox"
 import { Eye, EyeOff } from "lucide-react"
+import { useLoginUserMutation } from "@/redux/api/user/usersApi"
+import { useAppDispatch } from "@/redux/hooks/hooks"
+import { login } from "@/redux/feature/auth/authSlice"
+import { useRouter } from "next/navigation"
 
 export default function LoginPage() {
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
   const [showPassword, setShowPassword] = useState(false)
+  const [loginUser, { isLoading, isError, error }] = useLoginUserMutation()
+  const dispatch = useAppDispatch()
+  const router = useRouter()
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    console.log("Login attempt:", { email, password })
+    try {
+      const res = await loginUser({ email, password }).unwrap()
+      dispatch(login({ user: res.data.user, token: res.data.token }))
+      router.push("/user")
+    } catch (err) {
+      console.error("Failed to login:", err)
+    }
   }
 
   const handleGoogleLogin = () => {
@@ -161,10 +173,17 @@ export default function LoginPage() {
                 </Button>
               </div>
 
-              <Button type="submit" className="w-full">
-                Sign In
+              <Button type="submit" className="w-full" disabled={isLoading}>
+                {isLoading ? "Signing In..." : "Sign In"}
               </Button>
             </form>
+
+            {isError && (
+              <div className="text-center text-sm text-red-500">
+                {/* @ts-ignore */}
+                <p>{error?.data?.message || "An error occurred"}</p>
+              </div>
+            )}
 
             <div className="text-center text-sm">
               <span className="text-muted-foreground">Don't have an account? </span>

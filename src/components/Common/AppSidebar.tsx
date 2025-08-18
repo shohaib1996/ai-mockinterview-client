@@ -14,7 +14,6 @@ import {
   ChevronsRight,
   LogOut,
 } from "lucide-react";
-
 import {
   Sidebar,
   SidebarContent,
@@ -26,8 +25,10 @@ import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
+  useSidebar,
 } from "@/components/ui/sidebar";
 import Link from "next/link";
+import { Button } from "../ui/button";
 
 const iconMap: Record<string, React.ComponentType<any>> = {
   home: Home,
@@ -47,49 +48,45 @@ type MenuItem = {
 
 interface AppSidebarProps {
   items: MenuItem[];
-  collapsed: boolean;
-  setCollapsed: (value: boolean) => void;
 }
 
-export function AppSidebar({
-  items,
-  collapsed,
-  setCollapsed,
-}: AppSidebarProps) {
-  console.log(collapsed);
+export function AppSidebar({ items }: AppSidebarProps) {
+  const { open, setOpen, isMobile } = useSidebar();
+
   return (
     <Sidebar
-      collapsed={collapsed} // Pass the collapsed prop
-      className={`${
-        collapsed ? "w-16" : "w-64"
-      } flex-shrink-0 transition-all duration-300 flex flex-col`}
+      collapsible="offcanvas" // Use offcanvas to hide sidebar completely
+      className={`flex-shrink-0 transition-all duration-300 flex flex-col ${
+        open ? "w-64" : isMobile ? "w-0" : "w-16"
+      }`}
     >
       {/* Header */}
       <SidebarHeader className="flex items-center justify-between px-2">
-        {!collapsed && <span className="font-semibold">Ai Mock Interview</span>}
-        <button
-          onClick={() => setCollapsed(!collapsed)}
+        {open && <span className="font-semibold">AI Mock Interview</span>}
+        <Button
+          variant="ghost"
+          onClick={() => setOpen(!open)}
           className="p-1 rounded hover:bg-muted"
         >
-          {collapsed ? (
-            <ChevronsRight className="w-4 h-4" />
-          ) : (
+          {open ? (
             <ChevronsLeft className="w-4 h-4" />
+          ) : (
+            <ChevronsRight className="w-4 h-4" />
           )}
-        </button>
+        </Button>
       </SidebarHeader>
 
       {/* Content */}
-      <SidebarContent className="flex-1 overflow-y-auto">
+      <SidebarContent className={`flex-1 overflow-y-auto ${open && "w-64"}`}>
         <SidebarGroup>
-          {!collapsed && <SidebarGroupLabel>Application</SidebarGroupLabel>}
+          {open && <SidebarGroupLabel>Application</SidebarGroupLabel>}
           <SidebarGroupContent>
             <SidebarMenu>
               {items.map((item) => (
                 <MenuItemComponent
                   key={item.title}
                   item={item}
-                  collapsed={collapsed}
+                  collapsed={!open}
                 />
               ))}
             </SidebarMenu>
@@ -104,7 +101,7 @@ export function AppSidebar({
           className="flex items-center gap-2 text-muted-foreground hover:text-foreground"
         >
           <LogOut className="w-4 h-4" />
-          {!collapsed && <span>Logout</span>}
+          {open && <span>Logout</span>}
         </Link>
       </SidebarFooter>
     </Sidebar>
