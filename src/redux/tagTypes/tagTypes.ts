@@ -1,7 +1,33 @@
 export enum tagTypes {
-    
+  AiChat = "ai-chat",
+  Answer = "answer",
+  FileUpload = "file-upload",
+  ListeningAudio = "listeningAudio",
+  Question = "question",
+  QuizAnswer = "quizAnswer",
+  QuizAttempt = "quizAttempt",
+  ReadingPassage = "readingPassage",
+  Session = "session",
+  TextExtraction = "text-extraction",
+  UserDashboard = "userDashboard",
+  UserProgress = "userProgress",
+  Users = "users",
+  WritingSubmission = "writingSubmission",
 }
 
 export const tagTypesList = [
-    
+  tagTypes.AiChat,
+  tagTypes.Answer,
+  tagTypes.FileUpload,
+  tagTypes.ListeningAudio,
+  tagTypes.Question,
+  tagTypes.QuizAnswer,
+  tagTypes.QuizAttempt,
+  tagTypes.ReadingPassage,
+  tagTypes.Session,
+  tagTypes.TextExtraction,
+  tagTypes.UserDashboard,
+  tagTypes.UserProgress,
+  tagTypes.Users,
+  tagTypes.WritingSubmission,
 ];
