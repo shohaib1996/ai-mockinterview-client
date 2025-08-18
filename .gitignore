@@ -2,6 +2,7 @@
 
 # dependencies
 /node_modules
+/ai-mock-interview-backend
 /.pnp
 .pnp.*
 .yarn/*
