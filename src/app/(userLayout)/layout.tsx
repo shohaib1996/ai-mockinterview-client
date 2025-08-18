@@ -1,13 +1,13 @@
 "use client";
 
 import { useState } from "react";
-import { AppSidebar } from "@/components/Common/AppSidebar";
+import { AppSidebar } from "@/components/Common/AppSidebar/AppSidebar";
 import { SidebarProvider, SidebarTrigger, useSidebar } from "@/components/ui/sidebar";
 import { Calendar, Home, Inbox } from "lucide-react";
 
 const UserLayout = ({ children }: { children: React.ReactNode }) => {
   const userMenu = [
-    { title: "Home", url: "/", icon: "home" },
+    { title: "Sessions", url: "/dashboard/user-session", icon: "home" },
     { title: "My Profile", url: "/profile", icon: "calendar" },
     {
       title: "Messages",

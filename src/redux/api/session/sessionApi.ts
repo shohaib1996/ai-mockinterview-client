@@ -12,9 +12,10 @@ const sessionApi = baseApi.injectEndpoints({
       invalidatesTags: [tagTypes.Session],
     }),
     getAllSessions: builder.query({
-      query: () => ({
+      query: (arg) => ({
         url: "/sessions",
         method: "GET",
+        params: arg
       }),
       providesTags: [tagTypes.Session],
     }),

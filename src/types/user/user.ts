@@ -1,0 +1,12 @@
+export interface User {
+  user: {
+    id: string;
+    email: string;
+    name: string;
+    password: string;
+    avatarUrl: string | null;
+    role: "USER" | "ADMIN"; // adjust if you have more roles
+    createdAt: string; // ISO date string
+    updatedAt: string; // ISO date string
+  };
+}

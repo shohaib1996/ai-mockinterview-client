@@ -28,7 +28,8 @@ import {
   useSidebar,
 } from "@/components/ui/sidebar";
 import Link from "next/link";
-import { Button } from "../ui/button";
+import { Button } from "../../ui/button";
+import { ModeToggle } from "../../ThemeProvider/ModeToggle";
 
 const iconMap: Record<string, React.ComponentType<any>> = {
   home: Home,
@@ -62,7 +63,7 @@ export function AppSidebar({ items }: AppSidebarProps) {
     >
       {/* Header */}
       <SidebarHeader className="flex items-center justify-between px-2">
-        {open && <span className="font-semibold">AI Mock Interview</span>}
+        {open && <span className="font-semibold">AI Mock Interview <ModeToggle/> </span>}
         <Button
           variant="ghost"
           onClick={() => setOpen(!open)}
@@ -126,7 +127,7 @@ function MenuItemComponent({
           className="flex items-center justify-between cursor-pointer"
           onClick={() => hasChildren && setOpen(!open)}
         >
-          <Link href={item.url || "#"} className="flex items-center gap-2">
+          <Link href={item.url || "#"} className="flex items-center gap-2 w-full">
             {Icon && <Icon className="w-4 h-4" />}
             {!collapsed && <span>{item.title}</span>}
           </Link>
