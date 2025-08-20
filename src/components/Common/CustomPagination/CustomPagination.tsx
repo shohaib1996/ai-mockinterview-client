@@ -38,28 +38,19 @@ export function CustomPagination({
 
   const generatePageNumbers = () => {
     const pages = [];
-    const maxVisiblePages = 5;
+    const maxVisiblePages = 5; // User wants 5 visible pages
 
     if (totalPages <= maxVisiblePages) {
+      // If total pages are 5 or less, show all of them
       for (let i = 1; i <= totalPages; i++) {
         pages.push(i);
       }
     } else {
-      if (page <= 3) {
-        pages.push(1, 2, 3, 4, 5);
-      } else if (page >= totalPages - 2) {
-        pages.push(
-          totalPages - 4,
-          totalPages - 3,
-          totalPages - 2,
-          totalPages - 1,
-          totalPages
-        );
-      } else {
-        pages.push(page - 2, page - 1, page, page + 1, page + 2);
+      // If total pages are more than 5, always show 1, 2, 3, 4, 5
+      for (let i = 1; i <= maxVisiblePages; i++) {
+        pages.push(i);
       }
     }
-
     return pages;
   };
 
@@ -119,27 +110,6 @@ export function CustomPagination({
                 />
               </PaginationItem>
 
-              {pageNumbers[0] > 1 && (
-                <>
-                  <PaginationItem>
-                    <PaginationLink
-                      href="#"
-                      onClick={(e) => {
-                        e.preventDefault();
-                        onPageChange(1);
-                      }}
-                    >
-                      1
-                    </PaginationLink>
-                  </PaginationItem>
-                  {pageNumbers[0] > 2 && (
-                    <PaginationItem>
-                      <PaginationEllipsis />
-                    </PaginationItem>
-                  )}
-                </>
-              )}
-
               {pageNumbers.map((pageNum) => (
                 <PaginationItem key={pageNum}>
                   <PaginationLink
@@ -155,13 +125,11 @@ export function CustomPagination({
                 </PaginationItem>
               ))}
 
-              {pageNumbers[pageNumbers.length - 1] < totalPages && (
+              {totalPages > 5 && (
                 <>
-                  {pageNumbers[pageNumbers.length - 1] < totalPages - 1 && (
-                    <PaginationItem>
-                      <PaginationEllipsis />
-                    </PaginationItem>
-                  )}
+                  <PaginationItem>
+                    <PaginationEllipsis />
+                  </PaginationItem>
                   <PaginationItem>
                     <PaginationLink
                       href="#"

@@ -18,10 +18,18 @@ const aiChatApi = baseApi.injectEndpoints({
       }),
       providesTags: [tagTypes.AiChat],
     }),
+    getScoreAndFeedback: builder.mutation({
+      query: (sessionId) => ({
+        url: `ai-chat/analyze/${sessionId}`,
+        method: "POST",
+      }),
+      invalidatesTags: [tagTypes.AiChat],
+    })
   }),
 });
 
 export const {
   useCreateChatCompletionMutation,
   useGetConversationBySessionIdQuery,
+  useGetScoreAndFeedbackMutation
 } = aiChatApi;
