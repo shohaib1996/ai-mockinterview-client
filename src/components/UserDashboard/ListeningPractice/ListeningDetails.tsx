@@ -15,10 +15,11 @@ import Link from "next/link"
 const ListeningDetailsPage = ({ id }: { id: string }) => {
   const { data, isLoading } = useGetSingleSessionQuery(id)
   const { data: answerdata, isLoading: isAnswerLoading } = useGetAllAnswersQuery({ sessionId: id })
-  const listeningAudioId = data?.data?.userListeningHistory?.find(
+  const listeningAudioId = data?.data?.userCompletionHistory?.find(
     (history: IUserListeningHistory) => history.sessionId === id,
   )?.listeningAudioId
-  const { data: question, isLoading: isQuestionLoading } = useGetAllQuestionsQuery({ listeningAudioId })
+
+  const { data: question, isLoading: isQuestionLoading } = useGetAllQuestionsQuery({ listeningAudioId }, { skip: !listeningAudioId })
 
   const answers: ListeningAnswer[] = answerdata?.data || []
   const questions: IQuestion[] = question?.data || []

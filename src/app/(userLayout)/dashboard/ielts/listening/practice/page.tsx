@@ -11,7 +11,6 @@ import {
 import { CustomPagination } from "@/components/Common/CustomPagination/CustomPagination";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
-import { Eye } from "lucide-react";
 import { useRouter, useSearchParams } from "next/navigation";
 
 const ListeningPractice = () => {

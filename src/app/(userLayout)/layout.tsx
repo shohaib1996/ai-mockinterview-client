@@ -11,6 +11,8 @@ const UserLayout = ({ children }: { children: React.ReactNode }) => {
     { title: "IELTS Sessions", icon: "home", children: [
       {title: "Speaking", url: "/dashboard/ielts/speaking", icon: "inbox"},
       {title: "Listening", url: "/dashboard/ielts/listening", icon: "inbox"},
+      {title: "Reading", url: "/dashboard/ielts/reading", icon: "inbox"},
+      {title: "Writing", url: "/dashboard/ielts/writing", icon: "inbox"},
     ]},
     { title: "My Profile", url: "/profile", icon: "calendar" },
     {

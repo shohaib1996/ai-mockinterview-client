@@ -65,11 +65,11 @@ const ListeningSessions = () => {
       const {id} = res?.data
       refetch();
       if (res.success) {
-        router.push(`/dashboard/ielts/listening/practice?id=${id}`); // Navigate to the new practice page
+        router.push(`/dashboard/ielts/listening/practice?id=${id}`);
       }
     } catch (error) {
       console.error("Failed to create session:", error);
-      toast.error("Failed to create listening session."); // Add a toast for error
+      toast.error("Failed to create listening session."); 
     }
   };
 

@@ -10,13 +10,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import {
   Clock,
-  Play,
-  Pause,
   SkipForward,
-  SkipBack,
-  Volume2,
-  Moon,
-  Sun,
   ChevronLeft,
   ChevronRight,
   Send,
@@ -179,18 +173,6 @@ const ListeningPractice = ({ id, sessionId }: ListeningPracticeProps) => {
                 {formatTime(timer)}
               </span>
             </div>
-
-            <Button
-              variant="ghost"
-              size="icon"
-              onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
-            >
-              {theme === "dark" ? (
-                <Sun className="w-4 h-4" />
-              ) : (
-                <Moon className="w-4 h-4" />
-              )}
-            </Button>
           </div>
         </div>
       </header>
