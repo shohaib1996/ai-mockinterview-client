@@ -24,3 +24,26 @@ export interface InterviewSession {
     avatarUrl: string | null;
   };
 }
+
+interface UserListeningHistory {
+  userId: string;
+  listeningAudioId: string;
+  completedAt: string; // ISO date string
+  sessionId: string;
+}
+
+
+
+export interface ISinglesSession {
+  id: string;
+  userId: string;
+  type: SessionType;
+  startedAt: string;
+  endedAt: string;
+  score: number;
+  transcript: string | null;
+  feedback: string | null;
+  aiChatConversations: any[];
+  writingSubmissions: any[];
+  userListeningHistory: UserListeningHistory[];
+}

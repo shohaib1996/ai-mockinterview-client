@@ -1,3 +1,6 @@
 export * from './session/session'
 export * from "./meta/meta"
 export * from "./user/user"
+export * from "./question/question"
+export * from "./listeningAudio/listeningAudio"
+export * from "./answer/answer"

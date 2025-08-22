@@ -16,7 +16,7 @@ interface TimeAllocationChartProps {
 
 export function TimeAllocationChart({ data }: TimeAllocationChartProps) {
   // Map data to match chart expectations (type -> activity, minutes -> time)
-  const formattedData = data.map((item) => ({
+  const formattedData = data?.map((item) => ({
     activity: item.type,
     time: item.minutes,
     shortActivity: item.type.length > 10 ? `${item.type.slice(0, 7)}...` : item.type, // Shorten long labels

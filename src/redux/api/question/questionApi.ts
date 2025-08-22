@@ -12,9 +12,10 @@ const questionApi = baseApi.injectEndpoints({
       invalidatesTags: [tagTypes.Question],
     }),
     getAllQuestions: builder.query({
-      query: () => ({
+      query: (args) => ({
         url: "/questions",
         method: "GET",
+        params: args,
       }),
       providesTags: [tagTypes.Question],
     }),

@@ -121,7 +121,7 @@ export function ActivityHeatmapChart({ data }: ActivityHeatmapChartProps) {
                   {week.map((day, dayIndex) => (
                     <div
                       key={`${weekIndex}-${dayIndex}`}
-                      className={`w-13 h-10 rounded-sm ${getIntensityClass(day.count)} border border-border/50 cursor-pointer transition-all duration-200 hover:scale-110 hover:border-border`}
+                      className={`w-[38px] h-10 rounded-sm ${getIntensityClass(day.count)} border border-border/50 cursor-pointer transition-all duration-200 hover:scale-110 hover:border-border`}
                       onMouseEnter={(e) => handleMouseEnter(day, e)}
                       onMouseLeave={handleMouseLeave}
                     />

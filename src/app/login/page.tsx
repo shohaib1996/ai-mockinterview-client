@@ -26,6 +26,7 @@ export default function LoginPage() {
     e.preventDefault()
     try {
       const res = await loginUser({ email, password }).unwrap()
+      console.log(res.data)
       dispatch(login({ user: res.data.user, token: res.data.accessToken }))
       router.push("/dashboard/user")
     } catch (err) {

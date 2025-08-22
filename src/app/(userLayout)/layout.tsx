@@ -9,7 +9,8 @@ const UserLayout = ({ children }: { children: React.ReactNode }) => {
   const userMenu = [
     { title: "Sessions", url: "/dashboard/user-session", icon: "home" },
     { title: "IELTS Sessions", icon: "home", children: [
-      {title: "Speaking", url: "/dashboard/ielts/speaking", icon: "inbox"}
+      {title: "Speaking", url: "/dashboard/ielts/speaking", icon: "inbox"},
+      {title: "Listening", url: "/dashboard/ielts/listening", icon: "inbox"},
     ]},
     { title: "My Profile", url: "/profile", icon: "calendar" },
     {
