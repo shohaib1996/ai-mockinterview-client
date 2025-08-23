@@ -37,6 +37,9 @@ const WritingSessions = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [currentLimit, setCurrentLimit] = useState(10);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [sessionId, setSessionId] = useState<string | null>(null);
+
+  console.log(sessionId)
 
   const { data, isLoading, refetch } = useGetAllSessionsQuery({
     page: currentPage,
@@ -92,14 +95,15 @@ const WritingSessions = () => {
 
   const handleCreateSession = async () => {
     try {
-      await createWritingSession({ type: sessionType }).unwrap();
+      const res = await createWritingSession({ type: sessionType }).unwrap();
       setIsDialogOpen(true);
+      setSessionId(res?.data?.id);
     } catch (error) {
       toast.error("Failed to create a writing session. Please try again.");
     }
   };
 
-  const handleTaskSelection = (task: "TASK1" | "TASK2") => {
+  const handleTaskSelection = (task: any) => {
     router.push(`/dashboard/ielts/writing/practice?task=${task}`);
   };
 
@@ -226,13 +230,13 @@ const WritingSessions = () => {
           <div className="grid grid-cols-2 gap-4 py-4">
             <Button
               variant="outline"
-              onClick={() => handleTaskSelection("TASK1")}
+              onClick={() => handleTaskSelection(`TASK1-${sessionId}`)}
             >
               Task 1
             </Button>
             <Button
               variant="outline"
-              onClick={() => handleTaskSelection("TASK2")}
+              onClick={() => handleTaskSelection(`TASK2-${sessionId}`)}
             >
               Task 2
             </Button>

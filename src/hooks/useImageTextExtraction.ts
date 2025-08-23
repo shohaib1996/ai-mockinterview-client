@@ -1,16 +1,17 @@
 "use client";
 
+import { useExtractTextMutation } from "@/redux/api/text-extraction/textExtractionApi";
 import { useState } from "react";
-import { useExtractTextFromImageMutation } from "@/redux/api/text-extraction/textExtractionApi";
+
 
 export const useImageTextExtraction = () => {
-  const [extractTextFromImage, { isLoading }] = useExtractTextFromImageMutation();
+  const [extractTextFromImage, { isLoading }] = useExtractTextMutation();
   const [extractedText, setExtractedText] = useState<string | null>(null);
   const [error, setError] = useState<any>(null);
 
   const extractText = async (imageFile: File) => {
     const formData = new FormData();
-    formData.append("file", imageFile);
+    formData.append("image", imageFile);
 
     try {
       const response = await extractTextFromImage(formData).unwrap();

@@ -12,15 +12,14 @@ import {
 import { CustomPagination } from "@/components/Common/CustomPagination/CustomPagination";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Plus, Eye, Edit, Trash } from "lucide-react";
-import { format } from "date-fns";
 import { CustomTooltip } from "@/components/Common/CustomTooltip/CustomTooltip";
 
 const WritingPractice = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [currentLimit, setCurrentLimit] = useState(10);
   const searchParams = useSearchParams();
-  const taskType = searchParams.get("task");
+  const sessionId = searchParams.get("task") && searchParams.get("task")!.split("-")[1]
+  const taskType = searchParams.get("task") && searchParams.get("task")!.split("-")[0];
   const router = useRouter()
 
   const { data, isLoading } = useGetAllWritingTasksQuery({
@@ -42,7 +41,7 @@ const WritingPractice = () => {
   };
 
   const handleViewTask = (task: IWritingTask) => {
-    router.push(`/dashboard/ielts/writing/practice/${task.id}`);
+    router.push(`/dashboard/ielts/writing/practice/${task.id}-${sessionId}`);
   };
 
 

@@ -5,9 +5,11 @@ interface PageProps {
 }
 const WritingTaskPage = async({ params }: PageProps) => {
     const { id } = params;
+    const sessionId= id.split("-")[1];
+    const taskId = id.split("-")[0];
 
   return (
-    <WritingPracticePage id={id} />
+    <WritingPracticePage sessionId={sessionId} taskId={taskId} />
   )
 }
 
