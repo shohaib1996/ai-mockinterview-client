@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import type { InterviewSession, Meta } from "@/types";
 import {
   CustomTable,
@@ -9,18 +10,33 @@ import {
 } from "@/components/Common/CustomTable/CustomTable";
 import { CustomPagination } from "@/components/Common/CustomPagination/CustomPagination";
 import { Button } from "@/components/ui/button";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+  DialogFooter,
+  DialogClose,
+} from "@/components/ui/dialog";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Plus, Eye } from "lucide-react";
-import { useGetAllSessionsQuery } from "@/redux/api/session/sessionApi";
+import {
+  useCreateSessionMutation,
+  useGetAllSessionsQuery,
+} from "@/redux/api/session/sessionApi";
 import { useAppSelector } from "@/redux/hooks/hooks";
 import { CustomTooltip } from "@/components/Common/CustomTooltip/CustomTooltip";
 import { format } from "date-fns";
+import { toast } from "sonner";
 
 const WritingSessions = () => {
+  const router = useRouter();
   const user = useAppSelector((state) => state.auth.user);
   const sessionType = "IELTS_WRITING";
   const [currentPage, setCurrentPage] = useState(1);
   const [currentLimit, setCurrentLimit] = useState(10);
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
 
   const { data, isLoading, refetch } = useGetAllSessionsQuery({
     page: currentPage,
@@ -28,6 +44,8 @@ const WritingSessions = () => {
     type: sessionType,
     userId: user?.id,
   });
+  const [createWritingSession, { isLoading: isCreating }] =
+    useCreateSessionMutation();
   const writingData: InterviewSession[] = data?.data || [];
   const meta: Meta = data?.meta || { page: 1, limit: 10, total: 0 };
 
@@ -73,7 +91,16 @@ const WritingSessions = () => {
   };
 
   const handleCreateSession = async () => {
-    // functionality to be added
+    try {
+      await createWritingSession({ type: sessionType }).unwrap();
+      setIsDialogOpen(true);
+    } catch (error) {
+      toast.error("Failed to create a writing session. Please try again.");
+    }
+  };
+
+  const handleTaskSelection = (task: "TASK1" | "TASK2") => {
+    router.push(`/dashboard/ielts/writing/practice?task=${task}`);
   };
 
   const columns: TableColumn<InterviewSession>[] = [
@@ -81,7 +108,9 @@ const WritingSessions = () => {
       key: "id",
       header: "Id",
       render: (session) => (
-        <span className="font-medium">{session?.id || "Writing Practice"}</span>
+        <span className="font-medium">
+          {session?.id || "Writing Practice"}
+        </span>
       ),
     },
     {
@@ -152,9 +181,10 @@ const WritingSessions = () => {
         <Button
           className="flex items-center gap-2"
           onClick={handleCreateSession}
+          disabled={isCreating}
         >
           <Plus className="h-4 w-4" />
-          {"Start A Writing Session"}
+          {isCreating ? "Starting..." : "Start A Writing Session"}
         </Button>
       </div>
 
@@ -169,7 +199,7 @@ const WritingSessions = () => {
               columns={columns}
               data={writingData}
               actions={actions}
-              loading={false}
+              loading={isLoading}
               emptyMessage="No writing sessions found. Create your first session to get started!"
             />
 
@@ -183,8 +213,40 @@ const WritingSessions = () => {
           </div>
         </CardContent>
       </Card>
+
+      {/* Task Selection Dialog */}
+      <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Select Writing Task</DialogTitle>
+            <DialogDescription>
+              Choose which task you would like to practice.
+            </DialogDescription>
+          </DialogHeader>
+          <div className="grid grid-cols-2 gap-4 py-4">
+            <Button
+              variant="outline"
+              onClick={() => handleTaskSelection("TASK1")}
+            >
+              Task 1
+            </Button>
+            <Button
+              variant="outline"
+              onClick={() => handleTaskSelection("TASK2")}
+            >
+              Task 2
+            </Button>
+          </div>
+          <DialogFooter>
+            <DialogClose asChild>
+              <Button variant="ghost">Cancel</Button>
+            </DialogClose>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };
 
 export default WritingSessions;
+

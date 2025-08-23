@@ -10,6 +10,8 @@ const UserDashboard = () => {
   const chartData = data?.data?.charts
   const statsData = data?.data?.stats
 
+  console.log(data)
+
 
   if (isLoading) {
     return (
