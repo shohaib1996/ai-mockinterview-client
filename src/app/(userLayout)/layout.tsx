@@ -1,28 +1,29 @@
 "use client";
-
-import { useState } from "react";
 import { AppSidebar } from "@/components/Common/AppSidebar/AppSidebar";
-import { SidebarProvider, SidebarTrigger, useSidebar } from "@/components/ui/sidebar";
-import { Calendar, Home, Inbox } from "lucide-react";
+import {
+  SidebarProvider,
+  SidebarTrigger,
+  useSidebar,
+} from "@/components/ui/sidebar";
 
 const UserLayout = ({ children }: { children: React.ReactNode }) => {
   const userMenu = [
-    { title: "Sessions", url: "/dashboard/user-session", icon: "home" },
-    { title: "IELTS Sessions", icon: "home", children: [
-      {title: "Speaking", url: "/dashboard/ielts/speaking", icon: "inbox"},
-      {title: "Listening", url: "/dashboard/ielts/listening", icon: "inbox"},
-      {title: "Reading", url: "/dashboard/ielts/reading", icon: "inbox"},
-      {title: "Writing", url: "/dashboard/ielts/writing", icon: "inbox"},
-    ]},
-    { title: "My Profile", url: "/profile", icon: "calendar" },
+     { title: "Dashboard", url: "/dashboard/user", icon: "calendar" },
     {
-      title: "Messages",
-      icon: "inbox",
+      title: "IELTS Sessions",
+      icon: "home",
       children: [
-        { title: "Inbox", url: "/messages/inbox", icon: "inbox" },
-        { title: "Sent", url: "/messages/sent", icon: "message" },
+        { title: "Speaking", url: "/dashboard/ielts/speaking", icon: "inbox" },
+        {
+          title: "Listening",
+          url: "/dashboard/ielts/listening",
+          icon: "inbox",
+        },
+        { title: "Reading", url: "/dashboard/ielts/reading", icon: "inbox" },
+        { title: "Writing", url: "/dashboard/ielts/writing", icon: "inbox" },
       ],
     },
+    { title: "Mock Test", url: "/dashboard/mock-test", icon: "calendar" },
   ];
 
   return (
