@@ -32,6 +32,17 @@ interface UserListeningHistory {
   sessionId: string;
 }
 
+export interface ConversationMessage {
+  role: "user" | "assistant";
+  content: string;
+}
+
+export interface AiChatConversation {
+  id: string;
+  sessionId: string;
+  conversation: ConversationMessage[];
+}
+
 
 
 export interface ISinglesSession {
@@ -43,7 +54,7 @@ export interface ISinglesSession {
   score: number;
   transcript: string | null;
   feedback: string | null;
-  aiChatConversations: any[];
+  aiChatConversations: AiChatConversation[];
   writingSubmissions: any[];
   userListeningHistory: UserListeningHistory[];
 }

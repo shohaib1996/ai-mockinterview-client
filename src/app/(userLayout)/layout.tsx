@@ -5,10 +5,11 @@ import {
   SidebarTrigger,
   useSidebar,
 } from "@/components/ui/sidebar";
+import { title } from "process";
 
 const UserLayout = ({ children }: { children: React.ReactNode }) => {
   const userMenu = [
-     { title: "Dashboard", url: "/dashboard/user", icon: "calendar" },
+    { title: "Dashboard", url: "/dashboard/user", icon: "calendar" },
     {
       title: "IELTS Sessions",
       icon: "home",
@@ -23,7 +24,19 @@ const UserLayout = ({ children }: { children: React.ReactNode }) => {
         { title: "Writing", url: "/dashboard/ielts/writing", icon: "inbox" },
       ],
     },
-    { title: "Mock Test", url: "/dashboard/mock-test", icon: "calendar" },
+    {
+      title: "Mock Test",
+      icon: "calendar",
+      children: [
+        {
+          title: "Technical",
+          url: "/dashboard/mock-test/technical",
+          icon: "inbox",
+        },
+        { title: "Behavioral", url: "/dashboard/mock-test/behavioral", icon: "inbox" },
+        { title: "Interpersonal", url: "/dashboard/mock-test/interpersonal", icon: "inbox" }
+      ],
+    },
   ];
 
   return (

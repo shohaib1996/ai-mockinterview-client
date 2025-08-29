@@ -14,6 +14,7 @@ export enum tagTypes {
   Users = "users",
   WritingSubmission = "writingSubmission",
   writingTask = "writingTask",
+  MockInterview = "mockInterview",
 }
 
 export const tagTypesList = [
@@ -32,4 +33,5 @@ export const tagTypesList = [
   tagTypes.Users,
   tagTypes.WritingSubmission,
   tagTypes.writingTask,
-];
+  tagTypes.MockInterview,
+]
