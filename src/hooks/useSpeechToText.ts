@@ -51,14 +51,24 @@ interface SpeechToTextOptions {
 export const useSpeechToText = ({ onTranscript }: SpeechToTextOptions) => {
   const [isListening, setIsListening] = useState(false)
   const recognitionRef = useRef<SpeechRecognition | null>(null)
+  const onTranscriptRef = useRef(onTranscript)
+  const isListeningRef = useRef(isListening)
+
+  useEffect(() => {
+    onTranscriptRef.current = onTranscript
+  }, [onTranscript])
+
+  useEffect(() => {
+    isListeningRef.current = isListening
+  }, [isListening])
 
   useEffect(() => {
     if (typeof window !== "undefined" && ("SpeechRecognition" in window || "webkitSpeechRecognition" in window)) {
       const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition
       recognitionRef.current = new SpeechRecognition()
 
-      recognitionRef.current.continuous = true   // ✅ keeps listening until you stop manually
-      recognitionRef.current.interimResults = true // ✅ get partial results in real time if needed
+      recognitionRef.current.continuous = true
+      recognitionRef.current.interimResults = true
       recognitionRef.current.lang = "en-US"
 
       recognitionRef.current.onresult = (event: SpeechRecognitionEvent) => {
@@ -69,7 +79,7 @@ export const useSpeechToText = ({ onTranscript }: SpeechToTextOptions) => {
           }
         }
         if (finalTranscript.trim()) {
-          onTranscript(finalTranscript)
+          onTranscriptRef.current(finalTranscript)
         }
       }
 
@@ -79,8 +89,8 @@ export const useSpeechToText = ({ onTranscript }: SpeechToTextOptions) => {
       }
 
       recognitionRef.current.onend = () => {
-        // If listening was active and not manually stopped, restart it
-        if (isListening) {
+        // Use the ref to get the latest listening state
+        if (isListeningRef.current) {
           recognitionRef.current?.start()
         }
       }

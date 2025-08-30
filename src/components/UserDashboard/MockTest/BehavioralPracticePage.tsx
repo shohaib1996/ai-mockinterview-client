@@ -20,22 +20,16 @@ import { Skeleton } from '@/components/ui/skeleton';
 import { useUpdateSessionMutation } from '@/redux/api/session/sessionApi';
 import { toast } from 'sonner';
 
-
-
-
-const TechnicalPracticePage = ({ id: sessionId }: { id: string }) => {
+const BehavioralPracticePage = ({ id: sessionId }: { id: string }) => {
   const user = useAppSelector((state) => state.auth.user);
   const router = useRouter();
   const [conversation, setConversation] = useState<
     { role: string; content: string }[]
   >([]);
 
-  
-
   const scrollAreaRef = useRef<HTMLDivElement>(null);
   const [practiceStarted, setPracticeStarted] = useState(false);
   const [isClosing, setIsClosing] = useState(false);
-  
 
   const { data: initialConversation, isLoading: isHistoryLoading } =
     useGetConversationHistoryQuery(sessionId);
@@ -95,7 +89,7 @@ const TechnicalPracticePage = ({ id: sessionId }: { id: string }) => {
       };
       handleSendMessage(initialMessage.content);
     }
-  }, [initialConversation, user, practiceStarted, isHistoryLoading]);
+  }, [initialConversation, user, practiceStarted, isHistoryLoading, handleSendMessage]);
 
   useEffect(() => {
     if (scrollAreaRef.current) {
@@ -128,7 +122,7 @@ const TechnicalPracticePage = ({ id: sessionId }: { id: string }) => {
       }).unwrap();
 
       toast.success('Session saved successfully!', { id: toastId });
-      router.push('/dashboard/mock-test/technical');
+      router.push('/dashboard/mock-test/behavioral');
     } catch (error) {
       console.error('Failed to close and analyze session:', error);
       toast.error('An error occurred during analysis. Please try again.', {
@@ -151,9 +145,8 @@ const TechnicalPracticePage = ({ id: sessionId }: { id: string }) => {
   return (
     <Card className='flex flex-col'>
       <CardHeader className='flex-row items-center justify-between'>
-        <CardTitle>Technical Mock Interview</CardTitle>
+        <CardTitle>Behavioral Mock Interview</CardTitle>
         <div className='flex items-center gap-4'>
-          
           <Button
             onClick={isSpeaking ? cancel : () => speak(conversation[conversation.length - 1]?.content)}
             variant='outline'
@@ -212,4 +205,4 @@ const TechnicalPracticePage = ({ id: sessionId }: { id: string }) => {
   );
 };
 
-export default TechnicalPracticePage;
+export default BehavioralPracticePage;

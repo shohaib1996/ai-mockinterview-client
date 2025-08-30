@@ -41,6 +41,7 @@ export interface AiChatConversation {
   id: string;
   sessionId: string;
   conversation: ConversationMessage[];
+  createdAt: string
 }
 
 
