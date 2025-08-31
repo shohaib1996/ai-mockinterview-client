@@ -1,7 +1,6 @@
 "use client"
 
 import React, { useState } from "react"
-
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Calendar } from "lucide-react"
 
@@ -53,7 +52,7 @@ export function ActivityHeatmapChart({ data }: ActivityHeatmapChartProps) {
         weekData.push({
           date: currentDate,
           count,
-          dateString: dateKey,
+          dateKey,
         })
       }
       weeks.push(weekData)
@@ -81,47 +80,52 @@ export function ActivityHeatmapChart({ data }: ActivityHeatmapChartProps) {
   }
 
   return (
-    <Card className="relative">
-      <CardHeader>
-        <CardTitle className="flex items-center gap-2">
+    <Card className="w-full max-w-4xl mx-auto">
+      <CardHeader className="pb-4">
+        <CardTitle className="flex items-center gap-2 text-lg sm:text-xl md:text-2xl">
           <Calendar className="h-5 w-5" />
           Activity Heatmap
         </CardTitle>
-        <CardDescription>
+        <CardDescription className="text-sm sm:text-base">
           Your practice consistency over the last 12 weeks ({totalActivities} total activities)
         </CardDescription>
       </CardHeader>
-      <CardContent>
+      <CardContent className="p-2 sm:p-4 md:p-6">
         <div className="space-y-4">
           <div className="flex gap-1">
             {/* Day labels column */}
-            <div className="flex flex-col gap-1 mr-2">
-              <div className="h-4"></div> {/* Spacer for alignment */}
+            <div className="flex flex-col gap-1 mr-1 sm:mr-2">
+              <div className="h-4 sm:h-5"></div> {/* Spacer for alignment */}
               {dayLabels.map((label, index) => (
-                <div key={label} className="h-4 w-8 text-xs text-muted-foreground flex items-center">
+                <div
+                  key={label}
+                  className="h-4 sm:h-5 w-6 sm:w-8 text-xs sm:text-sm text-muted-foreground dark:text-muted-foreground-dark flex items-center"
+                >
                   {index % 2 === 1 ? label : ""}
                 </div>
               ))}
             </div>
 
             {/* Calendar grid */}
-            <div className="flex gap-1 flex-1 overflow-x-auto pb-2">
+            <div className="flex gap-0.5 sm:gap-1 flex-1 overflow-x-auto pb-2">
               {calendarData.map((week, weekIndex) => (
-                <div key={weekIndex} className="flex flex-col gap-1 min-w-0">
+                <div key={weekIndex} className="flex flex-col gap-0.5 sm:gap-1 min-w-[24px] sm:min-w-[32px]">
                   {/* Month labels */}
                   {weekIndex === 0 || week[0].date.getDate() <= 7 ? (
-                    <div className="h-4 text-xs text-muted-foreground text-center">
+                    <div className="h-4 sm:h-5 text-xs sm:text-sm text-muted-foreground dark:text-muted-foreground-dark text-center">
                       {week[0].date.toLocaleDateString("en-US", { month: "short" })}
                     </div>
                   ) : (
-                    <div className="h-4"></div>
+                    <div className="h-4 sm:h-5"></div>
                   )}
 
                   {/* Week column */}
                   {week.map((day, dayIndex) => (
                     <div
                       key={`${weekIndex}-${dayIndex}`}
-                      className={`w-[38px] h-10 rounded-sm ${getIntensityClass(day.count)} border border-border/50 cursor-pointer transition-all duration-200 hover:scale-110 hover:border-border`}
+                      className={`w-6 h-6 sm:w-8 sm:h-8 md:w-[38px] md:h-[44px] rounded-sm ${getIntensityClass(
+                        day.count
+                      )} border border-border/50 cursor-pointer transition-all duration-200 hover:scale-105 hover:border-border`}
                       onMouseEnter={(e) => handleMouseEnter(day, e)}
                       onMouseLeave={handleMouseLeave}
                     />
@@ -131,14 +135,14 @@ export function ActivityHeatmapChart({ data }: ActivityHeatmapChartProps) {
             </div>
           </div>
 
-          <div className="flex items-center justify-between text-xs text-muted-foreground">
+          <div className="flex items-center justify-between text-xs sm:text-sm text-muted-foreground dark:text-muted-foreground-dark">
             <span>Less</span>
-            <div className="flex gap-1">
-              <div className="w-5 h-3 rounded-sm bg-muted border border-border/50" />
-              <div className="w-3 h-3 rounded-sm bg-green-200 dark:bg-green-900 border border-border/50" />
-              <div className="w-3 h-3 rounded-sm bg-green-300 dark:bg-green-800 border border-border/50" />
-              <div className="w-3 h-3 rounded-sm bg-green-400 dark:bg-green-700 border border-border/50" />
-              <div className="w-3 h-3 rounded-sm bg-green-500 dark:bg-green-600 border border-border/50" />
+            <div className="flex gap-0.5 sm:gap-1">
+              <div className="w-3 h-3 sm:w-4 sm:h-4 rounded-sm bg-muted border border-border/50" />
+              <div className="w-3 h-3 sm:w-4 sm:h-4 rounded-sm bg-green-200 dark:bg-green-900 border border-border/50" />
+              <div className="w-3 h-3 sm:w-4 sm:h-4 rounded-sm bg-green-300 dark:bg-green-800 border border-border/50" />
+              <div className="w-3 h-3 sm:w-4 sm:h-4 rounded-sm bg-green-400 dark:bg-green-700 border border-border/50" />
+              <div className="w-3 h-3 sm:w-4 sm:h-4 rounded-sm bg-green-500 dark:bg-green-600 border border-border/50" />
             </div>
             <span>More</span>
           </div>
@@ -147,7 +151,7 @@ export function ActivityHeatmapChart({ data }: ActivityHeatmapChartProps) {
 
       {hoveredDay && (
         <div
-          className="fixed z-50 px-3 py-2 text-sm bg-popover text-popover-foreground border border-border rounded-md shadow-lg pointer-events-none"
+          className="fixed z-50 px-2 sm:px-3 py-1 sm:py-2 text-xs sm:text-sm bg-popover text-popover-foreground border border-border rounded-md shadow-lg pointer-events-none"
           style={{
             left: hoveredDay.x,
             top: hoveredDay.y,
@@ -162,7 +166,7 @@ export function ActivityHeatmapChart({ data }: ActivityHeatmapChartProps) {
               year: "numeric",
             })}
           </div>
-          <div className="text-muted-foreground">
+          <div className="text-muted-foreground dark:text-muted-foreground-dark">
             {hoveredDay.count} {hoveredDay.count === 1 ? "activity" : "activities"}
           </div>
         </div>

@@ -11,7 +11,7 @@ type SessionType =
   | "MOCK_INTERVIEW_INTERPERSONAL"
   | "QUIZ";
 
-type Difficulty = "EASY" | "MEDIUM" | "HARD";
+type Difficulty = "LOW" | "MEDIUM" | "HARD";
 
 export interface IQuestion {
   id: string;
@@ -26,4 +26,5 @@ export interface IQuestion {
   updatedAt: string;
   listeningAudioId?: string | null;
   readingPassageId?: string | null;
+  quizAttemptId?: string | null;
 }

@@ -27,12 +27,10 @@ export function IeltsScoreTrendChart({ data }: IeltsScoreTrendChartProps) {
     const allDates = new Set<string>();
     const dateMap = new Map<string, { date: string; listening?: number; reading?: number; writing?: number; speaking?: number }>();
 
-    // Define valid skill keys
     type SkillKey = keyof IeltsScoreTrendData;
 
-    // Collect all unique dates and scores
     Object.entries(data).forEach(([skill, scores]: [string, Array<{ date: string; score: number }>]) => {
-      const skillKey = skill as SkillKey; // Type assertion to valid skill keys
+      const skillKey = skill as SkillKey;
       scores.forEach(({ date, score }) => {
         const formattedDate = new Date(date).toLocaleDateString();
         allDates.add(formattedDate);
@@ -40,7 +38,7 @@ export function IeltsScoreTrendChart({ data }: IeltsScoreTrendChartProps) {
           dateMap.set(formattedDate, { date: formattedDate });
         }
         const entry = dateMap.get(formattedDate)!;
-        entry[skillKey] = score; // Now TypeScript knows skillKey is valid
+        entry[skillKey] = score;
       });
     });
 
@@ -49,101 +47,111 @@ export function IeltsScoreTrendChart({ data }: IeltsScoreTrendChartProps) {
     );
   }, [data]);
 
+  // Define color scheme for light and dark modes
   const chartConfig = {
     listening: {
       label: "Listening",
-      color: "hsl(var(--chart-1))", // Blue
+      color: "hsl(221, 83%, 53%)", // Blue-500 for light, visible in dark
     },
     reading: {
       label: "Reading",
-      color: "hsl(var(--chart-2))", // Green
+      color: "hsl(142, 76%, 36%)", // Green-600 for light, visible in dark
     },
     writing: {
       label: "Writing",
-      color: "hsl(var(--chart-3))", // Orange
+      color: "hsl(24, 94%, 50%)", // Orange-500 for light, visible in dark
     },
     speaking: {
       label: "Speaking",
-      color: "hsl(var(--chart-4))", // Purple
+      color: "hsl(280, 65%, 60%)", // Purple-500 for light, visible in dark
     },
   };
 
   const hasData = chartData.length > 0;
 
   return (
-    <Card className="w-full">
-      <CardHeader>
-        <CardTitle className="flex items-center gap-2">
+    <Card className="w-full max-w-4xl mx-auto">
+      <CardHeader className="">
+        <CardTitle className="flex items-center gap-2 text-lg sm:text-xl md:text-2xl">
           <TrendingUp className="h-5 w-5" />
           IELTS Score Trend
         </CardTitle>
-        <CardDescription>Track your progress across all IELTS skills over time</CardDescription>
+        <CardDescription className="text-sm sm:text-base">
+          Track your progress across all IELTS skills over time
+        </CardDescription>
       </CardHeader>
-      <CardContent>
+      <CardContent className="p-2 sm:p-4 md:p-6">
         {hasData ? (
-          <ChartContainer config={chartConfig} className="h-[300px] w-full">
+          <ChartContainer config={chartConfig} className="h-[250px] sm:h-[300px] md:h-[350px] w-full">
             <ResponsiveContainer width="100%" height="100%">
-              <LineChart data={chartData} margin={{ top: 5, right: 30, left: 20, bottom: 5 }}>
-                <CartesianGrid strokeDasharray="3 3" className="stroke-muted" />
+              <LineChart 
+                data={chartData} 
+                margin={{ 
+                  top: 10, 
+                  right: 10, 
+                  left: 0, 
+                  bottom: 10 
+                }}
+              >
+                <CartesianGrid 
+                  strokeDasharray="5 5" 
+                  strokeWidth={3}
+                  className="stroke-muted dark:stroke-muted" 
+                />
                 <XAxis
                   dataKey="date"
-                  className="text-muted-foreground"
+                  className="text-muted-foreground dark:text-muted-foreground-dark"
                   fontSize={12}
                   tick={{ fill: "hsl(var(--muted-foreground))" }}
+                  tickMargin={8}
+                  interval="preserveStartEnd"
+                  tickFormatter={(value) => new Date(value).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}
                 />
                 <YAxis
                   domain={[0, 9]}
-                  className="text-muted-foreground"
+                  className="text-muted-foreground dark:text-muted-foreground-dark"
                   fontSize={12}
                   tick={{ fill: "hsl(var(--muted-foreground))" }}
-                  tickFormatter={(value) => value?.toFixed(1)}
+                  tickMargin={8}
+                  tickFormatter={(value) => value.toFixed(1)}
                 />
-                <ChartTooltip content={<ChartTooltipContent />} />
-                <Legend />
-                <Line
-                  type="monotone"
-                  dataKey="listening"
-                  stroke="var(--color-listening)"
-                  fill="var(--color-listening)"
-                  strokeWidth={2}
-                  dot={{ r: 4, fill: "var(--color-listening)" }}
-                  connectNulls={false}
+                <ChartTooltip 
+                  content={
+                    <ChartTooltipContent 
+                      className="bg-background dark:bg-background border border-muted dark:border-muted"
+                    />
+                  } 
                 />
-                <Line
-                  type="monotone"
-                  dataKey="reading"
-                  stroke="var(--color-reading)"
-                  fill="var(--color-reading)"
-                  strokeWidth={2}
-                  dot={{ r: 4, fill: "var(--color-reading)" }}
-                  connectNulls={false}
+                <Legend 
+                  wrapperStyle={{ 
+                    paddingTop: 10,
+                    fontSize: '0.875rem',
+                  }}
                 />
-                <Line
-                  type="monotone"
-                  dataKey="writing"
-                  stroke="var(--color-writing)"
-                  fill="var(--color-writing)"
-                  strokeWidth={2}
-                  dot={{ r: 4, fill: "var(--color-writing)" }}
-                  connectNulls={false}
-                />
-                <Line
-                  type="monotone"
-                  dataKey="speaking"
-                  stroke="var(--color-speaking)"
-                  fill="var(--color-speaking)"
-                  strokeWidth={2}
-                  dot={{ r: 4, fill: "var(--color-speaking)" }}
-                  connectNulls={false}
-                />
+                {Object.keys(chartConfig).map((key) => (
+                  <Line
+                    key={key}
+                    type="monotone"
+                    dataKey={key}
+                    stroke={chartConfig[key as keyof typeof chartConfig].color}
+                    fill={chartConfig[key as keyof typeof chartConfig].color}
+                    strokeWidth={5}
+                    dot={{ 
+                      r: 4, 
+                      fill: chartConfig[key as keyof typeof chartConfig].color 
+                    }}
+                    connectNulls={false}
+                    activeDot={{ r: 6 }}
+                  />
+                ))}
               </LineChart>
             </ResponsiveContainer>
           </ChartContainer>
         ) : (
-          <div className="h-[300px] flex items-center justify-center">
-            <div className="text-center text-muted-foreground">
+          <div className="h-[250px] sm:h-[300px] md:h-[350px] flex items-center justify-center">
+            <div className="text-center text-muted-foreground dark:text-muted-foreground-dark">
               <TrendingUp className="h-12 w-12 mx-auto mb-4 opacity-50" />
-              <p className="text-lg font-medium">No score data available</p>
+              <p className="text-base sm:text-lg font-medium">No score data available</p>
               <p className="text-sm">Start practicing to see your IELTS score trends</p>
             </div>
           </div>

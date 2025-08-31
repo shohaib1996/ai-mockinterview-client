@@ -30,6 +30,9 @@ import {
 import Link from "next/link";
 import { Button } from "../../ui/button";
 import { ModeToggle } from "../../ThemeProvider/ModeToggle";
+import { useAppDispatch } from "@/redux/hooks/hooks";
+import { logout } from "@/redux/feature/auth/authSlice";
+import { useRouter } from "next/navigation";
 
 const iconMap: Record<string, React.ComponentType<any>> = {
   home: Home,
@@ -53,7 +56,13 @@ interface AppSidebarProps {
 
 export function AppSidebar({ items }: AppSidebarProps) {
   const { open, setOpen, isMobile } = useSidebar();
+  const dispatch = useAppDispatch();
+  const router = useRouter();
 
+  const handleLogout = () => {
+    dispatch(logout());
+    router.push("/login");
+  };
   return (
     <Sidebar
       collapsible="offcanvas" // Use offcanvas to hide sidebar completely
@@ -63,18 +72,25 @@ export function AppSidebar({ items }: AppSidebarProps) {
     >
       {/* Header */}
       <SidebarHeader className="flex items-center justify-between px-2">
-        {open && <span className="font-semibold">AI Mock Interview <ModeToggle/> </span>}
-        <Button
-          variant="ghost"
-          onClick={() => setOpen(!open)}
-          className="p-1 rounded hover:bg-muted"
-        >
-          {open ? (
-            <ChevronsLeft className="w-4 h-4" />
-          ) : (
-            <ChevronsRight className="w-4 h-4" />
-          )}
-        </Button>
+        {open && (
+          <div className="font-semibold flex items-center gap-2">
+            <Link href="/" className="text-lg font-semibold">
+              AI Mock Interview
+            </Link>
+            <ModeToggle />{" "}
+            <Button
+              variant="ghost"
+              onClick={() => setOpen(!open)}
+              className="p-1 rounded hover:bg-muted"
+            >
+              {open ? (
+                <ChevronsLeft className="w-4 h-4" />
+              ) : (
+                <ChevronsRight className="w-4 h-4" />
+              )}
+            </Button>{" "}
+          </div>
+        )}
       </SidebarHeader>
 
       {/* Content */}
@@ -97,13 +113,14 @@ export function AppSidebar({ items }: AppSidebarProps) {
 
       {/* Footer */}
       <SidebarFooter className="p-2">
-        <Link
-          href="/logout"
-          className="flex items-center gap-2 text-muted-foreground hover:text-foreground"
+        <Button
+          variant="ghost"
+          onClick={handleLogout}
+          className="flex items-center gap-2 text-muted-foreground hover:text-foreground justify-start w-full p-2"
         >
           <LogOut className="w-4 h-4" />
           {open && <span>Logout</span>}
-        </Link>
+        </Button>
       </SidebarFooter>
     </Sidebar>
   );
@@ -127,7 +144,10 @@ function MenuItemComponent({
           className="flex items-center justify-between cursor-pointer"
           onClick={() => hasChildren && setOpen(!open)}
         >
-          <Link href={item.url || "#"} className="flex items-center gap-2 w-full">
+          <Link
+            href={item.url || "#"}
+            className="flex items-center gap-2 w-full"
+          >
             {Icon && <Icon className="w-4 h-4" />}
             {!collapsed && <span>{item.title}</span>}
           </Link>

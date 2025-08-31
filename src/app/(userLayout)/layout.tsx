@@ -33,10 +33,19 @@ const UserLayout = ({ children }: { children: React.ReactNode }) => {
           url: "/dashboard/mock-test/technical",
           icon: "inbox",
         },
-        { title: "Behavioral", url: "/dashboard/mock-test/behavioral", icon: "inbox" },
-        { title: "Interpersonal", url: "/dashboard/mock-test/interpersonal", icon: "inbox" }
+        {
+          title: "Behavioral",
+          url: "/dashboard/mock-test/behavioral",
+          icon: "inbox",
+        },
+        {
+          title: "Interpersonal",
+          url: "/dashboard/mock-test/interpersonal",
+          icon: "inbox",
+        },
       ],
     },
+    { title: "Quiz", url: "/dashboard/quiz", icon: "calendar" },
   ];
 
   return (

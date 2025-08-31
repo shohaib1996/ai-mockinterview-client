@@ -11,6 +11,14 @@ const questionApi = baseApi.injectEndpoints({
       }),
       invalidatesTags: [tagTypes.Question],
     }),
+    generateQuestions: builder.mutation({
+      query: (data) => ({
+        url: "/questions/generate",
+        method: "POST",
+        data,
+      }),
+      invalidatesTags: [tagTypes.Question],
+    }),
     getAllQuestions: builder.query({
       query: (args) => ({
         url: "/questions",
@@ -50,4 +58,5 @@ export const {
   useGetSingleQuestionQuery,
   useUpdateQuestionMutation,
   useDeleteQuestionMutation,
+  useGenerateQuestionsMutation
 } = questionApi;
