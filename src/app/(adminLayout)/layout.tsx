@@ -15,12 +15,12 @@ const AdminLayout = ({ children }: { children: React.ReactNode }) => {
       children: [
         { title: "Speaking", url: "/dashboard/ielts/speaking", icon: "inbox" },
         {
-          title: "Listening",
-          url: "/dashboard/ielts/listening",
+          title: "Listening Audios",
+          url: "/dashboard/admin/ielts/listening",
           icon: "inbox",
         },
-        { title: "Reading", url: "/dashboard/ielts/reading", icon: "inbox" },
-        { title: "Writing", url: "/dashboard/ielts/writing", icon: "inbox" },
+        { title: "Reading", url: "/dashboard/admin/ielts/reading", icon: "inbox" },
+        { title: "Writing", url: "/dashboard/admin/ielts/writing", icon: "inbox" },
       ],
     },
     {
