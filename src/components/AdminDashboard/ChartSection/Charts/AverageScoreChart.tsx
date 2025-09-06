@@ -135,7 +135,7 @@ export function AverageScoreChart({ data, isLoading }: AverageScoreChartProps) {
       </CardHeader>
       <CardContent className="overflow-x-auto">
         {/* Make container responsive with minHeight */}
-        <ChartContainer config={chartConfig} className="">
+        <ChartContainer config={chartConfig} className="p-1">
           <ResponsiveContainer width="100%" height="100%">
             <BarChart
               data={allSessionTypes}

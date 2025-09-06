@@ -8,6 +8,7 @@ import {
 const AdminLayout = ({ children }: { children: React.ReactNode }) => {
   const userMenu = [
     { title: "Dashboard", url: "/dashboard/admin", icon: "calendar" },
+    { title: "All Sessions", url: "/dashboard/sessions", icon: "calendar" },
     {
       title: "IELTS Sessions",
       icon: "home",
