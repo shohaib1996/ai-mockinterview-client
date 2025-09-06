@@ -5,9 +5,9 @@ import {
   SidebarTrigger,
 } from "@/components/ui/sidebar";
 
-const UserLayout = ({ children }: { children: React.ReactNode }) => {
+const AdminLayout = ({ children }: { children: React.ReactNode }) => {
   const userMenu = [
-    { title: "Dashboard", url: "/dashboard/user", icon: "calendar" },
+    { title: "Dashboard", url: "/dashboard/admin", icon: "calendar" },
     {
       title: "IELTS Sessions",
       icon: "home",
@@ -62,4 +62,5 @@ const UserLayout = ({ children }: { children: React.ReactNode }) => {
   );
 };
 
-export default UserLayout;
+export default AdminLayout;
+

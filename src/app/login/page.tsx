@@ -28,7 +28,11 @@ export default function LoginPage() {
       const res = await loginUser({ email, password }).unwrap()
       console.log(res.data)
       dispatch(login({ user: res.data.user, token: res.data.accessToken }))
-      router.push("/dashboard/user")
+      if(res.data.user.role === "ADMIN") {
+        router.push("/dashboard/admin")
+      } else {
+        router.push("/dashboard/user")
+      }
     } catch (err) {
       console.error("Failed to login:", err)
     }
@@ -43,7 +47,7 @@ export default function LoginPage() {
       setEmail("john.doe@example.com")
       setPassword("securePass123")
     } else {
-      setEmail("john.doe1@example.com")
+      setEmail("john.doe2@example.com")
       setPassword("securePass123")
     }
   }
