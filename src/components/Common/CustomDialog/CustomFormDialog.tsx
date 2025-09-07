@@ -1,9 +1,11 @@
 'use client';
 
+import { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
 
+import { cn } from '@/lib/utils';
 import {
   Dialog,
   DialogContent,
@@ -38,6 +40,7 @@ export interface FormFieldConfig {
   options?: { value: string; label: string }[];
   placeholder?: string;
   validation?: z.ZodType<any, any>;
+  className?: string;
 }
 
 interface CustomFormDialogProps {
@@ -72,6 +75,14 @@ export const CustomFormDialog = ({
     defaultValues,
   });
 
+  useEffect(() => {
+    if (defaultValues) {
+      form.reset(defaultValues);
+    } else {
+      form.reset({});
+    }
+  }, [defaultValues, form.reset]);
+
   const handleFormSubmit = (data: z.infer<typeof formSchema>) => {
     onSubmit(data);
     form.reset();
@@ -96,7 +107,7 @@ export const CustomFormDialog = ({
                     <FormControl>
                       {field.type === 'select' ? (
                         <Select onValueChange={formField.onChange} defaultValue={formField.value}>
-                          <SelectTrigger>
+                          <SelectTrigger className={field.className}>
                             <SelectValue placeholder={field.placeholder} />
                           </SelectTrigger>
                           <SelectContent>
@@ -108,9 +119,18 @@ export const CustomFormDialog = ({
                           </SelectContent>
                         </Select>
                       ) : field.type === 'textarea' ? (
-                        <Textarea {...formField} placeholder={field.placeholder} />
+                        <Textarea
+                          {...formField}
+                          placeholder={field.placeholder}
+                          className={field.className}
+                        />
                       ) : (
-                        <Input {...formField} type={field.type} placeholder={field.placeholder} />
+                        <Input
+                          {...formField}
+                          type={field.type}
+                          placeholder={field.placeholder}
+                          className={field.className}
+                        />
                       )}
                     </FormControl>
                     <FormMessage />

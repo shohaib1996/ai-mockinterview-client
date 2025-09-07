@@ -1,3 +1,4 @@
+
 export interface IListeningAudio {
   id: string;
   title: string;
@@ -12,4 +13,11 @@ export interface IUserListeningHistory {
   sessionId: string;
   listeningAudioId: string;
   completedAt: string; // ISO date string
+}
+
+export interface IReadingPassage {
+  id: string;
+  title: string;
+  content: string;
+  createdAt: string; 
 }
