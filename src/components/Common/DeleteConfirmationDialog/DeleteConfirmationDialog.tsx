@@ -19,6 +19,8 @@ interface DeleteConfirmationDialogProps {
   title: string;
   description: string;
   isLoading?: boolean;
+  confirmButtonText?: string;
+  loadingButtonText?: string;
 }
 
 export const DeleteConfirmationDialog = ({
@@ -28,6 +30,8 @@ export const DeleteConfirmationDialog = ({
   title,
   description,
   isLoading = false,
+  confirmButtonText = 'Delete',
+  loadingButtonText = 'Deleting...',
 }: DeleteConfirmationDialogProps) => {
   return (
     <AlertDialog open={open} onOpenChange={onOpenChange}>
@@ -39,7 +43,7 @@ export const DeleteConfirmationDialog = ({
         <AlertDialogFooter>
           <AlertDialogCancel>Cancel</AlertDialogCancel>
           <AlertDialogAction onClick={onConfirm} disabled={isLoading}>
-            {isLoading ? 'Deleting...' : 'Delete'}
+            {isLoading ? loadingButtonText : confirmButtonText}
           </AlertDialogAction>
         </AlertDialogFooter>
       </AlertDialogContent>

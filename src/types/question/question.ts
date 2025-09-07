@@ -1,7 +1,7 @@
-type QuestionType =
+export type QuestionType =
   | "MCQ"
 
-type SessionType =
+export type SessionType =
   | "IELTS_LISTENING"
   | "IELTS_READING"
   | "IELTS_WRITING"
@@ -11,7 +11,7 @@ type SessionType =
   | "MOCK_INTERVIEW_INTERPERSONAL"
   | "QUIZ";
 
-type Difficulty = "LOW" | "MEDIUM" | "HARD";
+export type Difficulty = "LOW" | "MEDIUM" | "HARD";
 
 export interface IQuestion {
   id: string;

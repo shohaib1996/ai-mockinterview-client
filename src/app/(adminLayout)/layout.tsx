@@ -23,27 +23,12 @@ const AdminLayout = ({ children }: { children: React.ReactNode }) => {
       ],
     },
     {
-      title: "Mock Test",
+      title: "All Questions",
       icon: "calendar",
-      children: [
-        {
-          title: "Technical",
-          url: "/dashboard/mock-test/technical",
-          icon: "inbox",
-        },
-        {
-          title: "Behavioral",
-          url: "/dashboard/mock-test/behavioral",
-          icon: "inbox",
-        },
-        {
-          title: "Interpersonal",
-          url: "/dashboard/mock-test/interpersonal",
-          icon: "inbox",
-        },
-      ],
+      url: "/dashboard/admin/questions"
     },
     { title: "Quiz", url: "/dashboard/admin/quiz", icon: "calendar" },
+    { title: "All User", url: "/dashboard/admin/users", icon: "calendar" },
   ];
 
   return (

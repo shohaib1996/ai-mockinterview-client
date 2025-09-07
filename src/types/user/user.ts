@@ -10,3 +10,14 @@ export interface User {
     updatedAt: string; // ISO date string
   };
 }
+
+export interface ISingleUser {
+  id: string;
+  email: string;
+  name: string;
+  password: string;
+  avatarUrl: string | null;
+  role: "USER" | "ADMIN"; // adjust if you have more roles
+  createdAt: string; // ISO date string
+  updatedAt: string; // ISO date string
+}

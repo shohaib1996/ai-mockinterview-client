@@ -20,12 +20,21 @@ const usersApi = baseApi.injectEndpoints({
       invalidatesTags: [tagTypes.Users],
     }),
     getUsers: builder.query({
-      query: () => ({
+      query: (args) => ({
         url: "/users",
         method: "GET",
+        params: args
       }),
       providesTags: [tagTypes.Users],
     }),
+    roleToggle: builder.mutation({
+      query: ({id, data}) => ({
+        url: `/users/${id}/role`,
+        method: "PATCH",
+        data
+      }),
+      invalidatesTags: [tagTypes.Users],
+    })
   }),
 });
 
@@ -33,4 +42,5 @@ export const {
   useRegisterUserMutation,
   useLoginUserMutation,
   useGetUsersQuery,
+  useRoleToggleMutation
 } = usersApi;
