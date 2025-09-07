@@ -12,9 +12,10 @@ const quizAttemptApi = baseApi.injectEndpoints({
       invalidatesTags: [tagTypes.QuizAttempt],
     }),
     getAllQuizAttempts: builder.query({
-      query: () => ({
+      query: (params) => ({
         url: "/quiz-attempts",
         method: "GET",
+        params
       }),
       providesTags: [tagTypes.QuizAttempt],
     }),

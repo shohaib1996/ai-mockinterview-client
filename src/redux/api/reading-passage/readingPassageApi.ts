@@ -12,9 +12,10 @@ const readingPassageApi = baseApi.injectEndpoints({
       invalidatesTags: [tagTypes.ReadingPassage],
     }),
     getAllReadingPassages: builder.query({
-      query: () => ({
+      query: (params) => ({
         url: "/reading-passages",
         method: "GET",
+        params
       }),
       providesTags: [tagTypes.ReadingPassage],
     }),

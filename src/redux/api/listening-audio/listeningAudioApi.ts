@@ -12,9 +12,10 @@ const listeningAudioApi = baseApi.injectEndpoints({
       invalidatesTags: [tagTypes.ListeningAudio],
     }),
     getAllListeningAudios: builder.query({
-      query: () => ({
+      query: (params) => ({
         url: "/listening-audios",
         method: "GET",
+        params
       }),
       providesTags: [tagTypes.ListeningAudio],
     }),

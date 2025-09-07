@@ -17,7 +17,6 @@ export interface IQuizAnswer {
   question: IQuestion;
 }
 
-
 export interface IQuizAttempt {
   id: string;
   userId: string;
@@ -28,4 +27,8 @@ export interface IQuizAttempt {
   feedback: string | null;
   createdAt: string;
   quizAnswers: IQuizAnswer[];
+  user: {
+    name: string;
+    email: string;
+  };
 }

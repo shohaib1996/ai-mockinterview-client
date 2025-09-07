@@ -43,7 +43,7 @@ const AdminLayout = ({ children }: { children: React.ReactNode }) => {
         },
       ],
     },
-    { title: "Quiz", url: "/dashboard/quiz", icon: "calendar" },
+    { title: "Quiz", url: "/dashboard/admin/quiz", icon: "calendar" },
   ];
 
   return (
