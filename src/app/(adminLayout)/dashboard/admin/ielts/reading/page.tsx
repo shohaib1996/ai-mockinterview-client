@@ -42,16 +42,16 @@ const ReadingLession = () => {
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [isGenerateModalOpen, setIsGenerateModalOpen] = useState(false);
-  const [selectedPassage, setSelectedPassage] = useState<IReadingPassage | null>(
-    null
-  );
+  const [selectedPassage, setSelectedPassage] =
+    useState<IReadingPassage | null>(null);
   const [newPassageId, setNewPassageId] = useState<string | null>(null);
 
   const { data, isLoading } = useGetAllReadingPassagesQuery({
     page: currentPage,
     limit: currentLimit,
   });
-  const [generateQuestions, { isLoading: isGenerating }] = useGenerateQuestionsMutation()
+  const [generateQuestions, { isLoading: isGenerating }] =
+    useGenerateQuestionsMutation();
   const [createReadingPassage, { isLoading: isCreating }] =
     useCreateReadingPassageMutation();
   const [updateReadingPassage, { isLoading: isUpdating }] =
@@ -150,7 +150,7 @@ const ReadingLession = () => {
       toast.error("Failed to generate questions.");
     }
   };
-  
+
   const columns: TableColumn<IReadingPassage>[] = [
     {
       key: "id",
@@ -307,10 +307,12 @@ const ReadingLession = () => {
         fields={formFields}
         onSubmit={selectedPassage ? handleUpdatePassage : handleCreatePassage}
         defaultValues={
-          selectedPassage ? {
-            title: selectedPassage.title,
-            content: selectedPassage.content,
-          } : {}
+          selectedPassage
+            ? {
+                title: selectedPassage.title,
+                content: selectedPassage.content,
+              }
+            : {}
         }
       />
 
@@ -336,4 +338,3 @@ const ReadingLession = () => {
 };
 
 export default ReadingLession;
-

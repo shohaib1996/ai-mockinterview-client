@@ -1,12 +1,5 @@
-enum IELTSWritingTaskType {
-  TASK1,
-  TASK2,
-}
-enum Difficulty {
-  EASY,
-  MEDIUM,
-  HARD,
-}
+export type IELTSWritingTaskType = 'TASK1' | 'TASK2';
+export type Difficulty = 'EASY' | 'MEDIUM' | 'HARD';
 
 export interface IWritingTask {
   id: string;
