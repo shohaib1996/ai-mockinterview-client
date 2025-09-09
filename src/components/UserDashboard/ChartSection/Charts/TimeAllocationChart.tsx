@@ -58,7 +58,7 @@ export function TimeAllocationChart({ data }: TimeAllocationChartProps) {
   const hasData = formattedData.some((item) => item.time > 0);
 
   return (
-    <Card className="w-full max-w-4xl mx-auto">
+    <Card className="w-full mx-auto">
       <CardHeader className="pb-4">
         <CardTitle className="flex items-center gap-2 text-lg sm:text-xl md:text-2xl">
           <Clock className="h-5 w-5" />

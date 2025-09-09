@@ -44,7 +44,7 @@ export function SkillBreakdownChart({ data }: SkillBreakdownChartProps) {
   const hasData = data.length > 0
 
   return (
-    <Card className="w-full max-w-3xl mx-auto">
+    <Card className="w-full mx-auto">
       <CardHeader className="pb-4">
         <CardTitle className="flex items-center gap-2 text-lg sm:text-xl md:text-2xl">
           <BarChart3 className="h-5 w-5" />
