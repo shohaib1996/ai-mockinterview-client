@@ -154,17 +154,17 @@ const BehavioralDetailsPage = ({ id }: { id: string }) => {
             <MessageSquare className="h-5 w-5" />
             Interview Conversations
           </CardTitle>
-          <CardDescription>{sessionData.aiChatConversations.length} conversation(s) recorded</CardDescription>
+          <CardDescription>{sessionData.aiChatConversations?.length} conversation(s) recorded</CardDescription>
         </CardHeader>
         <CardContent>
           <div className="space-y-3">
-            {sessionData.aiChatConversations.length > 0 ? (
+            {sessionData.aiChatConversations?.length > 0 ? (
               sessionData.aiChatConversations.map((conversation, index) => (
                 <div key={conversation.id} className="flex items-center justify-between p-4 border rounded-lg">
                   <div className="space-y-1">
                     <h4 className="font-medium">Conversation {index + 1}</h4>
                     <p className="text-sm text-muted-foreground">
-                      {conversation.conversation.length} messages • Started {formatDate(conversation.createdAt)}
+                      {conversation.conversation?.length} messages • Started {formatDate(conversation.createdAt)}
                     </p>
                   </div>
                   <Dialog>
@@ -217,7 +217,7 @@ const BehavioralDetailsPage = ({ id }: { id: string }) => {
                                   </div>
                                 </div>
                               </div>
-                              {msgIndex < (selectedConversation?.conversation.length || 0) - 1 && (
+                              {msgIndex < (selectedConversation?.conversation?.length || 0) - 1 && (
                                 <Separator className="my-4" />
                               )}
                             </div>

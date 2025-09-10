@@ -41,7 +41,7 @@ export function PerformanceByDifficultyChart({ data }: PerformanceByDifficultyCh
     fill: getDifficultyColor(item.difficulty),
   })) || []
 
-  const hasData = chartData.length > 0
+  const hasData = chartData?.length > 0
 
   return (
     <Card className="w-full mx-auto">
@@ -85,7 +85,7 @@ export function PerformanceByDifficultyChart({ data }: PerformanceByDifficultyCh
                 />
                 <ChartTooltip
                   content={({ active, payload, label }) => {
-                    if (active && payload && payload.length) {
+                    if (active && payload && payload?.length) {
                       const data = payload[0].payload
                       return (
                         <div className="bg-background dark:bg-background-dark border border-muted dark:border-muted-dark rounded-lg p-2 sm:p-3 shadow-md">
@@ -109,7 +109,7 @@ export function PerformanceByDifficultyChart({ data }: PerformanceByDifficultyCh
                 <Bar 
                   dataKey="accuracy" 
                   radius={[4, 4, 0, 0]} 
-                  barSize={Math.max(40, 80 / Math.max(1, chartData.length))}
+                  barSize={Math.max(40, 80 / Math.max(1, chartData?.length))}
                 >
                   {chartData.map((entry, index) => (
                     <Bar 

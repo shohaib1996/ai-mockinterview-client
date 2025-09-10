@@ -61,6 +61,7 @@ const ListeningAudios = () => {
         setAudioToDelete(null);
       }
     } catch (error) {
+      console.log(error)
       toast.error('Failed to delete audio.');
     }
   };

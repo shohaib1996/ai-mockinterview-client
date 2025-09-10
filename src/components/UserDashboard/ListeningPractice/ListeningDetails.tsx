@@ -36,8 +36,8 @@ const ListeningDetailsPage = ({ id }: { id: string }) => {
     )
   }
 
-  const totalQuestions = questions.length
-  const correctAnswers = answers.filter((answer) => answer.isCorrect).length
+  const totalQuestions = questions?.length
+  const correctAnswers = answers.filter((answer) => answer.isCorrect)?.length
   const scorePercentage = totalQuestions > 0 ? Math.round((correctAnswers / totalQuestions) * 100) : 0
   const completedAt = sessionInfo.endedAt ? format(new Date(sessionInfo.endedAt), "PPP p") : "N/A"
 

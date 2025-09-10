@@ -20,7 +20,7 @@ interface IeltsScoreTrendChartProps {
 export function IeltsScoreTrendChart({ data }: IeltsScoreTrendChartProps) {
   // Combine all data points and format for chart
   const chartData = React.useMemo(() => {
-    if (!data || Object.values(data).every((scores) => scores.length === 0)) {
+    if (!data || Object.values(data).every((scores) => scores?.length === 0)) {
       return [];
     }
 
@@ -67,7 +67,7 @@ export function IeltsScoreTrendChart({ data }: IeltsScoreTrendChartProps) {
     },
   };
 
-  const hasData = chartData.length > 0;
+  const hasData = chartData?.length > 0;
 
   return (
     <Card className="w-full mx-auto">

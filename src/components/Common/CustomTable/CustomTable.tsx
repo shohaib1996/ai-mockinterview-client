@@ -52,23 +52,23 @@ export function CustomTable<T extends Record<string, any>>({
                   {column.header}
                 </TableHead>
               ))}
-              {actions.length > 0 && <TableHead className="text-right">Actions</TableHead>}
+              {actions?.length > 0 && <TableHead className="text-right">Actions</TableHead>}
             </TableRow>
           </TableHeader>
           <TableBody>
             {loading ? (
               <TableRow>
-                <TableCell colSpan={columns.length + (actions.length > 0 ? 1 : 0)} className="text-center py-8">
+                <TableCell colSpan={columns?.length + (actions?.length > 0 ? 1 : 0)} className="text-center py-8">
                   <div className="flex items-center justify-center">
                     <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-primary"></div>
                     <span className="ml-2 text-muted-foreground">Loading...</span>
                   </div>
                 </TableCell>
               </TableRow>
-            ) : data.length === 0 ? (
+            ) : data?.length === 0 ? (
               <TableRow>
                 <TableCell
-                  colSpan={columns.length + (actions.length > 0 ? 1 : 0)}
+                  colSpan={columns?.length + (actions?.length > 0 ? 1 : 0)}
                   className="text-center py-8 text-muted-foreground"
                 >
                   {emptyMessage}
@@ -82,7 +82,7 @@ export function CustomTable<T extends Record<string, any>>({
                       {column.render ? column.render(item) : item[column.key]}
                     </TableCell>
                   ))}
-                  {actions.length > 0 && (
+                  {actions?.length > 0 && (
                     <TableCell className="text-right">
                       <div className="flex items-center justify-end gap-2">
                         {actions.map((action, actionIndex) => (

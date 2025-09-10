@@ -1,7 +1,6 @@
 "use client";
 import { motion, useInView } from "framer-motion";
 import { useRef, useEffect, useState } from "react";
-import { TrendingUp, Award, Clock, Users } from "lucide-react";
 
 export const AiPerformanceShowcase: React.FC = () => {
   const ref = useRef(null);
@@ -12,6 +11,7 @@ export const AiPerformanceShowcase: React.FC = () => {
     timesSaved: 0,
     studentsHelped: 0,
   });
+  console.log(animatedStats)
 
   const finalStats = {
     accuracy: 96,
@@ -27,34 +27,34 @@ export const AiPerformanceShowcase: React.FC = () => {
       }, 500);
       return () => clearTimeout(timer);
     }
-  }, [isInView]);
+  }, [isInView, finalStats]);
 
-  const statsData = [
-    {
-      icon: TrendingUp,
-      label: "Average Accuracy",
-      value: animatedStats.accuracy,
-      suffix: "%",
-    },
-    {
-      icon: Award,
-      label: "Score Improvement",
-      value: animatedStats.improvement,
-      suffix: "%",
-    },
-    {
-      icon: Clock,
-      label: "Hours Saved",
-      value: animatedStats.timesSaved,
-      suffix: "h",
-    },
-    {
-      icon: Users,
-      label: "Students Helped",
-      value: animatedStats.studentsHelped,
-      suffix: "+",
-    },
-  ];
+  // const statsData = [
+  //   {
+  //     icon: TrendingUp,
+  //     label: "Average Accuracy",
+  //     value: animatedStats.accuracy,
+  //     suffix: "%",
+  //   },
+  //   {
+  //     icon: Award,
+  //     label: "Score Improvement",
+  //     value: animatedStats.improvement,
+  //     suffix: "%",
+  //   },
+  //   {
+  //     icon: Clock,
+  //     label: "Hours Saved",
+  //     value: animatedStats.timesSaved,
+  //     suffix: "h",
+  //   },
+  //   {
+  //     icon: Users,
+  //     label: "Students Helped",
+  //     value: animatedStats.studentsHelped,
+  //     suffix: "+",
+  //   },
+  // ];
 
   return (
     <section className="py-20 bg-blue-900 dark:bg-blue-950" ref={ref}>

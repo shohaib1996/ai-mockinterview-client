@@ -7,7 +7,7 @@ import { Card, CardContent } from "@/components/ui/card";
 const HowItWorks = () => {
   return (
     <div>
-      <section className="py-20 px-4">
+      <section className="py-20 px-4 dark:bg-gray-800">
         <div className="container mx-auto">
           <motion.div
             className="text-center mb-16"
@@ -57,10 +57,10 @@ const HowItWorks = () => {
                 transition={{ duration: 0.6, delay: index * 0.1 }}
                 viewport={{ once: true }}
               >
-                <Card className="h-full hover:shadow-lg transition-shadow">
+                <Card className="h-full hover:shadow-lg transition-shadow bg-accent">
                   <CardContent className="p-6 text-center">
                     <div className="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-4">
-                      <feature.icon className="w-8 h-8 text-[#1D2B64]" />
+                      <feature.icon className="w-8 h-8 text-[#1D2B64] dark:text-white" />
                     </div>
                     <h3 className="text-xl font-semibold mb-3">
                       {feature.title}

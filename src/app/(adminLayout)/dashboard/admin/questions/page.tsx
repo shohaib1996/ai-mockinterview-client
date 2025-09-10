@@ -121,6 +121,7 @@ const QuestionsPage = () => {
         setIsEditModalOpen(false);
         setSelectedQuestion(null);
       } catch (error) {
+        console.log(error)
         toast.error("Failed to update question.");
       }
     }
@@ -134,6 +135,7 @@ const QuestionsPage = () => {
         setIsDeleteModalOpen(false);
         setSelectedQuestion(null);
       } catch (error) {
+        console.log(error)
         toast.error("Failed to delete question.");
       }
     }
@@ -396,7 +398,7 @@ const QuestionsPage = () => {
                 </div>
 
                 {selectedQuestion.options &&
-                  selectedQuestion.options.length > 0 && (
+                  selectedQuestion.options?.length > 0 && (
                     <div>
                       <p className="text-sm font-medium text-muted-foreground mb-2">
                         Options

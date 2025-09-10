@@ -33,7 +33,7 @@ const WritingDetailsPage = ({ id }: { id: string }) => {
             <FileText className="mx-auto h-12 w-12 text-muted-foreground mb-4" />
             <h2 className="text-xl font-semibold mb-2">Session Not Found</h2>
             <p className="text-muted-foreground">
-              The writing session you're looking for doesn't exist or has been removed.
+              The writing session you&apos;re looking for doesn&apos;t exist or has been removed.
             </p>
           </CardContent>
         </Card>
@@ -203,12 +203,12 @@ const WritingDetailsPage = ({ id }: { id: string }) => {
       ))}
 
       {/* Empty State for No Submissions */}
-      {(!sessionData.writingSubmissions || sessionData.writingSubmissions.length === 0) && (
+      {(!sessionData.writingSubmissions || sessionData.writingSubmissions?.length === 0) && (
         <Card>
           <CardContent className="text-center py-12">
             <FileText className="mx-auto h-12 w-12 text-muted-foreground mb-4" />
             <h3 className="text-lg font-semibold mb-2">No Writing Submissions</h3>
-            <p className="text-muted-foreground">This session doesn't contain any writing submissions to display.</p>
+            <p className="text-muted-foreground">This session doesn&apos;t contain any writing submissions to display.</p>
           </CardContent>
         </Card>
       )}

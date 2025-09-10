@@ -14,7 +14,7 @@ import { Button } from "../ui/button"
 const MockTest = () => {
   return (
     <div>
-       <section className="py-20 px-4">
+       <section className="py-20 px-4 bg-background dark:bg-gray-800">
         <div className="container mx-auto">
           <div className="grid lg:grid-cols-2 gap-16 items-center">
             <motion.div
@@ -43,13 +43,13 @@ const MockTest = () => {
                     viewport={{ once: true }}
                   >
                     <div className="w-8 h-8 bg-[#1C398E] rounded-full flex items-center justify-center">
-                      <feature.icon className="w-4 h-4 text-secondary" />
+                      <feature.icon className="w-4 h-4 text-secondary dark:text-white" />
                     </div>
                     <span>{feature.text}</span>
                   </motion.div>
                 ))}
               </div>
-              <Button size="lg" className="bg-[#1C398E] text-primary-foreground hover:bg-primary/90">
+              <Button size="lg" className="bg-[#1C398E] text-primary-foreground dark:text-white hover:bg-primary/90">
                 Try Free Mock Test
                 <ArrowRight className="w-5 h-5 ml-2" />
               </Button>
@@ -65,7 +65,7 @@ const MockTest = () => {
               <Card className="overflow-hidden py-0">
                 <CardContent className="p-0">
                   <div className="bg-gradient-to-br from-primary/5 to-secondary/5 p-6">
-                    <div className="bg-white rounded-lg p-4 mb-4">
+                    <div className="bg-background rounded-lg p-4 mb-4">
                       <div className="flex items-center justify-between mb-3">
                         <span className="font-semibold">IELTS Reading Test</span>
                         <Badge variant="outline">Section 1 of 3</Badge>
@@ -80,14 +80,14 @@ const MockTest = () => {
                         </div>
                       </div>
                     </div>
-                    <div className="bg-white rounded-lg p-4">
+                    <div className="bg-background rounded-lg p-4">
                       <h3 className="font-semibold mb-2">Question 1-5</h3>
                       <p className="text-sm text-muted-foreground mb-3">Choose the correct answer A, B, C, or D.</p>
                       <div className="space-y-2">
                         <div className="p-2 border rounded hover:bg-muted/50 cursor-pointer">
                           A) The development of renewable energy
                         </div>
-                        <div className="p-2 border rounded bg-green-100 border-green-300">
+                        <div className="p-2 border rounded bg-green-100 dark:text-black border-green-300">
                           B) Climate change and its effects
                         </div>
                         <div className="p-2 border rounded hover:bg-muted/50 cursor-pointer">

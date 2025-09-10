@@ -26,7 +26,7 @@ const WritingPractice = ({
   taskId: string;
   sessionId: string;
 }) => {
-  const { data, isLoading: isTaskLoading } =
+  const { data} =
     useGetSingleWritingTaskQuery(taskId);
   const [submitWriting, { isLoading: isSubmitting }] =
     useCreateWritingSubmissionMutation();
@@ -36,6 +36,7 @@ const WritingPractice = ({
   const { extractedText, isLoading, extractText } = useImageTextExtraction();
   const [timer, setTimer] = useState(0);
   const [isTimerRunning, setIsTimerRunning] = useState(false);
+  console.log(isTimerRunning)
   const [textareaValue, setTextareaValue] = useState<string>("");
   const [submissionData, setSubmissionData] = useState<any>(null);
 
@@ -95,6 +96,7 @@ const WritingPractice = ({
       console.log(res);
       toast.success("Writing submitted successfully!");
     } catch (error) {
+      console.log(error)
       toast.error("Failed to submit writing. Please try again.");
     }
   };
@@ -144,10 +146,12 @@ const WritingPractice = ({
               {taskData.imageUrl && (
                 <div>
                   <h3 className="font-semibold mb-2">Reference Image:</h3>
-                  <img
+                  <Image
                     src={taskData.imageUrl || "/placeholder.svg"}
                     alt="Task reference"
                     className="max-w-full h-auto rounded-lg border shadow-sm"
+                    width={500}
+                    height={500}
                   />
                 </div>
               )}
@@ -234,7 +238,7 @@ const WritingPractice = ({
 
                 {extractedText && (
                   <div className="text-sm text-muted-foreground">
-                    Character count: {extractedText.length}
+                    Character count: {extractedText?.length}
                   </div>
                 )}
 

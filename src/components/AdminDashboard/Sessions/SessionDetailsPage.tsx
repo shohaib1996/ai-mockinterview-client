@@ -44,7 +44,7 @@ export function SessionDetailsPage({ id }: SessionDetailsPageProps) {
               <div className="text-center space-y-4">
                 <p className="text-lg font-medium">Session not found</p>
                 <p className="text-sm text-muted-foreground">
-                  The session you're looking for doesn't exist or has been removed
+                  The session you&apos;re looking for doesn&apos;t exist or has been removed
                 </p>
               </div>
             </CardContent>
@@ -72,7 +72,7 @@ export function SessionDetailsPage({ id }: SessionDetailsPageProps) {
             <AiConversations conversations={session.aiChatConversations || []} />
 
             {/* Additional Session Data */}
-            {session.userListeningHistory && session.userListeningHistory.length > 0 && (
+            {session.userListeningHistory && session.userListeningHistory?.length > 0 && (
               <Card>
                 <CardContent className="p-6">
                   <h3 className="font-semibold mb-4">Listening History</h3>
@@ -87,12 +87,12 @@ export function SessionDetailsPage({ id }: SessionDetailsPageProps) {
               </Card>
             )}
 
-            {session.writingSubmissions && session.writingSubmissions.length > 0 && (
+            {session.writingSubmissions && session.writingSubmissions?.length > 0 && (
               <Card>
                 <CardContent className="p-6">
                   <h3 className="font-semibold mb-4">Writing Submissions</h3>
                   <div className="text-sm text-muted-foreground">
-                    {session.writingSubmissions.length} submission(s) available
+                    {session.writingSubmissions?.length} submission(s) available
                   </div>
                 </CardContent>
               </Card>

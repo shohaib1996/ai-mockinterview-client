@@ -1,6 +1,6 @@
 "use client"
 
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { Card, CardContent, CardHeader } from "@/components/ui/card"
 import { CustomPagination } from "@/components/Common/CustomPagination/CustomPagination"
 import {
   CustomTable,
@@ -55,7 +55,7 @@ const AllSessions = () => {
 
   const truncateText = (text: string | null, maxLength = 30) => {
     if (!text) return "N/A"
-    return text.length > maxLength
+    return text?.length > maxLength
       ? `${text.substring(0, maxLength)}...`
       : text
   }

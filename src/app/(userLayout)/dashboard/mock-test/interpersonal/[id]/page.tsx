@@ -2,10 +2,11 @@
 
 import InterpersonalDetailsPage from '@/components/UserDashboard/MockTest/InterpersonalDetailsPage';
 
-const page = ({ params }: { params: { id: string } }) => {
+const page = async({ params, }: {params: Promise<{id: string}>}) => {
+  const {id} = await params
   return (
     <div>
-      <InterpersonalDetailsPage id={params.id} />
+      <InterpersonalDetailsPage id={id} />
     </div>
   );
 };

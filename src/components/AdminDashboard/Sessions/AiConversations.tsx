@@ -30,7 +30,7 @@ export function AiConversations({ conversations }: AiConversationsProps) {
     setOpenConversations((prev) => (prev.includes(id) ? prev.filter((convId) => convId !== id) : [...prev, id]))
   }
 
-  if (!conversations || conversations.length === 0) {
+  if (!conversations || conversations?.length === 0) {
     return (
       <Card>
         <CardHeader>
@@ -58,7 +58,7 @@ export function AiConversations({ conversations }: AiConversationsProps) {
           <Bot className="h-5 w-5" />
           AI Conversations
           <Badge variant="secondary" className="ml-2">
-            {conversations.length}
+            {conversations?.length}
           </Badge>
         </CardTitle>
       </CardHeader>
@@ -79,7 +79,7 @@ export function AiConversations({ conversations }: AiConversationsProps) {
               </div>
               <div className="flex items-center gap-2">
                 <Badge variant="outline" className="text-xs">
-                  {conversation.conversation.length} messages
+                  {conversation.conversation?.length} messages
                 </Badge>
                 <ChevronDown className="h-4 w-4 transition-transform duration-200" />
               </div>

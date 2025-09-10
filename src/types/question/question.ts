@@ -1,7 +1,7 @@
 export type QuestionType =
   | "MCQ"
 
-export type SessionType =
+export type SessionTypeQ =
   | "IELTS_LISTENING"
   | "IELTS_READING"
   | "IELTS_WRITING"
@@ -16,7 +16,7 @@ export type Difficulty = "LOW" | "MEDIUM" | "HARD";
 export interface IQuestion {
   id: string;
   type: QuestionType;
-  sessionType: SessionType;
+  sessionType: SessionTypeQ;
   text: string;
   options?: string[]; 
   correctAnswer?: string | string[];

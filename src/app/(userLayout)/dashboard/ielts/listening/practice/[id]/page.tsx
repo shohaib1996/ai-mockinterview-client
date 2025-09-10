@@ -1,17 +1,17 @@
 import ListeningPractice from "@/components/UserDashboard/ListeningPractice/ListeningPractice";
 
+const ListeningAudioPracticePage = async ({
+  params,
+}: {
+  params: Promise<{ id: string }>
+}) => {
+  const { id } = await params;
 
-interface PageProps {
-  params: { id: string };
-}
+  if (!id) {
+    return <div>Error: Listening audio ID is required.</div>;
+  }
 
-const ListeningAudioPracticePage = ({ params }: PageProps) => {
-  const { id } = params;
-    if (!id) {
-        return <div>Error: Listening audio ID is required.</div>;
-    }
-   const sessionId = id.split("-")[0]; 
-   const audioId = id.split("-")[1];
+  const [sessionId, audioId] = id.split("-");
 
   return <ListeningPractice sessionId={sessionId} id={audioId} />;
 };

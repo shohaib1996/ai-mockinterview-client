@@ -41,7 +41,7 @@ const WritingSessions = () => {
 
   console.log(sessionId)
 
-  const { data, isLoading, refetch } = useGetAllSessionsQuery({
+  const { data, isLoading } = useGetAllSessionsQuery({
     page: currentPage,
     limit: currentLimit,
     type: sessionType,
@@ -75,7 +75,7 @@ const WritingSessions = () => {
 
   const truncateText = (text: string | null, maxLength = 50) => {
     if (!text) return "N/A";
-    return text.length > maxLength
+    return text?.length > maxLength
       ? `${text.substring(0, maxLength)}...`
       : text;
   };
@@ -100,6 +100,7 @@ const WritingSessions = () => {
       setIsDialogOpen(true);
       setSessionId(res?.data?.id);
     } catch (error) {
+      console.log(error)
       toast.error("Failed to create a writing session. Please try again.");
     }
   };

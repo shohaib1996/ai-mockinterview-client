@@ -9,7 +9,7 @@ import { Badge } from "@/components/ui/badge";
 import { Clock, ChevronLeft, ChevronRight, Send, Check, X } from "lucide-react";
 import { useGetSingleReadingPassageQuery } from "@/redux/api/reading-passage/readingPassageApi";
 import { useGetAllQuestionsQuery } from "@/redux/api/question/questionApi";
-import { IQuestion, Meta } from "@/types";
+import { IQuestion } from "@/types";
 
 interface ReadingPracticeProps {
   passageId: string;
@@ -35,9 +35,7 @@ const ReadingPractice = ({ passageId, sessionId }: ReadingPracticeProps) => {
   const [submissionMessage, setSubmissionMessage] = useState("");
 
   const questions: IQuestion[] = questionData?.data || [];
-  const meta: Meta = questionData?.meta || { page: 1, limit: 10, total: 0 };
-
-  const totalPages = Math.ceil(questions.length / questionsPerPage);
+  const totalPages = Math.ceil(questions?.length / questionsPerPage);
   const startIndex = (currentPage - 1) * questionsPerPage;
   const endIndex = startIndex + questionsPerPage;
   const currentQuestions = questions.slice(startIndex, endIndex);
@@ -133,9 +131,9 @@ const ReadingPractice = ({ passageId, sessionId }: ReadingPracticeProps) => {
   };
 
   const allQuestionsAnswered =
-    questions.length > 0 && questions.every((q) => selectedAnswers[q.id]);
-  const answeredCount = Object.keys(selectedAnswers).length;
-  const totalQuestions = questions.length;
+    questions?.length > 0 && questions.every((q) => selectedAnswers[q.id]);
+  const answeredCount = Object.keys(selectedAnswers)?.length;
+  const totalQuestions = questions?.length;
 
   return (
     <div className="min-h-screen bg-background">
@@ -199,7 +197,7 @@ const ReadingPractice = ({ passageId, sessionId }: ReadingPracticeProps) => {
                 </h2>
                 <p className="text-muted-foreground">
                   Showing {startIndex + 1}-
-                  {Math.min(endIndex, questions.length)} of {questions.length}{" "}
+                  {Math.min(endIndex, questions?.length)} of {questions?.length}{" "}
                   questions
                 </p>
               </div>

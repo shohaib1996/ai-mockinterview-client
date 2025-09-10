@@ -46,7 +46,7 @@ const Quiz = () => {
   };
   const truncateText = (text: string | null, maxLength = 50) => {
     if (!text) return "N/A";
-    return text.length > maxLength
+    return text?.length > maxLength
       ? `${text.substring(0, maxLength)}...`
       : text;
   };

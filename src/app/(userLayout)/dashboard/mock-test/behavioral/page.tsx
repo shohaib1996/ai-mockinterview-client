@@ -69,7 +69,7 @@ const QuestionSourceDialog: FC<QuestionSourceDialogProps> = ({
               <span>{isUploading ? 'Uploading...' : 'Upload Questions'}</span>
             </Button>
             <p className='text-xs text-muted-foreground text-center mt-1'>
-              Upload a CSV file with a header named 'question'.
+              Upload a CSV file with a header named &lsquo;question&lsquo;.
             </p>
           </div>
           <Button
@@ -181,7 +181,7 @@ const BehavioralMockInterview = () => {
 
   const truncateText = (text: string | null, maxLength = 50) => {
     if (!text) return 'N/A';
-    return text.length > maxLength
+    return text?.length > maxLength
       ? `${text.substring(0, maxLength)}...`
       : text;
   };

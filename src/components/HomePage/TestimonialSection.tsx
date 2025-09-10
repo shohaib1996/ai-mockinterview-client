@@ -43,11 +43,11 @@ export const TestimonialsSection: React.FC = () => {
   const [currentIndex, setCurrentIndex] = useState(0);
 
   const nextTestimonial = () => {
-    setCurrentIndex((prev) => (prev + 1) % testimonials.length);
+    setCurrentIndex((prev) => (prev + 1) % testimonials?.length);
   };
 
   const prevTestimonial = () => {
-    setCurrentIndex((prev) => (prev - 1 + testimonials.length) % testimonials.length);
+    setCurrentIndex((prev) => (prev - 1 + testimonials?.length) % testimonials?.length);
   };
 
   return (
@@ -112,7 +112,7 @@ export const TestimonialsSection: React.FC = () => {
 
                   {/* Content */}
                   <blockquote className="text-lg md:text-xl text-gray-700 dark:text-gray-300 mb-6 italic px-4">
-                    "{testimonials[currentIndex].content}"
+                    &quot;{testimonials[currentIndex].content}&quot;
                   </blockquote>
 
                   {/* Author */}

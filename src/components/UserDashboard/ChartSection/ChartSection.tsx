@@ -28,7 +28,7 @@ export function ChartsSection({ chartData }: ChartsSectionProps) {
     <div className="space-y-6">
       <h2 className="text-2xl font-semibold text-foreground">Analytics & Insights</h2>
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-3">
         <IeltsScoreTrendChart data={chartData?.ieltsScoreTrend} />
         <SkillBreakdownChart data={chartData?.skillBreakdown} />
         <ActivityHeatmapChart data={chartData?.activityHeatmap} />

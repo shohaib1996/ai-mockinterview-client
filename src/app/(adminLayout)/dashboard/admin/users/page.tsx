@@ -6,20 +6,17 @@ import { toast } from 'sonner';
 import { CustomPagination } from '@/components/Common/CustomPagination/CustomPagination';
 import {
   CustomTable,
-  TableAction,
   TableColumn,
 } from '@/components/Common/CustomTable/CustomTable';
 import { CustomTooltip } from '@/components/Common/CustomTooltip/CustomTooltip';
 import { DeleteConfirmationDialog } from '@/components/Common/DeleteConfirmationDialog/DeleteConfirmationDialog';
-import { Button, buttonVariants } from '@/components/ui/button';
+import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
-import { cn } from '@/lib/utils';
 import { useGetUsersQuery, useRoleToggleMutation } from '@/redux/api/user/usersApi';
 import { useDebounced } from '@/redux/hooks/hooks';
 import { ISingleUser, Meta } from '@/types';
 import { X } from 'lucide-react';
-import { email } from 'zod';
 
 const AllUsers = () => {
   const [currentPage, setCurrentPage] = useState(1);
@@ -65,6 +62,7 @@ const AllUsers = () => {
         setIsToggleModalOpen(false);
         setSelectedUser(null);
       } catch (error) {
+        console.log(error)
         toast.error('Failed to update user role.');
       }
     }
@@ -72,7 +70,7 @@ const AllUsers = () => {
 
   const truncateText = (text: string | null, maxLength = 50) => {
     if (!text) return 'N/A';
-    return text.length > maxLength ? `${text.substring(0, maxLength)}...` : text;
+    return text?.length > maxLength ? `${text.substring(0, maxLength)}...` : text;
   };
 
   const columns: TableColumn<ISingleUser>[] = [

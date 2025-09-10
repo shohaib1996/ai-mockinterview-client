@@ -1,7 +1,7 @@
 "use client"
 
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
-import { ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/ui/chart"
+import { ChartContainer, ChartTooltip } from "@/components/ui/chart"
 import { PieChart, Pie, Cell, ResponsiveContainer, Legend } from "recharts"
 
 interface SessionTypeChartProps {
@@ -40,12 +40,12 @@ const chartConfig = {
 
 const CustomLegend = ({ payload }: any) => {
   const truncateText = (text: string, maxLength = 15) => {
-    return text.length > maxLength ? `${text.substring(0, maxLength)}...` : text
+    return text?.length > maxLength ? `${text.substring(0, maxLength)}...` : text
   }
 
   return (
     <div className="flex flex-wrap justify-center gap-2 mt-4">
-      {payload?.map((entry: any, index: number) => (
+      {payload?.map((entry: any) => (
         <div
           key={`legend-${entry.value}`}
           className="flex items-center gap-1 text-xs cursor-pointer group"
@@ -62,7 +62,7 @@ const CustomLegend = ({ payload }: any) => {
 }
 
 const CustomTooltip = ({ active, payload }: any) => {
-  if (active && payload && payload.length) {
+  if (active && payload && payload?.length) {
     const { name, value } = payload[0]
     return (
       <div className="bg-background border rounded p-2 shadow">
@@ -127,7 +127,7 @@ export function SessionTypeChart({ data, isLoading }: SessionTypeChartProps) {
                 nameKey="label"
               >
                 {allSessionTypes.map((entry, index) => (
-                  <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                  <Cell key={`cell-${index}`} fill={COLORS[index % COLORS?.length]} />
                 ))}
               </Pie>
               <ChartTooltip content={<CustomTooltip />} />

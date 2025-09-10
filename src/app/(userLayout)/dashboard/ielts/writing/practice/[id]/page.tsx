@@ -1,10 +1,8 @@
 import WritingPracticePage from "@/components/UserDashboard/WritingPractice/WritingPractice";
 
-interface PageProps {
-  params: { id: string };
-}
-const WritingTaskPage = async({ params }: PageProps) => {
-    const { id } = params;
+
+const WritingTaskPage = async({ params, }: {params: Promise<{id: string}>}) => {
+    const { id } = await params;
     const sessionId= id.split("-")[1];
     const taskId = id.split("-")[0];
 

@@ -1,56 +1,62 @@
-"use client"
+"use client";
 
-import type React from "react"
-import { useState } from "react"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Separator } from "@/components/ui/separator"
-import { Checkbox } from "@/components/ui/checkbox"
-import { Eye, EyeOff } from "lucide-react"
-import { useLoginUserMutation } from "@/redux/api/user/usersApi"
-import { useAppDispatch } from "@/redux/hooks/hooks"
-import { login } from "@/redux/feature/auth/authSlice"
-import { useRouter } from "next/navigation"
+import type React from "react";
+import { useState } from "react";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Separator } from "@/components/ui/separator";
+import { Checkbox } from "@/components/ui/checkbox";
+import { Eye, EyeOff } from "lucide-react";
+import { useLoginUserMutation } from "@/redux/api/user/usersApi";
+import { useAppDispatch } from "@/redux/hooks/hooks";
+import { login } from "@/redux/feature/auth/authSlice";
+import { useRouter } from "next/navigation";
 
 export default function LoginPage() {
-  const [email, setEmail] = useState("")
-  const [password, setPassword] = useState("")
-  const [showPassword, setShowPassword] = useState(false)
-  const [loginUser, { isLoading, isError, error }] = useLoginUserMutation()
-  const dispatch = useAppDispatch()
-  const router = useRouter()
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
+  const [loginUser, { isLoading, isError, error }] = useLoginUserMutation();
+  const dispatch = useAppDispatch();
+  const router = useRouter();
 
   const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
+    e.preventDefault();
     try {
-      const res = await loginUser({ email, password }).unwrap()
-      console.log(res.data)
-      dispatch(login({ user: res.data.user, token: res.data.accessToken }))
-      if(res.data.user.role === "ADMIN") {
-        router.push("/dashboard/admin")
+      const res = await loginUser({ email, password }).unwrap();
+      console.log(res.data);
+      dispatch(login({ user: res.data.user, token: res.data.accessToken }));
+      if (res.data.user.role === "ADMIN") {
+        router.push("/dashboard/admin");
       } else {
-        router.push("/dashboard/user")
+        router.push("/dashboard/user");
       }
     } catch (err) {
-      console.error("Failed to login:", err)
+      console.error("Failed to login:", err);
     }
-  }
+  };
 
   const handleGoogleLogin = () => {
-    console.log("Google login clicked")
-  }
+    console.log("Google login clicked");
+  };
 
   const handleQuickLogin = (userType: "user" | "admin") => {
     if (userType === "user") {
-      setEmail("john.doe@example.com")
-      setPassword("securePass123")
+      setEmail("john.doe@example.com");
+      setPassword("securePass123");
     } else {
-      setEmail("john.doe2@example.com")
-      setPassword("securePass123")
+      setEmail("john.doe2@example.com");
+      setPassword("securePass123");
     }
-  }
+  };
 
   return (
     <div className="min-h-screen flex">
@@ -62,15 +68,21 @@ export default function LoginPage() {
             </div>
           </div>
           <h2 className="text-3xl font-bold mb-4">Welcome Back!</h2>
-          <p className="text-lg opacity-90">Sign in to access your account and continue your journey with us.</p>
+          <p className="text-lg opacity-90">
+            Sign in to access your account and continue your journey with us.
+          </p>
         </div>
       </div>
 
       <div className="flex-1 flex items-center justify-center p-8 bg-background">
         <Card className="w-full max-w-md">
           <CardHeader className="space-y-1">
-            <CardTitle className="text-2xl font-bold text-center">Sign In</CardTitle>
-            <CardDescription className="text-center">Enter your credentials to access your account</CardDescription>
+            <CardTitle className="text-2xl font-bold text-center">
+              Sign In
+            </CardTitle>
+            <CardDescription className="text-center">
+              Enter your credentials to access your account
+            </CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
             <div className="space-y-2">
@@ -99,7 +111,12 @@ export default function LoginPage() {
 
             <Separator />
 
-            <Button type="button" variant="outline" className="w-full bg-transparent" onClick={handleGoogleLogin}>
+            <Button
+              type="button"
+              variant="outline"
+              className="w-full bg-transparent"
+              onClick={handleGoogleLogin}
+            >
               <svg className="w-5 h-5 mr-2" viewBox="0 0 24 24">
                 <path
                   fill="currentColor"
@@ -126,7 +143,9 @@ export default function LoginPage() {
                 <Separator />
               </div>
               <div className="relative flex justify-center text-xs uppercase">
-                <span className="bg-background px-2 text-muted-foreground">Or continue with email</span>
+                <span className="bg-background px-2 text-muted-foreground">
+                  Or continue with email
+                </span>
               </div>
             </div>
 
@@ -161,7 +180,11 @@ export default function LoginPage() {
                     className="absolute right-0 top-0 h-full px-3 py-2 hover:bg-transparent"
                     onClick={() => setShowPassword(!showPassword)}
                   >
-                    {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                    {showPassword ? (
+                      <EyeOff className="h-4 w-4" />
+                    ) : (
+                      <Eye className="h-4 w-4" />
+                    )}
                   </Button>
                 </div>
               </div>
@@ -185,13 +208,15 @@ export default function LoginPage() {
 
             {isError && (
               <div className="text-center text-sm text-red-500">
-                {/* @ts-ignore */}
+                {/* @ts-expect-error: error typing is too generic */}
                 <p>{error?.data?.message || "An error occurred"}</p>
               </div>
             )}
 
             <div className="text-center text-sm">
-              <span className="text-muted-foreground">Don't have an account? </span>
+              <span className="text-muted-foreground">
+                Don&apos;t have an account?{" "}
+              </span>
               <Button variant="link" className="px-0">
                 Sign up
               </Button>
@@ -200,5 +225,5 @@ export default function LoginPage() {
         </Card>
       </div>
     </div>
-  )
+  );
 }

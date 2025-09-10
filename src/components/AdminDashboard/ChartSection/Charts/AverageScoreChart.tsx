@@ -1,4 +1,4 @@
-"use client"
+"use client";
 
 import {
   Card,
@@ -6,8 +6,8 @@ import {
   CardHeader,
   CardTitle,
   CardDescription,
-} from "@/components/ui/card"
-import { ChartContainer, ChartTooltip } from "@/components/ui/chart"
+} from "@/components/ui/card";
+import { ChartContainer, ChartTooltip } from "@/components/ui/chart";
 import {
   BarChart,
   Bar,
@@ -15,13 +15,12 @@ import {
   YAxis,
   CartesianGrid,
   ResponsiveContainer,
-  Legend,
   Cell,
-} from "recharts"
+} from "recharts";
 
 interface AverageScoreChartProps {
-  data: Array<{ label: string; value: number }> | undefined
-  isLoading: boolean
+  data: Array<{ label: string; value: number }> | undefined;
+  isLoading: boolean;
 }
 
 const COLORS = {
@@ -33,7 +32,7 @@ const COLORS = {
   MOCK_INTERVIEW_BEHAVIORAL: "hsl(280, 100%, 70%)", // Magenta
   MOCK_INTERVIEW_INTERPERSONAL: "hsl(195, 100%, 50%)", // Cyan
   QUIZ: "hsl(45, 100%, 51%)", // Yellow
-}
+};
 
 const SESSION_TYPE_DISPLAY = {
   IELTS_LISTENING: "IELTS Listening",
@@ -44,52 +43,52 @@ const SESSION_TYPE_DISPLAY = {
   MOCK_INTERVIEW_BEHAVIORAL: "Mock Behavioral Interview",
   MOCK_INTERVIEW_INTERPERSONAL: "Mock Interpersonal Interview",
   QUIZ: "Quiz",
-}
+};
 
 const chartConfig = {
   value: {
     label: "Average Score",
     color: "hsl(346, 87%, 43%)", // Fallback red
   },
-}
+};
 
-const CustomLegend = ({ payload }: any) => {
-  const truncateText = (text: string, maxLength = 14) =>
-    text.length > maxLength ? `${text.substring(0, maxLength)}...` : text
+// const CustomLegend = ({ payload }: any) => {
+//   const truncateText = (text: string, maxLength = 14) =>
+//     text?.length > maxLength ? `${text.substring(0, maxLength)}...` : text;
 
-  return (
-    <div className="flex flex-wrap justify-center gap-3 mt-4 px-2">
-      {payload?.map((entry: any) => (
-        <div
-          key={`legend-${entry.value}`}
-          className="flex items-center gap-1 text-[11px] sm:text-xs cursor-pointer group"
-          title={entry.value}
-        >
-          <div
-            className="w-2.5 h-2.5 sm:w-3 sm:h-3 rounded-full"
-            style={{ backgroundColor: entry.color }}
-          />
-          <span className="group-hover:text-foreground/80 transition-colors">
-            {truncateText(entry.value)}
-          </span>
-        </div>
-      ))}
-    </div>
-  )
-}
+//   return (
+//     <div className="flex flex-wrap justify-center gap-3 mt-4 px-2">
+//       {payload?.map((entry: any) => (
+//         <div
+//           key={`legend-${entry.value}`}
+//           className="flex items-center gap-1 text-[11px] sm:text-xs cursor-pointer group"
+//           title={entry.value}
+//         >
+//           <div
+//             className="w-2.5 h-2.5 sm:w-3 sm:h-3 rounded-full"
+//             style={{ backgroundColor: entry.color }}
+//           />
+//           <span className="group-hover:text-foreground/80 transition-colors">
+//             {truncateText(entry.value)}
+//           </span>
+//         </div>
+//       ))}
+//     </div>
+//   );
+// };
 
 const CustomTooltip = ({ active, payload }: any) => {
-  if (active && payload && payload.length) {
-    const { label, value } = payload[0]?.payload
+  if (active && payload && payload?.length) {
+    const { label, value } = payload[0]?.payload;
     return (
       <div className="bg-background border rounded p-2 shadow text-xs sm:text-sm">
         <p className="font-semibold">{label}</p>
         <p>Average Score: {value.toFixed(2)}</p>
       </div>
-    )
+    );
   }
-  return null
-}
+  return null;
+};
 
 export function AverageScoreChart({ data, isLoading }: AverageScoreChartProps) {
   if (isLoading) {
@@ -103,25 +102,25 @@ export function AverageScoreChart({ data, isLoading }: AverageScoreChartProps) {
           <div className="h-64 bg-muted rounded"></div>
         </CardContent>
       </Card>
-    )
+    );
   }
 
   const formatSessionType = (label: string) => {
-    const upperLabel = label.toUpperCase()
+    const upperLabel = label.toUpperCase();
     return (
       SESSION_TYPE_DISPLAY[upperLabel as keyof typeof SESSION_TYPE_DISPLAY] ||
       label
         .replace(/_/g, " ")
         .toLowerCase()
         .replace(/\b\w/g, (l) => l.toUpperCase())
-    )
-  }
+    );
+  };
 
   const allSessionTypes = Object.keys(SESSION_TYPE_DISPLAY).map((key) => ({
     label: formatSessionType(key),
     value: data?.find((item) => item.label.toUpperCase() === key)?.value || 0,
     fill: COLORS[key as keyof typeof COLORS],
-  }))
+  }));
 
   return (
     <Card className="w-full">
@@ -148,10 +147,10 @@ export function AverageScoreChart({ data, isLoading }: AverageScoreChartProps) {
                 tick={{ fontSize: 10 }}
                 interval={0}
                 tickFormatter={(value) => {
-                  const maxLength = 8
-                  return value.length > maxLength
+                  const maxLength = 8;
+                  return value?.length > maxLength
                     ? `${value.substring(0, maxLength)}…`
-                    : value
+                    : value;
                 }}
                 angle={-25}
                 textAnchor="end"
@@ -173,5 +172,5 @@ export function AverageScoreChart({ data, isLoading }: AverageScoreChartProps) {
         </ChartContainer>
       </CardContent>
     </Card>
-  )
+  );
 }

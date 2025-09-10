@@ -11,7 +11,6 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { Checkbox } from "@/components/ui/checkbox"
 
 // Define enums for runtime use, matching the type definitions in src/types/question/question.ts
 enum QuestionTypeEnum {
@@ -235,7 +234,7 @@ export const QuestionForm = ({ defaultValues, onSubmit, isLoading }: QuestionFor
                     variant="ghost"
                     size="icon"
                     onClick={() => remove(index)}
-                    disabled={fields.length <= 2}
+                    disabled={fields?.length <= 2}
                     className="text-destructive hover:text-destructive hover:bg-destructive/10"
                   >
                     <MinusCircle className="h-4 w-4" />

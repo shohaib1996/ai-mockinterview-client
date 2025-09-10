@@ -80,7 +80,7 @@ const SpeakingSessions = () => {
 
   const truncateText = (text: string | null, maxLength = 50) => {
     if (!text) return "N/A"
-    return text.length > maxLength ? `${text.substring(0, maxLength)}...` : text
+    return text?.length > maxLength ? `${text.substring(0, maxLength)}...` : text
   }
 
   const getScoreColor = (score: number) => {

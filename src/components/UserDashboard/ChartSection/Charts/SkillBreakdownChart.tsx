@@ -41,7 +41,7 @@ export function SkillBreakdownChart({ data }: SkillBreakdownChartProps) {
     fill: chartConfig[item.skill.toLowerCase() as keyof typeof chartConfig]?.color || "hsl(0, 0%, 50%)" // Fallback color
   }))
 
-  const hasData = data.length > 0
+  const hasData = data?.length > 0
 
   return (
     <Card className="w-full mx-auto">
@@ -98,7 +98,7 @@ export function SkillBreakdownChart({ data }: SkillBreakdownChartProps) {
                 <Bar 
                   dataKey="avgScore" 
                   radius={[4, 4, 0, 0]} 
-                  barSize={Math.max(40, 80 / Math.max(1, data.length))} // Dynamic bar size based on data length
+                  barSize={Math.max(40, 80 / Math.max(1, data?.length))} // Dynamic bar size based on data length
                 >
                   {formattedData.map((entry, index) => (
                     <Bar 

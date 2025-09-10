@@ -40,7 +40,7 @@ const QuizDetailsPage = ({ id }: { id: string }) => {
   const [showResults, setShowResults] = useState(false)
 
   const currentQuestion = quizQuestions[currentQuestionIndex]
-  const progress = ((currentQuestionIndex + 1) / quizQuestions.length) * 100
+  const progress = ((currentQuestionIndex + 1) / quizQuestions?.length) * 100
 
   const handleAnswerSelect = (questionId: string, answer: string) => {
     setSelectedAnswers((prev) => ({
@@ -50,7 +50,7 @@ const QuizDetailsPage = ({ id }: { id: string }) => {
   }
 
   const handleNextQuestion = () => {
-    if (currentQuestionIndex < quizQuestions.length - 1) {
+    if (currentQuestionIndex < quizQuestions?.length - 1) {
       setCurrentQuestionIndex((prev) => prev + 1)
     }
   }
@@ -87,7 +87,7 @@ const QuizDetailsPage = ({ id }: { id: string }) => {
 
       // Calculate total score
       const score = answersToSubmit.reduce((total, answer) => total + answer.score, 0)
-      const percentage = (score / quizQuestions.length) * 100
+      const percentage = (score / quizQuestions?.length) * 100
 
       // Update quiz attempt
       await updateQuiz({
@@ -131,7 +131,7 @@ const QuizDetailsPage = ({ id }: { id: string }) => {
     )
   }
 
-  if (error || quizQuestions.length === 0) {
+  if (error || quizQuestions?.length === 0) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 flex items-center justify-center">
         <Card className="w-96">
@@ -159,9 +159,9 @@ const QuizDetailsPage = ({ id }: { id: string }) => {
               <div className="text-6xl font-bold mb-2 ${getScoreColor(totalScore)}">{Math.round(totalScore)}%</div>
               <p className="text-xl text-gray-600 dark:text-gray-300 mb-4">{getScoreFeedback(totalScore)}</p>
               <div className="flex justify-center gap-6 text-sm text-gray-500 dark:text-gray-400">
-                <span>Correct: {quizResults.filter((r) => r.isCorrect).length}</span>
+                <span>Correct: {quizResults.filter((r) => r.isCorrect)?.length}</span>
                 <span>•</span>
-                <span>Total: {quizResults.length}</span>
+                <span>Total: {quizResults?.length}</span>
               </div>
             </CardContent>
           </Card>
@@ -241,7 +241,7 @@ const QuizDetailsPage = ({ id }: { id: string }) => {
                 Quiz in Progress
               </CardTitle>
               <Badge variant="outline" className="text-sm">
-                {currentQuestionIndex + 1} of {quizQuestions.length}
+                {currentQuestionIndex + 1} of {quizQuestions?.length}
               </Badge>
             </div>
             <div className="mt-4">
@@ -316,13 +316,13 @@ const QuizDetailsPage = ({ id }: { id: string }) => {
               </Button>
 
               <div className="text-sm text-gray-500 dark:text-gray-400">
-                {Object.keys(selectedAnswers).length} of {quizQuestions.length} answered
+                {Object.keys(selectedAnswers)?.length} of {quizQuestions?.length} answered
               </div>
 
-              {currentQuestionIndex === quizQuestions.length - 1 ? (
+              {currentQuestionIndex === quizQuestions?.length - 1 ? (
                 <Button
                   onClick={handleSubmitQuiz}
-                  disabled={Object.keys(selectedAnswers).length !== quizQuestions.length || isSubmitting || isUpdating}
+                  disabled={Object.keys(selectedAnswers)?.length !== quizQuestions?.length || isSubmitting || isUpdating}
                   className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white flex items-center gap-2"
                 >
                   {isSubmitting || isUpdating ? (

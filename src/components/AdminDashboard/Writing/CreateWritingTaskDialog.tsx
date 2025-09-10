@@ -99,6 +99,7 @@ export const CreateWritingTaskDialog = ({
         throw new Error("Upload failed to return a URL.");
       }
     } catch (error) {
+      console.log(error)
       toast.error("Image upload failed.", { id: toastId });
     }
   };

@@ -78,7 +78,7 @@ const BehavioralPracticePage = ({ id: sessionId }: { id: string }) => {
   });
 
   useEffect(() => {
-    if (initialConversation?.data && initialConversation.data.length > 0) {
+    if (initialConversation?.data && initialConversation.data?.length > 0) {
       setConversation(initialConversation.data);
       setPracticeStarted(true);
     } else if (user && !practiceStarted && !isHistoryLoading) {
@@ -148,10 +148,10 @@ const BehavioralPracticePage = ({ id: sessionId }: { id: string }) => {
         <CardTitle>Behavioral Mock Interview</CardTitle>
         <div className='flex items-center gap-4'>
           <Button
-            onClick={isSpeaking ? cancel : () => speak(conversation[conversation.length - 1]?.content)}
+            onClick={isSpeaking ? cancel : () => speak(conversation[conversation?.length - 1]?.content)}
             variant='outline'
             size='icon'
-            disabled={!conversation.length}
+            disabled={!conversation?.length}
           >
             {isSpeaking ? <VolumeX /> : <Volume2 />}
           </Button>

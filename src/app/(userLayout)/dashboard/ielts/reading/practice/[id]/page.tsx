@@ -1,11 +1,8 @@
 import ReadingPractice from "@/components/UserDashboard/ReadingPractice/ReadingPractice";
 
-interface PageProps {
-  params: { id: string };
-}
 
-const ReadingPracticePage = ({ params }: PageProps) => {
-  const { id } = params;
+const ReadingPracticePage = async({ params, }: {params: Promise<{id: string}>}) => {
+  const { id } = await params;
   if (!id) {
     return <div>Error: Listening audio ID is required.</div>;
   }

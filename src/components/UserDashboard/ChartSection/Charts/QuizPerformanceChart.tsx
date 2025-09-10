@@ -75,12 +75,12 @@ export function QuizPerformanceChart({ data }: QuizPerformanceChartProps) {
                   dataKey="value"
                 >
                   {chartData.map((entry, index) => (
-                    <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                    <Cell key={`cell-${index}`} fill={COLORS[index % COLORS?.length]} />
                   ))}
                 </Pie>
                 <ChartTooltip
                   content={({ active, payload }) => {
-                    if (active && payload && payload.length) {
+                    if (active && payload && payload?.length) {
                       const data = payload[0].payload
                       return (
                         <div className="bg-background dark:bg-background-dark border border-muted dark:border-muted-dark rounded-lg p-2 sm:p-3 shadow-md">

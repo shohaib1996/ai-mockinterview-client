@@ -74,6 +74,7 @@ export const EditAudioModal = ({
         onOpenChange(false);
       }
     } catch (error) {
+      console.log(error)
       toast.error("Failed to update audio.");
     }
   };

@@ -2,7 +2,7 @@
 
 import { useEffect, useState, useRef } from "react"
 import { motion } from "framer-motion"
-import { Send, Mic, MicOff, Volume2, VolumeX } from "lucide-react"
+import {  Mic, MicOff, Volume2, VolumeX } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import {
   Dialog,
@@ -34,7 +34,7 @@ export const SpeakingPracticeModal = ({ session, onClose }: SpeakingPracticeModa
   const scrollAreaRef = useRef<HTMLDivElement>(null)
   const [practiceStarted, setPracticeStarted] = useState(false)
 
-  const { data: initialConversation, isLoading: isHistoryLoading } = useGetConversationBySessionIdQuery(session.id)
+  const { data: initialConversation } = useGetConversationBySessionIdQuery(session.id)
   const [createChatCompletion, { isLoading: isAiResponding }] = useCreateChatCompletionMutation()
   const [getScoreAndFeedback, { isLoading: isAnalyzing }] = useGetScoreAndFeedbackMutation()
   const [updateSession, { isLoading: isUpdatingSession }] = useUpdateSessionMutation()

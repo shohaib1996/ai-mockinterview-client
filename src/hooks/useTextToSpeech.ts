@@ -31,7 +31,7 @@ export const useTextToSpeech = () => {
     return () => {
       cancel();
     };
-  }, []);
+  }, [cancel]);
 
   return { isSpeaking, speak, cancel };
 };

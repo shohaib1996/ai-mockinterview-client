@@ -42,7 +42,7 @@ export function TimeAllocationChart({ data }: TimeAllocationChartProps) {
       return {
         activity: label,
         time: activityMap.get(key) || 0,
-        shortActivity: label.length > 10 ? `${label.slice(0, 7)}...` : label,
+        shortActivity: label?.length > 10 ? `${label.slice(0, 7)}...` : label,
         fill: chartConfig[key as keyof typeof chartConfig].color,
       };
     });
@@ -97,8 +97,8 @@ export function TimeAllocationChart({ data }: TimeAllocationChartProps) {
                   tickFormatter={(value) => formatTime(value)}
                 />
                 <ChartTooltip
-                  content={({ active, payload, label }) => {
-                    if (active && payload && payload.length) {
+                  content={({ active, payload }) => {
+                    if (active && payload && payload?.length) {
                       const data = payload[0].payload;
                       return (
                         <div className="bg-background dark:bg-background-dark border border-muted dark:border-muted-dark rounded-lg p-2 sm:p-3 shadow-md">
@@ -119,7 +119,7 @@ export function TimeAllocationChart({ data }: TimeAllocationChartProps) {
                 <Bar
                   dataKey="time"
                   radius={[4, 4, 0, 0]}
-                  barSize={Math.max(30, 100 / Math.max(1, formattedData.length))}
+                  barSize={Math.max(30, 100 / Math.max(1, formattedData?.length))}
                 >
                   {formattedData.map((entry, index) => (
                     <Bar key={`bar-${index}`} dataKey="time" fill={entry.fill} />

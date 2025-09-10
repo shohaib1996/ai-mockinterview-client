@@ -77,9 +77,9 @@ export const CreateAudioExerciseModal = ({
 
   const handleFileChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const files = event.target.files;
-    if (files && files.length > 0) {
+    if (files && files?.length > 0) {
       const uploadedResult = (await uploadFiles([files[0]], 'audio')) as any;
-      if (uploadedResult && uploadedResult.data && uploadedResult.data.length > 0) {
+      if (uploadedResult && uploadedResult.data && uploadedResult.data?.length > 0) {
         detailsForm.setValue('audioUrl', uploadedResult.data[0]);
         toast.success('Audio uploaded successfully!');
       }
@@ -97,6 +97,7 @@ export const CreateAudioExerciseModal = ({
         setStep('generate-questions');
       }
     } catch (error) {
+      console.log(error)
       toast.error('Failed to create audio.');
     }
   };
@@ -116,6 +117,7 @@ export const CreateAudioExerciseModal = ({
         handleClose();
       }
     } catch (error) {
+      console.log(error)
       toast.error('Failed to generate questions.');
     }
   };

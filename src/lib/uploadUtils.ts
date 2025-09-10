@@ -22,7 +22,7 @@ export function useFileUpload(): UseFileUploadResult {
 
     if (type === "photo") {
       // Limit number of files
-      if (files.length > MAX_PHOTO_FILES) {
+      if (files?.length > MAX_PHOTO_FILES) {
         setError(`You can upload up to ${MAX_PHOTO_FILES} photos.`);
         return [];
       }
@@ -40,7 +40,7 @@ export function useFileUpload(): UseFileUploadResult {
     if (type === "photo") {
       files.forEach((file) => formData.append("photos", file));
     } else if (type === "audio") {
-      if (files.length > 1) {
+      if (files?.length > 1) {
         setError("You can only upload one audio file at a time.");
         return [];
       }

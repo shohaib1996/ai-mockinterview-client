@@ -29,7 +29,7 @@ const chartConfig = {
 }
 
 const CustomTooltip = ({ active, payload }: any) => {
-  if (active && payload && payload.length) {
+  if (active && payload && payload?.length) {
     const { name, value } = payload[0]
     return (
       <div className="bg-background border rounded p-2 shadow">

@@ -24,7 +24,6 @@ import {
   DialogHeader,
   DialogTitle,
   DialogDescription,
-  DialogClose,
 } from "@/components/ui/dialog";
 import {
   CustomFormDialog,
@@ -59,6 +58,8 @@ const ReadingLession = () => {
   const [deleteReadingPassage, { isLoading: isDeleting }] =
     useDeleteReadingPassageMutation();
 
+  console.log(isCreating, isUpdating);
+
   const readingPassages: IReadingPassage[] = data?.data || [];
   const meta: Meta = data?.meta || { page: 1, limit: 10, total: 0 };
 
@@ -73,7 +74,7 @@ const ReadingLession = () => {
 
   const truncateText = (text: string | null, maxLength = 50) => {
     if (!text) return "N/A";
-    return text.length > maxLength
+    return text?.length > maxLength
       ? `${text.substring(0, maxLength)}...`
       : text;
   };
@@ -101,6 +102,7 @@ const ReadingLession = () => {
         setIsDeleteModalOpen(false);
         setSelectedPassage(null);
       } catch (error) {
+        console.log(error)
         toast.error("Failed to delete passage.");
       }
     }
@@ -117,6 +119,7 @@ const ReadingLession = () => {
         setIsEditModalOpen(false);
         setSelectedPassage(null);
       } catch (error) {
+        console.log(error)
         toast.error("Failed to update passage.");
       }
     }
@@ -129,6 +132,7 @@ const ReadingLession = () => {
       setNewPassageId(newPassage.data.id);
       setIsGenerateModalOpen(true);
     } catch (error) {
+      console.log(error)
       toast.error("Failed to create passage.");
     }
   };
@@ -147,6 +151,7 @@ const ReadingLession = () => {
       setIsGenerateModalOpen(false);
       setNewPassageId(null);
     } catch (error) {
+      console.log(error)
       toast.error("Failed to generate questions.");
     }
   };

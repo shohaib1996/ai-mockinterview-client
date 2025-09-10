@@ -26,7 +26,6 @@ import {
   DialogContent,
   DialogHeader,
   DialogTitle,
-  DialogDescription,
 } from '@/components/ui/dialog';
 import {
   CustomFormDialog,
@@ -34,6 +33,7 @@ import {
 } from '@/components/Common/CustomDialog/CustomFormDialog';
 import { DeleteConfirmationDialog } from '@/components/Common/DeleteConfirmationDialog/DeleteConfirmationDialog';
 import { CreateWritingTaskDialog } from '@/components/AdminDashboard/Writing/CreateWritingTaskDialog';
+import Image from 'next/image';
 
 const WritingLession = () => {
   const [currentPage, setCurrentPage] = useState(1);
@@ -49,7 +49,7 @@ const WritingLession = () => {
     limit: currentLimit,
   });
   const [createWritingTask, { isLoading: isCreating }] = useCreateWritingTaskMutation();
-  const [updateWritingTask, { isLoading: isUpdating }] = useUpdateWritingTaskMutation();
+  const [updateWritingTask] = useUpdateWritingTaskMutation();
   const [deleteWritingTask, { isLoading: isDeleting }] = useDeleteWritingTaskMutation();
 
   const writingTasks: IWritingTask[] = data?.data || [];
@@ -66,7 +66,7 @@ const WritingLession = () => {
 
   const truncateText = (text: string | null, maxLength = 50) => {
     if (!text) return 'N/A';
-    return text.length > maxLength ? `${text.substring(0, maxLength)}...` : text;
+    return text?.length > maxLength ? `${text.substring(0, maxLength)}...` : text;
   };
 
   const handleCreate = () => {
@@ -94,6 +94,7 @@ const WritingLession = () => {
       toast.success('Writing task created successfully!');
       setIsCreateModalOpen(false);
     } catch (error) {
+      console.log(error)
       toast.error('Failed to create writing task.');
     }
   };
@@ -106,6 +107,7 @@ const WritingLession = () => {
         setIsEditModalOpen(false);
         setSelectedTask(null);
       } catch (error) {
+        console.log(error)
         toast.error('Failed to update writing task.');
       }
     }
@@ -119,6 +121,7 @@ const WritingLession = () => {
         setIsDeleteModalOpen(false);
         setSelectedTask(null);
       } catch (error) {
+        console.log(error)
         toast.error('Failed to delete writing task.');
       }
     }
@@ -237,7 +240,7 @@ const WritingLession = () => {
               {selectedTask.imageUrl && (
                 <>
                   <h3 className="font-semibold">Image:</h3>
-                  <img src={selectedTask.imageUrl} alt="Task image" className="rounded-md border" />
+                  <Image width={50} height={50} src={selectedTask.imageUrl} alt="Task image" className="rounded-md border" />
                 </>
               )}
               <h3 className="font-semibold">Difficulty:</h3>

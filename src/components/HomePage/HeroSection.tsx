@@ -1,5 +1,5 @@
 "use client";
-import { easeInOut, motion } from "framer-motion";
+import {  motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import {
   Users,
@@ -13,7 +13,6 @@ import {
 } from "lucide-react";
 import Lottie from "lottie-react";
 import videoExplainer from "../../../public/video-explainer.json";
-import Navbar from "./Navbar";
 import Link from "next/link";
 
 const HeroSection = () => {
@@ -44,22 +43,10 @@ const HeroSection = () => {
       },
     },
   };
-
-  // const iconBounce = {
-  //   animate: {
-  //     y: [0, -10, 0],
-  //     transition: {
-  //       duration: 2,
-  //       repeat: Infinity,
-  //       ease: easeInOut,
-  //     },
-  //   },
-  // };
   return (
     <div className="relative">
-      <Navbar />
       <section className="relative py-20 px-4 overflow-hidden bg-gray-900 min-h-[75vh]">
-        <div className="absolute inset-0 bg-gradient-to-br from-[#1D2B64] via-black to-[#06D6A0]"></div>
+        <div className="absolute inset-0 bg-gradient-to-br from-white/80 via-white/30 to-black/40 dark:from-[#1D2B64] dark:via-black dark:to-[#06D6A0]"></div>
 
         <div className="container mx-auto relative z-10">
           <div className="grid lg:grid-cols-2 gap-8 items-center">
@@ -82,11 +69,11 @@ const HeroSection = () => {
                   <div className="relative transform rotate-[-25deg] perspective-1000">
                     <div className="w-80 h-80 relative">
                       {/* Bottom layer */}
-                      <div className="absolute animate-pulse inset-0 bg-gradient-to-br from-[#1D2B64] to-[#06D6A0] rounded-2xl transform translate-y-4 translate-x-4 opacity-60" />
+                      <div className="absolute animate-pulse inset-0 bg-gradient-to-br from-white/50 to-black/50 dark:from-[#1D2B64] dark:to-[#06D6A0] rounded-2xl transform translate-y-4 translate-x-4 opacity-60" />
                       {/* Middle layer */}
-                      <div className="absolute animate-pulse inset-2 bg-gradient-to-br from-[#1D2B64] to-[#06D6A0] rounded-xl transform translate-y-2 translate-x-2 opacity-80" />
+                      <div className="absolute animate-pulse inset-2 bg-gradient-to-br from-white/50 to-black/50 dark:from-[#1D2B64] dark:to-[#06D6A0] rounded-xl transform translate-y-2 translate-x-2 opacity-80" />
                       {/* Top layer */}
-                      <div className="absolute animate-pulse inset-4 bg-gradient-to-br from-[#1D2B64] to-[#06D6A0] rounded-lg" />
+                      <div className="absolute animate-pulse inset-4 bg-gradient-to-br from-white/30 to-black/30 dark:from-[#1D2B64] dark:to-[#06D6A0] rounded-lg" />
                     </div>
                   </div>
                 </div>
@@ -141,7 +128,7 @@ const HeroSection = () => {
 
                 {/* Outer Orbit - Larger radius */}
                 <motion.div
-                  className="absolute w-[400px] h-[400px] left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2"
+                  className="absolute w-[400px] h-[400px] left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2 "
                   variants={orbitVariants}
                   animate="animate"
                 >
@@ -197,7 +184,7 @@ const HeroSection = () => {
                     className="absolute left-1/2 top-2 transform -translate-x-1/2 -translate-y-full"
                     animate="animate"
                   >
-                    <div className="w-10 h-10 bg-secondary rounded-full flex items-center justify-center shadow-lg">
+                    <div className="w-10 h-10 bg-white rounded-full flex items-center justify-center shadow-lg">
                       <HelpCircle className="w-5 h-5 text-black" />
                     </div>
                   </motion.div>
@@ -214,8 +201,8 @@ const HeroSection = () => {
                 </motion.div>
 
                 {/* Orbit rings for visual effect */}
-                <div className="absolute w-[450px] h-[450px] left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2 border border-secondary/20 rounded-full"></div>
-                <div className="absolute w-[350px] h-[350px] left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2 border border-secondary/10 rounded-full"></div>
+                <div className="absolute w-[450px] h-[450px] left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2 border border-white/50 rounded-full"></div>
+                <div className="absolute w-[350px] h-[350px] left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2 border border-white/50 rounded-full"></div>
               </motion.div>
             </div>
           </div>

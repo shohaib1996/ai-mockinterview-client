@@ -56,7 +56,7 @@ const SingleQuizPage = ({ id }: { id: string }) => {
                   <h3 className="font-semibold text-lg">Unable to Load Quiz</h3>
                 </div>
                 <p className="text-sm mt-3 text-red-600 dark:text-red-400">
-                  We couldn't retrieve your quiz results. Please check your connection and try again.
+                  We couldn&apos;t retrieve your quiz results. Please check your connection and try again.
                 </p>
               </div>
             </CardContent>
@@ -153,7 +153,7 @@ const SingleQuizPage = ({ id }: { id: string }) => {
                   <div className="h-12 w-px bg-slate-300 dark:bg-slate-600"></div>
                   <div className="text-center">
                     <div className="text-2xl font-bold text-slate-700 dark:text-slate-300">
-                      {quiz.quizAnswers.length}
+                      {quiz.quizAnswers?.length}
                     </div>
                     <div className="text-sm text-slate-600 dark:text-slate-400 font-medium">Questions</div>
                   </div>

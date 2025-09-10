@@ -41,6 +41,7 @@
   --radius-md: calc(var(--radius) - 2px);
   --radius-lg: var(--radius);
   --radius-xl: calc(var(--radius) + 4px);
+  --animate-meteor-effect: meteor 5s linear infinite;
 }
 
 :root {
@@ -120,3 +121,37 @@
     @apply bg-background text-foreground;
   }
 }
+@keyframes meteor {
+  0% {
+    transform: rotate(215deg) translateX(0);
+    opacity: 1;
+  }
+  70% {
+    opacity: 1;
+  }
+  100% {
+    transform: rotate(215deg) translateX(-500px);
+    opacity: 0;
+  }
+}
+/* globals.css */
+html {
+  /* reserve vertical scrollbar space to avoid layout shift */
+  overflow-y: scroll;
+  /* modern: reserve the scrollbar gutter (supported in modern browsers) */
+  scrollbar-gutter: stable;
+}
+
+/* prevent any accidental horizontal overflow when dropdowns render */
+body {
+  overflow-x: hidden;
+  width: 100%;
+}
+
+/* consistent box model */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+

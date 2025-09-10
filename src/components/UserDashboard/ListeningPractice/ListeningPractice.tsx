@@ -17,10 +17,9 @@ import {
   Check,
   X,
 } from "lucide-react";
-import { useTheme } from "next-themes";
 import { useGetSingleListeningAudioQuery } from "@/redux/api/listening-audio/listeningAudioApi";
 import { useGetAllQuestionsQuery } from "@/redux/api/question/questionApi";
-import { IQuestion, Meta } from "@/types";
+import { IQuestion } from "@/types";
 
 interface ListeningPracticeProps {
   id: string;
@@ -35,23 +34,21 @@ const ListeningPractice = ({ id, sessionId }: ListeningPracticeProps) => {
   const [submitAnswers, { isLoading: isSubmitting }] =
     useCreateAnswerMutation();
   const [updateSession, { isLoading: isUpdating }] = useUpdateSessionMutation();
-  const { theme, setTheme } = useTheme();
-
   const [showQuestions, setShowQuestions] = useState(false);
   const [timer, setTimer] = useState(0);
   const [isPlaying, setIsPlaying] = useState(false);
   const [selectedAnswers, setSelectedAnswers] = useState<
     Record<string, string>
   >({});
+  console.log(isPlaying)
   const [currentPage, setCurrentPage] = useState(1);
   const [questionsPerPage] = useState(10);
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [submissionMessage, setSubmissionMessage] = useState("");
 
   const questions: IQuestion[] = questionData?.data || [];
-  const meta: Meta = questionData?.meta || { page: 1, limit: 10, total: 0 };
 
-  const totalPages = Math.ceil(questions.length / questionsPerPage);
+  const totalPages = Math.ceil(questions?.length / questionsPerPage);
   const startIndex = (currentPage - 1) * questionsPerPage;
   const endIndex = startIndex + questionsPerPage;
   const currentQuestions = questions.slice(startIndex, endIndex);
@@ -147,9 +144,9 @@ const ListeningPractice = ({ id, sessionId }: ListeningPracticeProps) => {
   };
 
   const allQuestionsAnswered =
-    questions.length > 0 && questions.every((q) => selectedAnswers[q.id]);
-  const answeredCount = Object.keys(selectedAnswers).length;
-  const totalQuestions = questions.length;
+    questions?.length > 0 && questions.every((q) => selectedAnswers[q.id]);
+  const answeredCount = Object.keys(selectedAnswers)?.length;
+  const totalQuestions = questions?.length;
 
   return (
     <div className="min-h-screen bg-background">
@@ -209,7 +206,7 @@ const ListeningPractice = ({ id, sessionId }: ListeningPracticeProps) => {
               </Card>
             )}
 
-            {showQuestions && questions.length > 0 && (
+            {showQuestions && questions?.length > 0 && (
               <div className="space-y-6">
                 <div className="text-center">
                   <h2 className="text-2xl font-serif font-bold text-foreground mb-2">
@@ -217,7 +214,7 @@ const ListeningPractice = ({ id, sessionId }: ListeningPracticeProps) => {
                   </h2>
                   <p className="text-muted-foreground">
                     Showing {startIndex + 1}-
-                    {Math.min(endIndex, questions.length)} of {questions.length}{" "}
+                    {Math.min(endIndex, questions?.length)} of {questions?.length}{" "}
                     questions
                   </p>
                 </div>

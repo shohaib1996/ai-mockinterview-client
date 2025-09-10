@@ -12,12 +12,12 @@ const AdminDashboard = () => {
   const chartData = data?.data?.charts || {} as AdminDashboardAnalytics
 
   return (
-    <div className="min-h-screen bg-background mb-10 p-6">
+    <div className="min-h-screen  mb-10 p-6">
       <div className="container mx-auto space-y-8">
         {/* Header */}
         <div className="space-y-2">
           <h1 className="text-3xl font-bold text-foreground">Admin Dashboard</h1>
-          <p className="text-muted-foreground">Monitor your platform's performance and user engagement</p>
+          <p className="text-muted-foreground">Monitor your platform&apos;s performance and user engagement</p>
         </div>
 
         {/* Stats Cards */}

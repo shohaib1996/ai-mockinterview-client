@@ -1,12 +1,16 @@
 "use client";
 
 import { motion } from "framer-motion";
+import Image from "next/image";
+import logo from "../../../public/logo.png"
+import { Facebook, InstagramIcon, Linkedin } from "lucide-react";
+import { Meteors } from "../ui/meteors";
 
 export default function Footer() {
   const footerLinks = ["Home", "About", "Contact"];
 
   return (
-    <footer className="bg-gray-900 text-white">
+    <footer className="bg-gray-900 text-white relative overflow-hidden">
       <div className="container mx-auto px-4 py-12">
         <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
           {/* Brand Section */}
@@ -18,10 +22,8 @@ export default function Footer() {
               transition={{ duration: 0.6 }}
               viewport={{ once: true }}
             >
-              <div className="w-8 h-8 bg-green-400 rounded-full flex items-center justify-center">
-                <span className="text-black font-bold text-lg">$</span>
-              </div>
-              <span className="text-white font-bold text-xl">BitSwapix</span>
+              <Image src={logo} alt="logo" width={50} height={50} />
+              <span className="text-white font-bold text-xl">LinguaAI</span>
             </motion.div>
 
             <motion.p
@@ -31,7 +33,7 @@ export default function Footer() {
               transition={{ duration: 0.6, delay: 0.1 }}
               viewport={{ once: true }}
             >
-              AI-Powered IELTS Preparation for your dream score.
+              Personalized mock exams, AI-powered instant feedback, and smart performance tracking designed to help you improve faster and achieve your dream IELTS score with confidence
             </motion.p>
           </div>
 
@@ -67,13 +69,13 @@ export default function Footer() {
             <h3 className="font-semibold text-lg mb-4">Follow Us</h3>
             <div className="flex space-x-4">
               <div className="w-10 h-10 bg-gray-800 rounded-full flex items-center justify-center hover:bg-green-400 hover:text-black transition-colors cursor-pointer">
-                <span className="text-sm font-bold">T</span>
+                <span className="text-sm font-bold"><Facebook/></span>
               </div>
               <div className="w-10 h-10 bg-gray-800 rounded-full flex items-center justify-center hover:bg-green-400 hover:text-black transition-colors cursor-pointer">
-                <span className="text-sm font-bold">D</span>
+                <span className="text-sm font-bold"><Linkedin/></span>
               </div>
               <div className="w-10 h-10 bg-gray-800 rounded-full flex items-center justify-center hover:bg-green-400 hover:text-black transition-colors cursor-pointer">
-                <span className="text-sm font-bold">M</span>
+                <span className="text-sm font-bold"><InstagramIcon/></span>
               </div>
             </div>
           </motion.div>
@@ -91,6 +93,7 @@ export default function Footer() {
             Copyright © {new Date().getFullYear()} LinguaAI. All rights reserved.
           </p>
         </motion.div>
+        <Meteors number={20} />
       </div>
     </footer>
   );

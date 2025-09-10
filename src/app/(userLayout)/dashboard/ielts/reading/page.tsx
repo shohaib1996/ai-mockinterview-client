@@ -1,6 +1,6 @@
 "use client";
 
-import { use, useState } from "react";
+import { useState } from "react";
 import type { InterviewSession, Meta } from "@/types";
 import {
   CustomTable,
@@ -26,14 +26,14 @@ const ReadingSessions = () => {
 
   const [currentPage, setCurrentPage] = useState(1);
   const [currentLimit, setCurrentLimit] = useState(10);
-  const { data, isLoading, refetch } = useGetAllSessionsQuery({
+  const { data, refetch } = useGetAllSessionsQuery({
     userId: user?.id,
     type: sessionType,
     page: currentPage,
     limit: currentLimit,
   });
 
-  const [createReadingSession, { isLoading: isCreating }] = useCreateSessionMutation();
+  const [createReadingSession] = useCreateSessionMutation();
 
   const readingData: InterviewSession[] = data?.data || [];
   const meta: Meta = data?.meta || { page: 1, limit: 10, total: 0 };
@@ -61,7 +61,7 @@ const ReadingSessions = () => {
 
   const truncateText = (text: string | null, maxLength = 50) => {
     if (!text) return "N/A";
-    return text.length > maxLength
+    return text?.length > maxLength
       ? `${text.substring(0, maxLength)}...`
       : text;
   };
