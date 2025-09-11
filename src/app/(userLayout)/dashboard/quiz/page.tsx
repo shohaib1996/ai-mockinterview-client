@@ -8,23 +8,19 @@ import {
 } from "@/components/Common/CustomTable/CustomTable";
 import { CustomTooltip } from "@/components/Common/CustomTooltip/CustomTooltip";
 import { Button } from "@/components/ui/button";
-import {
-  useGetAllQuizAttemptsQuery,
-} from "@/redux/api/quiz-attempt/quizAttemptApi";
+import { useGetAllQuizAttemptsQuery } from "@/redux/api/quiz-attempt/quizAttemptApi";
 // Assuming this is the path to your generate questions API hook
 import { useAppSelector } from "@/redux/hooks/hooks";
 import { IQuizAttempt, Meta } from "@/types";
 import { Dialog, DialogTrigger } from "@/components/ui/dialog";
-import { Eye, Plus } from "lucide-react"
+import { Eye, Plus } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import QuizCreationDialog from "@/components/UserDashboard/Quiz/QuizCreatingDialog";
 
-
-
 const Quiz = () => {
   const user = useAppSelector((state) => state.auth.user);
-  const router = useRouter()
+  const router = useRouter();
   const [currentPage, setCurrentPage] = useState(1);
   const [currentLimit, setCurrentLimit] = useState(10);
   const { data, isLoading } = useGetAllQuizAttemptsQuery({
@@ -147,19 +143,23 @@ const Quiz = () => {
           <QuizCreationDialog onClose={() => setIsDialogOpen(false)} />
         </Dialog>
       </div>
-      <CustomTable
-        columns={columns}
-        actions={actions}
-        data={quizAttempts}
-        loading={isLoading}
-      />
-      {meta.total > currentLimit && (
-        <CustomPagination
-          meta={meta}
-          onPageChange={handlePageChange}
-          onLimitChange={handleLimitChange}
+      <div className="bg-card rounded-2xl">
+        <CustomTable
+          columns={columns}
+          actions={actions}
+          data={quizAttempts}
+          loading={isLoading}
         />
-      )}
+        <div className="mt-3 px-4 pb-2">
+          {meta.total > 0 && (
+            <CustomPagination
+              meta={meta}
+              onPageChange={handlePageChange}
+              onLimitChange={handleLimitChange}
+            />
+          )}
+        </div>
+      </div>
     </div>
   );
 };

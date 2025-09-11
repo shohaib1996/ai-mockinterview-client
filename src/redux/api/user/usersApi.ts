@@ -17,7 +17,7 @@ const usersApi = baseApi.injectEndpoints({
         method: "POST",
         data,
       }),
-      invalidatesTags: [tagTypes.Users],
+      invalidatesTags: [tagTypes.Users, tagTypes.UserDashboard],
     }),
     getUsers: builder.query({
       query: (args) => ({

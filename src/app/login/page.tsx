@@ -17,8 +17,9 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Eye, EyeOff } from "lucide-react";
 import { useLoginUserMutation } from "@/redux/api/user/usersApi";
 import { useAppDispatch } from "@/redux/hooks/hooks";
-import { login } from "@/redux/feature/auth/authSlice";
+import { login, logout } from "@/redux/feature/auth/authSlice";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 
 export default function LoginPage() {
   const [email, setEmail] = useState("");
@@ -31,6 +32,7 @@ export default function LoginPage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
+      dispatch(logout());
       const res = await loginUser({ email, password }).unwrap();
       console.log(res.data);
       dispatch(login({ user: res.data.user, token: res.data.accessToken }));
@@ -217,9 +219,11 @@ export default function LoginPage() {
               <span className="text-muted-foreground">
                 Don&apos;t have an account?{" "}
               </span>
-              <Button variant="link" className="px-0">
-                Sign up
-              </Button>
+              <Link href="/register">
+                <Button variant="link" className="px-0">
+                  Sign up
+                </Button>
+              </Link>
             </div>
           </CardContent>
         </Card>

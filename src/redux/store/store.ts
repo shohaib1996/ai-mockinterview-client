@@ -24,15 +24,7 @@ export const makeStore = () => {
       }).concat(baseApi.middleware),
   });
 
-  // Add the interceptor after the store is created
-  axiosInstance.interceptors.request.use((config) => {
-    const state = store.getState() as RootState;
-    const token = state.auth.token; 
-    if (token) {
-      config.headers.Authorization = `Bearer ${token}`;
-    }
-    return config;
-  });
+  
 
   const persistor = persistStore(store);
   return { store, persistor };
