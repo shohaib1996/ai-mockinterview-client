@@ -2,7 +2,14 @@ import { createApi, BaseQueryFn } from '@reduxjs/toolkit/query/react';
 import { AxiosError, Method } from 'axios';
 import axiosInstance from '@/lib/axiosInstance';
 import { tagTypesList } from '../tagTypes/tagTypes';
-import { RootState } from '../store/store';
+
+// We can't import RootState from store.ts without creating a circular dependency.
+// So we define the shape of the state we need here.
+interface AuthEnabledState {
+  auth: {
+    token: string | null;
+  };
+}
 
 type AxiosArgs = {
   url: string;
@@ -19,15 +26,15 @@ const axiosBaseQuery =
   > =>
   async ({ url, method, data, params }, api) => {
     try {
-      const token = (api.getState() as RootState).auth.token;
-      if (token) {
-        axiosInstance.defaults.headers.common['Authorization'] = `Bearer ${token}`;
-      }
+      const token = (api.getState() as AuthEnabledState).auth.token;
+      console.log(token)
+      
       const result = await axiosInstance({
         url: baseUrl + url,
         method,
         data,
         params,
+        headers: token ? { Authorization: `Bearer ${token}` } : {},
       });
       return { data: result.data };
     } catch (axiosError) {

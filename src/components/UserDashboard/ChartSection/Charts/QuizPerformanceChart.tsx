@@ -84,7 +84,7 @@ export function QuizPerformanceChart({ data }: QuizPerformanceChartProps) {
                       const data = payload[0].payload
                       return (
                         <div className="bg-background dark:bg-background-dark border border-muted dark:border-muted-dark rounded-lg p-2 sm:p-3 shadow-md">
-                          <p className="text-foreground dark:text-foreground-dark font-medium">{data.name}</p>
+                          <p className="text-foreground dark:text-foreground-dark font-medium">{data?.name}</p>
                           <p className="text-muted-foreground dark:text-muted-foreground-dark">
                             {data.value} answers ({data.percentage}%)
                           </p>

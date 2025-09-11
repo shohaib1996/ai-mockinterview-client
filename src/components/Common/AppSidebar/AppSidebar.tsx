@@ -27,7 +27,7 @@ import {
   Mic,
   MessageCircle,
   Code,
-  ClipboardCheck
+  ClipboardCheck,
 } from "lucide-react";
 import {
   Sidebar,
@@ -59,6 +59,9 @@ import { logout } from "@/redux/feature/auth/authSlice";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 import logo from "../../../../public/logo.png";
+import { baseApi } from "@/redux/api/baseApi";
+import { useGetProfileQuery } from "@/redux/api/user/usersApi";
+import { ISingleUser } from "@/types";
 
 const iconMap: Record<string, React.ComponentType<any>> = {
   home: Home,
@@ -79,7 +82,7 @@ const iconMap: Record<string, React.ComponentType<any>> = {
   Mic: Mic,
   MessageCircle: MessageCircle,
   Code: Code,
-  ClipboardCheck: ClipboardCheck
+  ClipboardCheck: ClipboardCheck,
 };
 
 type MenuItem = {
@@ -97,11 +100,13 @@ export function AppSidebar({ items }: AppSidebarProps) {
   const { open, setOpen, isMobile } = useSidebar();
   const dispatch = useAppDispatch();
   const router = useRouter();
-  const user = useAppSelector((state) => state.auth.user);
+  const { data } = useGetProfileQuery({});
+  const user: ISingleUser = data?.data;
   const [dropdownOpen, setDropdownOpen] = useState(false);
 
   const handleLogout = () => {
     dispatch(logout());
+    dispatch(baseApi.util.resetApiState());
     router.push("/login");
   };
 
@@ -201,9 +206,13 @@ export function AppSidebar({ items }: AppSidebarProps) {
                 variant="ghost"
                 className="flex items-center gap-2 justify-start w-full p-2 h-auto"
               >
-                <Avatar className="w-8 h-8">
-                  <AvatarFallback className="bg-primary/10">
-                    {user?.name?.charAt(0)?.toUpperCase() || "U"}
+                <Avatar>
+                  <AvatarImage
+                    src={user?.avatarUrl || "https://github.com/shadcn.png"}
+                    alt={user?.name || "User"}
+                  />
+                  <AvatarFallback>
+                    {user?.name ? user?.name.charAt(0).toUpperCase() : "U"}
                   </AvatarFallback>
                 </Avatar>
                 <div className="flex flex-col items-start flex-1 min-w-0">

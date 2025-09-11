@@ -16,11 +16,17 @@ import Image from "next/image";
 import logo from "../../../public/logo.png";
 import Link from "next/link";
 import { ModeToggle } from "../ThemeProvider/ModeToggle";
+import { useGetProfileQuery } from "@/redux/api/user/usersApi";
+import { ISingleUser } from "@/types";
+import { useRouter } from "next/navigation";
+import { baseApi } from "@/redux/api/baseApi";
 
 export default function Navbar() {
   const [isScrolled, setIsScrolled] = useState(false);
-  const user = useAppSelector((state) => state.auth.user);
+  const { data } = useGetProfileQuery({});
+  const user: ISingleUser = data?.data;
   const dispatch = useAppDispatch();
+  const router = useRouter();
 
   useEffect(() => {
     const handleScroll = () => setIsScrolled(window.scrollY > 50);
@@ -33,6 +39,12 @@ export default function Navbar() {
     { label: "About", hasDropdown: false },
     { label: "Contact", hasDropdown: false },
   ];
+
+  const handleLogout = () => {
+    dispatch(logout());
+    dispatch(baseApi.util.resetApiState());
+    router.push("/login");
+  };
 
   return (
     <nav
@@ -57,7 +69,9 @@ export default function Navbar() {
             {navItems.map((item) => (
               <div key={item.label} className="relative group">
                 <Link
-                  href={`${item.label === "Home" ? "/": `/${item.label.toLowerCase()}`}`}
+                  href={`${
+                    item.label === "Home" ? "/" : `/${item.label.toLowerCase()}`
+                  }`}
                   className="text-gray-300 hover:text-white transition-colors"
                 >
                   <span>{item.label}</span>
@@ -87,11 +101,11 @@ export default function Navbar() {
                   >
                     <Avatar>
                       <AvatarImage
-                        src={user.avatarUrl || "https://github.com/shadcn.png"}
-                        alt={user.name || "User"}
+                        src={user?.avatarUrl || "https://github.com/shadcn.png"}
+                        alt={user?.name || "User"}
                       />
                       <AvatarFallback>
-                        {user.name ? user.name.charAt(0).toUpperCase() : "U"}
+                        {user?.name ? user?.name.charAt(0).toUpperCase() : "U"}
                       </AvatarFallback>
                     </Avatar>
                   </button>
@@ -104,12 +118,12 @@ export default function Navbar() {
                   className="min-w-[160px]"
                 >
                   <DropdownMenuItem disabled className="cursor-default">
-                    {user.name}
+                    {user?.name}
                   </DropdownMenuItem>
                   <DropdownMenuSeparator />
                   <Link
                     href={
-                      user.role === "admin"
+                      user.role === "ADMIN"
                         ? "/dashboard/admin"
                         : "/dashboard/user"
                     }
@@ -122,7 +136,7 @@ export default function Navbar() {
                   <DropdownMenuItem className="blcok md:hidden lg:hidden">
                     Contact
                   </DropdownMenuItem>
-                  <DropdownMenuItem onClick={() => dispatch(logout())}>
+                  <DropdownMenuItem onClick={handleLogout}>
                     Logout
                   </DropdownMenuItem>
                 </DropdownMenuContent>

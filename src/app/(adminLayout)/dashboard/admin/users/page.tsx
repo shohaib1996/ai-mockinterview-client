@@ -80,8 +80,8 @@ const AllUsers = () => {
       header: 'User Name',
       render: user =>
         user?.name ? (
-          <CustomTooltip content={user.name}>
-            <span className="cursor-help text-muted-foreground">{truncateText(user.name, 15)}</span>
+          <CustomTooltip content={user?.name}>
+            <span className="cursor-help text-muted-foreground">{truncateText(user?.name, 15)}</span>
           </CustomTooltip>
         ) : (
           <span className="text-muted-foreground">N/A</span>

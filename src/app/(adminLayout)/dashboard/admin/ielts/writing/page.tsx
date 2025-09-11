@@ -216,7 +216,7 @@ const WritingLession = () => {
             setSelectedTask(null);
           }}
           title="Edit Writing Task"
-          fields={editFormFields.filter(field => selectedTask.task === 'TASK1' || field.name !== 'imageUrl')}
+          fields={editFormFields.filter(field => selectedTask.task === 'TASK1' || field?.name !== 'imageUrl')}
           onSubmit={handleUpdateTask}
           defaultValues={selectedTask}
         />

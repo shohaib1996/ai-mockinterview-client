@@ -61,7 +61,7 @@ export const CustomFormDialog = ({
   const formSchema = z.object(
     fields.reduce(
       (acc, field) => {
-        acc[field.name] = field.validation || z.string().min(1, 'This field is required');
+        acc[field?.name] = field.validation || z.string().min(1, 'This field is required');
         return acc;
       },
       {} as Record<string, z.ZodType<any, any>>
@@ -96,9 +96,9 @@ export const CustomFormDialog = ({
           <form onSubmit={form.handleSubmit(handleFormSubmit)} className="space-y-4">
             {fields.map(field => (
               <FormField
-                key={field.name}
+                key={field?.name}
                 control={form.control}
-                name={field.name}
+                name={field?.name}
                 render={({ field: formField }) => (
                   <FormItem>
                     <FormLabel>{field.label}</FormLabel>

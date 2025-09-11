@@ -20,7 +20,8 @@ import { useAppDispatch } from "@/redux/hooks/hooks";
 import { login, logout } from "@/redux/feature/auth/authSlice";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-
+import loginImg from "../../../public/login.jpg"
+import Image from "next/image";
 export default function LoginPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -64,9 +65,9 @@ export default function LoginPage() {
     <div className="min-h-screen flex">
       <div className="hidden lg:flex lg:w-1/2 bg-gradient-to-br from-blue-600 to-purple-700 items-center justify-center p-12">
         <div className="text-center text-white">
-          <div className="w-96 h-96 bg-white/10 rounded-2xl flex items-center justify-center mb-8">
-            <div className="w-72 h-72 bg-white/20 rounded-xl flex items-center justify-center">
-              <span className="text-6xl">🔐</span>
+          <div className=" bg-white/10 rounded-2xl flex items-center justify-center mb-8">
+            <div className=" bg-white/20 rounded-xl flex items-center justify-center">
+              <Image src={loginImg} alt="login image" width={300} height={300} className="object-cover" />
             </div>
           </div>
           <h2 className="text-3xl font-bold mb-4">Welcome Back!</h2>
@@ -76,7 +77,7 @@ export default function LoginPage() {
         </div>
       </div>
 
-      <div className="flex-1 flex items-center justify-center p-8 bg-background">
+      <div className="flex-1 flex items-center justify-center p-8 bg-gradient-to-br from-white/80 via-white/30 to-black/40 dark:from-[#1D2B64] dark:via-black dark:to-[#06D6A0]">
         <Card className="w-full max-w-md">
           <CardHeader className="space-y-1">
             <CardTitle className="text-2xl font-bold text-center">
@@ -203,7 +204,7 @@ export default function LoginPage() {
                 </Button>
               </div>
 
-              <Button type="submit" className="w-full" disabled={isLoading}>
+              <Button type="submit" className="w-full bg-[#06D6A0]" disabled={isLoading}>
                 {isLoading ? "Signing In..." : "Sign In"}
               </Button>
             </form>

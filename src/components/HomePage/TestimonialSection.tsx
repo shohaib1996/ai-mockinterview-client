@@ -91,7 +91,7 @@ export const TestimonialsSection: React.FC = () => {
                   {/* Profile image */}
                   <motion.img
                     src={testimonials[currentIndex].image}
-                    alt={testimonials[currentIndex].name}
+                    alt={testimonials[currentIndex]?.name}
                     className="w-20 h-20 rounded-full mx-auto mb-6 object-cover"
                     whileHover={{ scale: 1.1 }}
                   />
@@ -118,7 +118,7 @@ export const TestimonialsSection: React.FC = () => {
                   {/* Author */}
                   <div>
                     <p className="font-semibold text-gray-900 dark:text-white text-lg">
-                      {testimonials[currentIndex].name}
+                      {testimonials[currentIndex]?.name}
                     </p>
                     <p className="text-gray-600 dark:text-gray-400">
                       {testimonials[currentIndex].role}

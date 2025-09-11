@@ -21,3 +21,13 @@ export interface ISingleUser {
   createdAt: string; // ISO date string
   updatedAt: string; // ISO date string
 }
+
+export interface UpdateProfileData {
+  name: string;
+  avatarUrl: string | null;
+}
+export interface ResetPasswordData {
+  currentPassword: string
+  newPassword: string
+  confirmPassword: string
+}

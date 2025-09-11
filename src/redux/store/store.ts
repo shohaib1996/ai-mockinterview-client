@@ -3,7 +3,6 @@ import { persistStore, persistReducer } from 'redux-persist';
 import storage from 'redux-persist/lib/storage'; // defaults to localStorage for web
 import rootReducer from './rootReducer';
 import { baseApi } from '../api/baseApi';
-import axiosInstance from '@/lib/axiosInstance'; // Import axiosInstance
 
 const persistConfig = {
   key: 'root',
@@ -29,6 +28,8 @@ export const makeStore = () => {
   const persistor = persistStore(store);
   return { store, persistor };
 };
+
+export const { store } = makeStore();
 
 export type AppStore = ReturnType<typeof makeStore>['store'];
 export type AppPersistor = ReturnType<typeof makeStore>['persistor'];
