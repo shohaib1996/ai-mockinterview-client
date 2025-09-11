@@ -85,9 +85,9 @@ const QuizLession = () => {
       header: "User Name",
       render: (quizAttempt) =>
         quizAttempt.user ? (
-          <CustomTooltip content={quizAttempt?.user.name}>
+          <CustomTooltip content={quizAttempt?.user?.name}>
             <span className="cursor-help text-muted-foreground">
-              {truncateText(quizAttempt.user.name, 15)}
+              {truncateText(quizAttempt.user?.name, 15)}
             </span>
           </CustomTooltip>
         ) : (

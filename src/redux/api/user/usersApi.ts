@@ -34,6 +34,29 @@ const usersApi = baseApi.injectEndpoints({
         data
       }),
       invalidatesTags: [tagTypes.Users],
+    }),
+    getProfile: builder.query({
+      query: () => ({
+        url: "/users/profile",
+        method: "GET",
+      }),
+      providesTags: [tagTypes.Users],
+    }),
+    updateProfile: builder.mutation({
+      query: (data) => ({
+        url: "/users/profile",
+        method: "PATCH",
+        data,
+      }),
+      invalidatesTags: [tagTypes.Users],
+    }),
+    resetPassword: builder.mutation({
+      query: (data) => ({
+        url: "/users/reset-password",
+        method: "POST",
+        data,
+      }),
+      invalidatesTags: [tagTypes.Users],
     })
   }),
 });
@@ -42,5 +65,8 @@ export const {
   useRegisterUserMutation,
   useLoginUserMutation,
   useGetUsersQuery,
-  useRoleToggleMutation
+  useRoleToggleMutation,
+  useGetProfileQuery,
+  useUpdateProfileMutation,
+  useResetPasswordMutation
 } = usersApi;
