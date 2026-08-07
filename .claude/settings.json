@@ -1,0 +1,14 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(cd \"D:\\\\Web Development\\\\ai-mock-interview\\\\ai-mock-interview-backend\" && npx tsc --noEmit 2>&1 | head -80)",
+      "Read(//d/Web Development/ai-mock-interview/ai-mock-interview-backend/**)",
+      "Read(//d/Web Development/ai-mock-interview/ai-mock-interview-backend/src/app/modules/userDashboard/**)",
+      "Bash(git commit *)"
+    ],
+    "additionalDirectories": [
+      "D:\\Web Development\\ai-mock-interview\\ai-mock-interview-backend\\src\\app\\jobs",
+      "D:\\Web Development\\ai-mock-interview\\ai-mock-interview-backend\\src\\app"
+    ]
+  }
+}
