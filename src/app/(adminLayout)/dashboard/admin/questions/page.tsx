@@ -333,7 +333,7 @@ const QuestionsPage = () => {
                     </p>
                     <Badge
                       variant={
-                        selectedQuestion.difficulty === "HARD"
+                        selectedQuestion.difficulty === "HIGH"
                           ? "destructive"
                           : selectedQuestion.difficulty === "MEDIUM"
                           ? "default"

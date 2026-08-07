@@ -11,7 +11,8 @@ import { CustomPagination } from "@/components/Common/CustomPagination/CustomPag
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Plus, Eye } from "lucide-react";
-import { useCreateSessionMutation, useGetAllSessionsQuery } from "@/redux/api/session/sessionApi";
+import { useGetAllSessionsQuery } from "@/redux/api/session/sessionApi";
+import { useStartReadingTestMutation } from "@/redux/api/reading-test/readingTestApi";
 import { useAppSelector } from "@/redux/hooks/hooks";
 import { CustomTooltip } from "@/components/Common/CustomTooltip/CustomTooltip";
 import { format } from "date-fns";
@@ -33,7 +34,7 @@ const ReadingSessions = () => {
     limit: currentLimit,
   });
 
-  const [createReadingSession] = useCreateSessionMutation();
+  const [startReadingTest, { isLoading: isStarting }] = useStartReadingTestMutation();
 
   const readingData: InterviewSession[] = data?.data || [];
   const meta: Meta = data?.meta || { page: 1, limit: 10, total: 0 };
@@ -81,17 +82,15 @@ const ReadingSessions = () => {
   };
 
   const handleCreateSession = async () => {
-    // functionality to be added
-      try {
-      const res = await createReadingSession({ type: sessionType }).unwrap();
-      const {id} = res?.data
+    try {
+      const res = await startReadingTest({}).unwrap();
       refetch();
       if (res.success) {
-        router.push(`/dashboard/ielts/reading/practice?id=${id}`);
+        router.push(`/dashboard/ielts/reading/test/${res.data.session.id}`);
       }
     } catch (error) {
-      console.error("Failed to create session:", error);
-      toast.error("Failed to create reading session.");
+      console.error("Failed to start reading test:", error);
+      toast.error("Failed to start reading test.");
     }
   };
 
@@ -171,6 +170,7 @@ const ReadingSessions = () => {
         <Button
           className="flex items-center gap-2"
           onClick={handleCreateSession}
+          disabled={isStarting}
         >
           <Plus className="h-4 w-4" />
           {"Start A Reading Session"}

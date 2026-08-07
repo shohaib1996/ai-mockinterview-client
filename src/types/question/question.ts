@@ -1,5 +1,10 @@
 export type QuestionType =
   | "MCQ"
+  | "OPEN_ENDED"
+  | "TRUE_FALSE_NOT_GIVEN"
+  | "MATCHING"
+  | "COMPLETION"
+  | "SHORT_ANSWER";
 
 export type SessionTypeQ =
   | "IELTS_LISTENING"
@@ -11,15 +16,16 @@ export type SessionTypeQ =
   | "MOCK_INTERVIEW_INTERPERSONAL"
   | "QUIZ";
 
-export type Difficulty = "LOW" | "MEDIUM" | "HARD";
+export type Difficulty = "LOW" | "MEDIUM" | "HIGH";
 
 export interface IQuestion {
   id: string;
   type: QuestionType;
   sessionType: SessionTypeQ;
   text: string;
-  options?: string[]; 
+  options?: string[];
   correctAnswer?: string | string[];
+  acceptableAnswers?: string[];
   difficulty: Difficulty;
   aiGenerated: boolean;
   createdAt: string;
