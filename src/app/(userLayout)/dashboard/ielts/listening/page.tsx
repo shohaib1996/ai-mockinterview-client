@@ -1,10 +1,8 @@
 "use client"
 
 import { useState } from "react"
-import {
-  useGetAllSessionsQuery,
-  useCreateSessionMutation,
-} from "@/redux/api/session/sessionApi"
+import { useGetAllSessionsQuery } from "@/redux/api/session/sessionApi"
+import { useStartListeningTestMutation } from "@/redux/api/listening-test/listeningTestApi"
 import type { InterviewSession, Meta } from "@/types"
 import {
   CustomTable,
@@ -39,7 +37,7 @@ const ListeningSessions = () => {
     limit: currentLimit,
   })
 
-  const [createListeningSession, { isLoading: isCreating }] = useCreateSessionMutation()
+  const [startListeningTest, { isLoading: isCreating }] = useStartListeningTestMutation()
 
   const listeningData: InterviewSession[] = data?.data || []
   const meta: Meta = data?.meta || { page: 1, limit: 10, total: 0 }
@@ -61,15 +59,14 @@ const ListeningSessions = () => {
 
   const handleCreateSession = async () => {
     try {
-      const res = await createListeningSession({ type: sessionType }).unwrap();
-      const {id} = res?.data
+      const res = await startListeningTest({}).unwrap();
       refetch();
       if (res.success) {
-        router.push(`/dashboard/ielts/listening/practice?id=${id}`);
+        router.push(`/dashboard/ielts/listening/test/${res.data.session.id}`);
       }
     } catch (error) {
-      console.error("Failed to create session:", error);
-      toast.error("Failed to create listening session."); 
+      console.error("Failed to start listening test:", error);
+      toast.error("Failed to start listening test.");
     }
   };
 
