@@ -10,21 +10,10 @@ import {
 } from "@/components/Common/CustomTable/CustomTable";
 import { CustomPagination } from "@/components/Common/CustomPagination/CustomPagination";
 import { Button } from "@/components/ui/button";
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogDescription,
-  DialogFooter,
-  DialogClose,
-} from "@/components/ui/dialog";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Plus, Eye } from "lucide-react";
-import {
-  useCreateSessionMutation,
-  useGetAllSessionsQuery,
-} from "@/redux/api/session/sessionApi";
+import { useGetAllSessionsQuery } from "@/redux/api/session/sessionApi";
+import { useStartWritingTestMutation } from "@/redux/api/writing-test/writingTestApi";
 import { useAppSelector } from "@/redux/hooks/hooks";
 import { CustomTooltip } from "@/components/Common/CustomTooltip/CustomTooltip";
 import { format } from "date-fns";
@@ -36,10 +25,6 @@ const WritingSessions = () => {
   const sessionType = "IELTS_WRITING";
   const [currentPage, setCurrentPage] = useState(1);
   const [currentLimit, setCurrentLimit] = useState(10);
-  const [isDialogOpen, setIsDialogOpen] = useState(false);
-  const [sessionId, setSessionId] = useState<string | null>(null);
-
-  console.log(sessionId)
 
   const { data, isLoading } = useGetAllSessionsQuery({
     page: currentPage,
@@ -47,8 +32,7 @@ const WritingSessions = () => {
     type: sessionType,
     userId: user?.id,
   });
-  const [createWritingSession, { isLoading: isCreating }] =
-    useCreateSessionMutation();
+  const [startWritingTest, { isLoading: isCreating }] = useStartWritingTestMutation();
   const writingData: InterviewSession[] = data?.data || [];
   const meta: Meta = data?.meta || { page: 1, limit: 10, total: 0 };
 
@@ -96,17 +80,14 @@ const WritingSessions = () => {
 
   const handleCreateSession = async () => {
     try {
-      const res = await createWritingSession({ type: sessionType }).unwrap();
-      setIsDialogOpen(true);
-      setSessionId(res?.data?.id);
+      const res = await startWritingTest({}).unwrap();
+      if (res.success) {
+        router.push(`/dashboard/ielts/writing/test/${res.data.session.id}`);
+      }
     } catch (error) {
-      console.log(error)
-      toast.error("Failed to create a writing session. Please try again.");
+      console.error("Failed to start writing test:", error);
+      toast.error("Failed to start writing test. Please try again.");
     }
-  };
-
-  const handleTaskSelection = (task: any) => {
-    router.push(`/dashboard/ielts/writing/practice?task=${task}`);
   };
 
   const columns: TableColumn<InterviewSession>[] = [
@@ -219,37 +200,6 @@ const WritingSessions = () => {
           </div>
         </CardContent>
       </Card>
-
-      {/* Task Selection Dialog */}
-      <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>Select Writing Task</DialogTitle>
-            <DialogDescription>
-              Choose which task you would like to practice.
-            </DialogDescription>
-          </DialogHeader>
-          <div className="grid grid-cols-2 gap-4 py-4">
-            <Button
-              variant="outline"
-              onClick={() => handleTaskSelection(`TASK1-${sessionId}`)}
-            >
-              Task 1
-            </Button>
-            <Button
-              variant="outline"
-              onClick={() => handleTaskSelection(`TASK2-${sessionId}`)}
-            >
-              Task 2
-            </Button>
-          </div>
-          <DialogFooter>
-            <DialogClose asChild>
-              <Button variant="ghost">Cancel</Button>
-            </DialogClose>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
     </div>
   );
 };

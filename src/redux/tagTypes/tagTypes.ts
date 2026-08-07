@@ -18,6 +18,7 @@ export enum tagTypes {
   AdminDashboard = "adminDashboard",
   ReadingTest = "readingTest",
   ListeningTest = "listeningTest",
+  WritingTest = "writingTest",
 }
 
 export const tagTypesList = [
@@ -40,4 +41,5 @@ export const tagTypesList = [
   tagTypes.AdminDashboard,
   tagTypes.ReadingTest,
   tagTypes.ListeningTest,
+  tagTypes.WritingTest,
 ]
