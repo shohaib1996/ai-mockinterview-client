@@ -14,7 +14,7 @@ interface SkillBreakdownChartProps {
   data: SkillBreakdownData[]
 }
 
-export function SkillBreakdownChart({ data }: SkillBreakdownChartProps) {
+export function SkillBreakdownChart({ data = [] }: SkillBreakdownChartProps) {
   // Define colors for each skill, ensuring visibility in both light and dark modes
   const chartConfig = {
     listening: {

@@ -1,0 +1,236 @@
+# Rebuild IELTS Modules to Match Real British Council Structure (Academic)
+
+## Context
+
+The four IELTS modules (Reading, Listening, Writing, Speaking) currently share one generic
+"MCQ quiz + freeform AI chat" engine instead of each skill's real British Council test
+structure (confirmed earlier: single flat passage/audio instead of 3 passages/4 sections,
+MCQ-only questions instead of True/False/Not Given, matching, completion, no cue-card
+structure for Speaking, no per-criterion band scoring for Writing/Speaking).
+
+Goal: rebuild each module to mirror the real Academic IELTS format closely enough for
+genuine mock-test practice, while making content creation self-sustaining — the AI
+generates and replenishes test content on its own, and the admin panel becomes mostly a
+monitoring/override surface rather than a place where someone has to manually type
+passages, upload audio, or write prompts every time.
+
+Confirmed decisions:
+- Independence: Reading, Listening, Writing, Speaking stay fully separate practice
+  tracks. No "full test" wrapper, no gating between skills -- someone weak in Listening
+  only ever touches Listening. (Already naturally true given SessionType; the new
+  design must not introduce any cross-skill dependency.)
+- Test variant: Academic only. General Training is out of scope for this pass.
+- Listening audio: fully automated via AI text-to-speech -- admin never records or
+  uploads audio.
+
+This plan is intentionally broad (covers all 4 skills) since you asked to read the whole
+picture first. Suggested build order is at the end -- reprioritize freely after reading.
+
+---
+
+## Cross-Cutting Architecture
+
+### 1. Schema changes (prisma/schema.prisma)
+
+Extend rather than rename existing models -- smaller migrations, same query patterns as
+today. Because current Reading/Listening/Writing content is placeholder/dev data, this
+plan assumes a clean-break migration (reset practice content, regenerate via the new
+pipeline) rather than a painful backfill. Flag if you'd rather preserve existing rows.
+
+- ReadingPassage: add readingTestId String?, order Int? (1-3), relation to new
+  ReadingTest { id, title, difficulty, createdAt, passages ReadingPassage[] }.
+- ListeningAudio: add listeningTestId String?, order Int? (1-4), context
+  ListeningContext? (new enum: SOCIAL_CONVERSATION | SOCIAL_MONOLOGUE |
+  EDUCATIONAL_CONVERSATION | ACADEMIC_MONOLOGUE), relation to new ListeningTest { id,
+  title, difficulty, sections ListeningAudio[] }.
+- New SpeakingTest: { id, part1Topic, part1Questions String[], cueCardTopic,
+  cueCardBullets String[], part3Questions String[], difficulty }.
+- Session: add nullable readingTestId, listeningTestId, speakingTestId FKs
+  for direct O(1) lookup of assigned content. (Side benefit: replaces the convoluted
+  history-table walk currently in session.services.ts:112-202.)
+- Question.type enum: extend MCQ | OPEN_ENDED -> add TRUE_FALSE_NOT_GIVEN |
+  MATCHING | COMPLETION | SHORT_ANSWER. Add acceptableAnswers String[] to Question
+  for accepted synonym/spelling variants on free-text answers.
+- New GenerationLog: { id, skill, difficulty, status (SUCCESS|FAILED),
+  errorMessage?, createdAt } -- gives admin visibility into the automated pipeline
+  without needing to babysit it.
+- Writing needs no new wrapper model: at session start, immediately create two stub
+  WritingSubmission rows (Task 1 + Task 2, extractedText null) linked to the
+  session -- the pair of submissions *is* the assignment.
+
+### 2. Objective auto-grading (currently missing entirely)
+
+answer.services.ts today has zero grading logic -- the frontend would have to compute
+isCorrect/score itself, which doesn't scale to real completion/matching questions.
+Add a gradeObjectiveAnswer(question, answerText) helper:
+- MCQ / TRUE_FALSE_NOT_GIVEN / MATCHING: exact match against correctAnswer.
+- COMPLETION / SHORT_ANSWER: normalize (lowercase, trim, strip punctuation) and
+  match against correctAnswer or any entry in acceptableAnswers.
+
+Wrap this in new bulk-submit endpoints (see Reading/Listening below) so a whole test is
+graded in one pass, not per-question.
+
+### 3. AI content generation pipeline + self-sustaining pool
+
+New src/app/modules/contentGeneration/ with one generator per skill
+(readingTest.generator.ts, listeningTest.generator.ts, writingTest.generator.ts,
+speakingTest.generator.ts), each producing a complete, ready-to-serve test unit (not
+just questions) via OpenAI JSON-mode, following the existing pattern in
+question.services.ts:144-224 (generateQuestions) and mock-interview.services.ts's
+analyzeConversation (JSON-mode + parse). Rotate topics per call (science, environment,
+technology, history, business, arts, health...) so the pool doesn't repeat.
+
+- Scheduler: add node-cron (new dependency), register a job in server.ts that
+  runs every few hours per skill: if unused pool size for a difficulty tier falls below
+  a floor (e.g. 5), generate a batch. Writes to GenerationLog.
+- Admin panel becomes monitoring, not data entry: new AdminDashboard/ContentPool
+  page showing pool counts per skill/difficulty + recent generation log + a manual
+  "Generate now" override button (POST /admin-dashboard/content-pool/generate). The
+  existing manual dialogs (CreateAudioExerciseModal.tsx, CreateWritingTaskDialog.tsx,
+  GenerateQuestionsDialog.tsx) can stay as a power-user fallback but stop being the
+  primary workflow.
+- Assignment on demand: reuse the existing "exclude what this user already
+  completed" pattern from readingPassage.services.ts:37-57 /
+  listeningAudio.services.ts:36-61 to hand out an unseen test per user. If the global
+  pool is ever empty, generate synchronously as a fallback so the user is never blocked.
+
+---
+
+## Per-Module Plan
+
+### Reading (build first -- pure text, no new external service, proves the pattern)
+
+Real structure: 3 passages, 40 questions, 60 minutes, increasing difficulty,
+journal/article-style text; question types beyond MCQ (True/False/Not Given, matching
+headings, sentence/summary completion, short answer).
+
+- readingTest.generator.ts: one AI call generates 3 passages (increasing difficulty)
+  + ~13 questions each, mixing the extended question types, with correctAnswer +
+  acceptableAnswers set by the AI itself (it wrote the passage, so it knows the
+  answers) -- same trust model already used in generateQuestions.
+- New endpoint POST /reading-tests/start -> assigns an unseen ReadingTest, creates a
+  Session (IELTS_READING) with readingTestId set, returns passages + questions.
+- New endpoint POST /reading-tests/:sessionId/submit -> accepts all 40 answers at
+  once, bulk-grades via gradeObjectiveAnswer, computes raw score, converts to band via
+  a new bandConversion.util.ts (standard published Academic Reading raw-to-band table
+  -- an approximation, since IELTS doesn't publish exact per-sitting tables), updates
+  Session.score.
+- Frontend: dashboard/ielts/reading/page.tsx gets a single "Start Reading Test"
+  button instead of a passage list; new ReadingTestPage.tsx -- tabbed 3-passage view,
+  persistent 60-minute countdown (reuse the differenceInSeconds timer pattern already
+  in SpeakingPracticeModal.tsx:60-83), one submit at the end. Results page reuses/
+  extends the existing ReadingDetails.tsx.
+
+### Listening (second -- reuses Reading's question/grading engine, adds TTS)
+
+Real structure: 4 sections (2-speaker social conversation -> social monologue ->
+up-to-4-speaker educational conversation -> academic monologue), 40 questions, ~30 min.
+
+- listeningTest.generator.ts: AI generates a 4-section script as
+  {speaker, text}[] per section, tagged with context, plus matching questions
+  (same extended type set as Reading -- completion is actually more common here than
+  MCQ, matching real IELTS listening).
+- TTS synthesis: for each section, call openai.audio.speech.create per speaker
+  turn with a distinct voice per speaker, upload each clip to Cloudinary (already a
+  dependency -- uploadToCloudinary in lib/multer.ts), then concatenate into one
+  section audio file using Cloudinary's audio transformation/splice API (avoids adding
+  ffmpeg as a system dependency). Flag as a research spike: if Cloudinary
+  concatenation proves unreliable, fallback is one narrated voice per section reading
+  the whole dialogue -- still fully automated, less realistic.
+- Endpoints mirror Reading: POST /listening-tests/start,
+  POST /listening-tests/:sessionId/submit.
+- Frontend: ListeningTestPage.tsx -- sequential section-by-section audio player (play
+  section -> answer its questions -> next section, matching the real test's section
+  pacing) rather than one long synced timeline, to keep the UI buildable. Default to
+  exam-realistic single playback (no rewind), practice-mode replay as a later toggle if
+  wanted.
+
+### Writing (third -- adds chart generation + rubric grading)
+
+Real structure: Task 1 = describe a chart/graph/table (150+ words, 20 min), Task 2 =
+essay (250+ words, 40 min), 60 min total, scored on 4 separate band criteria (Task 2
+weighted 2x).
+
+- writingTask.generator.ts: Task 1 -> AI generates structured chart data (labels +
+  series) as JSON; render via a QuickChart.io-style hosted chart-image URL (no new
+  server-side rendering dependency) built from a small Chart.js config, then upload
+  the result to Cloudinary for a permanent imageUrl. Task 2 -> AI generates an essay
+  prompt.
+- writingGrader.service.ts: 4-criteria IELTS rubric (Task Achievement, Coherence &
+  Cohesion, Lexical Resource, Grammatical Range & Accuracy) via OpenAI JSON-mode,
+  extending the single-score pattern in mock-interview.services.ts:154-225 into a
+  structured criteriaScores JSON stored on WritingSubmission (new field), plus
+  overall band = weighted average. Also store/report live word count.
+- No OCR/handwriting path needed -- real IELTS is computer-delivered now, so input is
+  typed. Drop the existing text-extraction (Google Cloud Vision) dependency from this
+  flow entirely; it stays available elsewhere in the codebase if still used for other
+  features, but Writing doesn't need it.
+- Frontend: WritingTestPage.tsx -- Task 1 (chart image + 20-min timer) then Task 2
+  (40-min timer), plain textarea per task with a live word-count, single submit grades
+  both. Results show the 4 band criteria plus overall, not just one number.
+
+### Speaking (last -- most structural rework, also cleans up the earlier-flagged duplication)
+
+Real structure: 11-14 minutes, exactly 3 parts -- Part 1 intro Q&A (~4-5 min), Part 2
+cue card with 1-minute silent prep then a 1-2 minute uninterrupted long turn, Part 3
+abstract discussion tied to the Part 2 topic (~4-5 min).
+
+- speakingTest.generator.ts: one AI call produces part1Questions, cueCardTopic +
+  cueCardBullets ("You should say..."), and part3Questions tied to the cue card
+  topic -- deterministic content instead of the current "ask me random questions" free
+  improvisation.
+- speakingGrader.service.ts: 4-criteria rubric (Fluency & Coherence, Lexical
+  Resource, Grammatical Range & Accuracy, Pronunciation) -- honest limitation:
+  Pronunciation can only be approximated from the text transcript, no audio waveform
+  analysis; the feedback should say so rather than imply real pronunciation scoring.
+- This is also where the duplication flagged earlier
+  (mock-interview.services.ts vs ai-chat.services.ts, and the 3x-copy-pasted
+  TechnicalPracticePage.tsx/BehavioralPracticePage.tsx/InterpersonalPracticePage.tsx)
+  gets addressed for the Speaking side specifically: one interview-engine, parameterized
+  by which part of the exam it's in.
+- Frontend: rework SpeakingPracticeModal.tsx into a 3-phase flow -- Part 1 (today's
+  chat UI, but asking from part1Questions), Part 2 (show the cue card, a silent
+  60-second prep countdown with mic disabled, then recording), Part 3 (chat from
+  part3Questions). Reuses useSpeechToText/useTextToSpeech as-is -- no changes
+  needed there.
+
+---
+
+## New Dependencies
+
+- Backend: node-cron + @types/node-cron (scheduler). No new TTS SDK -- openai
+  already exposes audio.speech.create.
+- Frontend: none required -- chart images render as a plain <img> from a hosted URL.
+
+## Known Limitations (stated up front, not discovered later)
+
+- Academic only; General Training deferred.
+- Multi-speaker Listening audio realism depends on Cloudinary concatenation working
+  cleanly -- fallback is single-voice narration per section.
+- Band conversion tables are standard published approximations, not IELTS's exact
+  (undisclosed, per-sitting) tables.
+- Speaking Pronunciation scoring is transcript-based, not acoustic.
+
+## Suggested Build Order
+
+1. Shared schema migration + node-cron scaffold + GenerationLog + Admin Content
+   Pool page skeleton.
+2. Reading, end-to-end.
+3. Listening (reuses Reading's grading engine; adds the TTS pipeline).
+4. Writing (adds chart generation + rubric grading).
+5. Speaking (conversation-engine rework + duplication cleanup).
+
+Each phase is independently shippable and testable before moving to the next -- reorder
+or drop phases as you see fit once you've read this.
+
+## Verification (per phase)
+
+1. npx prisma migrate dev -- confirm migration applies cleanly.
+2. Start both dev servers; as admin, hit "Generate now" for the skill -> confirm
+   GenerationLog gets a SUCCESS row and pool count increments.
+3. As a user, start that skill's test -> confirm assigned content is unseen and that no
+   other skill is affected or gated.
+4. Submit -> confirm objective score/band (Reading/Listening) or AI rubric scores
+   (Writing/Speaking) populate on the session.
+5. Re-trigger the cron manually (or wait for it) -> confirm the pool tops itself back up
+   without admin action.
