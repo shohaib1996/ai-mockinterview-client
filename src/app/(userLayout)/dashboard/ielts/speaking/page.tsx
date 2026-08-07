@@ -1,10 +1,9 @@
 "use client"
 
 import { useState } from "react"
-import {
-  useGetAllSessionsQuery,
-  useCreateSessionMutation,
-} from "@/redux/api/session/sessionApi"
+import { useRouter } from "next/navigation"
+import { useGetAllSessionsQuery } from "@/redux/api/session/sessionApi"
+import { useStartSpeakingTestMutation } from "@/redux/api/speaking-test/speakingTestApi"
 import type { InterviewSession, Meta } from "@/types"
 import {
   CustomTable,
@@ -22,20 +21,14 @@ import {
 } from "@/components/ui/card"
 import { Skeleton } from "@/components/ui/skeleton"
 import { Plus, Eye } from "lucide-react"
-import { format, addMinutes } from "date-fns"
+import { format } from "date-fns"
 import { useAppSelector } from "@/redux/hooks/hooks"
-import {
-  CustomFormDialog,
-  type FormFieldConfig,
-} from "@/components/Common/CustomDialog/CustomFormDialog"
-import * as z from "zod"
-import { SpeakingPracticeModal } from "@/components/UserDashboard/SpeakingPracticeModal"
+import { toast } from "sonner"
 
 const SpeakingSessions = () => {
+  const router = useRouter()
   const [currentPage, setCurrentPage] = useState(1)
   const [currentLimit, setCurrentLimit] = useState(10)
-  const [isDialogOpen, setIsDialogOpen] = useState(false)
-  const [activeSession, setActiveSession] = useState<InterviewSession | null>(null)
   const user = useAppSelector((state) => state.auth.user)
   const sessionType = "IELTS_SPEAKING"
 
@@ -46,7 +39,7 @@ const SpeakingSessions = () => {
     limit: currentLimit,
   })
 
-  const [createSpeakingSession, { isLoading: isCreating }] = useCreateSessionMutation()
+  const [startSpeakingTest, { isLoading: isCreating }] = useStartSpeakingTestMutation()
 
   const speakingData: InterviewSession[] = data?.data || []
   const meta: Meta = data?.meta || { page: 1, limit: 10, total: 0 }
@@ -61,20 +54,19 @@ const SpeakingSessions = () => {
   }
 
   const handleView = (session: InterviewSession) => {
-    setActiveSession(session)
+    router.push(`/dashboard/ielts/speaking/test/${session.id}`)
   }
 
-  const handleCreateSession = async (formData: { duration: string }) => {
-    const now = new Date()
-    const endedAt = addMinutes(now, parseInt(formData.duration, 10))
-
+  const handleCreateSession = async () => {
     try {
-      const res = await createSpeakingSession({ type: sessionType, endedAt: endedAt.toISOString() }).unwrap()
-      setIsDialogOpen(false)
+      const res = await startSpeakingTest({}).unwrap()
       refetch()
-      setActiveSession(res.data)
+      if (res.success) {
+        router.push(`/dashboard/ielts/speaking/test/${res.data.session.id}`)
+      }
     } catch (error) {
-      console.error("Failed to create session:", error)
+      console.error("Failed to start speaking test:", error)
+      toast.error("Failed to start speaking test.")
     }
   }
 
@@ -164,23 +156,6 @@ const SpeakingSessions = () => {
     },
   ]
 
-  const dialogFields: FormFieldConfig[] = [
-    {
-      name: "duration",
-      label: "Session Duration",
-      type: "select",
-      options: [
-        { value: "5", label: "5 minutes" },
-        { value: "10", label: "10 minutes" },
-        { value: "15", label: "15 minutes" },
-        { value: "20", label: "20 minutes" },
-        { value: "25", label: "25 minutes" },
-        { value: "30", label: "30 minutes" },
-      ],
-      validation: z.string(),
-    },
-  ]
-
   if (isLoading) {
     return (
       <div className="p-6 space-y-6">
@@ -222,11 +197,11 @@ const SpeakingSessions = () => {
 
         <Button
           className="flex items-center gap-2"
-          onClick={() => setIsDialogOpen(true)}
+          onClick={handleCreateSession}
           disabled={isCreating}
         >
           <Plus className="h-4 w-4" />
-          {isCreating ? "Creating..." : "Create Speaking Session"}
+          {isCreating ? "Starting..." : "Start A Speaking Test"}
         </Button>
       </div>
 
@@ -242,7 +217,7 @@ const SpeakingSessions = () => {
               data={speakingData}
               actions={actions}
               loading={isLoading}
-              emptyMessage="No speaking sessions found. Create your first session to get started!"
+              emptyMessage="No speaking sessions found. Start your first test to get started!"
             />
 
             {meta.total > 0 && (
@@ -255,23 +230,6 @@ const SpeakingSessions = () => {
           </div>
         </CardContent>
       </Card>
-
-      {/* Create Session Dialog */}
-      <CustomFormDialog
-        isOpen={isDialogOpen}
-        onClose={() => setIsDialogOpen(false)}
-        title="Create New Speaking Session"
-        fields={dialogFields}
-        onSubmit={handleCreateSession}
-        defaultValues={{ duration: "10" }}
-      />
-
-      {activeSession && (
-        <SpeakingPracticeModal
-          session={activeSession}
-          onClose={() => setActiveSession(null)}
-        />
-      )}
     </div>
   )
 }

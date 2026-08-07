@@ -1,5 +1,4 @@
 export enum tagTypes {
-  AiChat = "ai-chat",
   Answer = "answer",
   FileUpload = "file-upload",
   ListeningAudio = "listeningAudio",
@@ -19,10 +18,10 @@ export enum tagTypes {
   ReadingTest = "readingTest",
   ListeningTest = "listeningTest",
   WritingTest = "writingTest",
+  SpeakingTest = "speakingTest",
 }
 
 export const tagTypesList = [
-  tagTypes.AiChat,
   tagTypes.Answer,
   tagTypes.FileUpload,
   tagTypes.ListeningAudio,
@@ -42,4 +41,5 @@ export const tagTypesList = [
   tagTypes.ReadingTest,
   tagTypes.ListeningTest,
   tagTypes.WritingTest,
+  tagTypes.SpeakingTest,
 ]
