@@ -1,5 +1,5 @@
 type IELTSWritingTaskType = 'TASK1' | 'TASK2';
-type Difficulty = 'EASY' | 'MEDIUM' | 'HARD';
+type Difficulty = 'LOW' | 'MEDIUM' | 'HIGH';
 
 export interface IWritingTask {
   id: string;

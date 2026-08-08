@@ -161,11 +161,11 @@ const WritingLession = () => {
       label: 'Difficulty',
       type: 'select',
       options: [
-        { value: 'EASY', label: 'Easy' },
+        { value: 'LOW', label: 'Easy' },
         { value: 'MEDIUM', label: 'Medium' },
-        { value: 'HARD', label: 'Hard' },
+        { value: 'HIGH', label: 'Hard' },
       ],
-      validation: z.enum(['EASY', 'MEDIUM', 'HARD']),
+      validation: z.enum(['LOW', 'MEDIUM', 'HIGH']),
     },
   ];
 

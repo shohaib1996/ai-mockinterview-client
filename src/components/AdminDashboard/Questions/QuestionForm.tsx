@@ -31,7 +31,7 @@ enum SessionTypeEnum {
 enum DifficultyEnum {
   LOW = "LOW",
   MEDIUM = "MEDIUM",
-  HARD = "HARD",
+  HIGH = "HIGH",
 }
 
 const questionFormSchema = z.object({
@@ -50,7 +50,7 @@ const questionFormSchema = z.object({
     ],
     { message: "Session type is required" },
   ),
-  difficulty: z.enum([DifficultyEnum.LOW, DifficultyEnum.MEDIUM, DifficultyEnum.HARD], {
+  difficulty: z.enum([DifficultyEnum.LOW, DifficultyEnum.MEDIUM, DifficultyEnum.HIGH], {
     message: "Difficulty is required",
   }),
   options: z.array(
@@ -185,7 +185,7 @@ export const QuestionForm = ({ defaultValues, onSubmit, isLoading }: QuestionFor
                       <SelectItem key={level} value={level}>
                         <span
                           className={`capitalize ${
-                            level === "HARD"
+                            level === "HIGH"
                               ? "text-red-600 dark:text-red-400"
                               : level === "MEDIUM"
                                 ? "text-yellow-600 dark:text-yellow-400"

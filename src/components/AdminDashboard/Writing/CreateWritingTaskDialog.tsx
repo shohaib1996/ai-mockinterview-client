@@ -45,13 +45,13 @@ const task1Schema = z.object({
   task: z.literal("TASK1"),
   promptText: z.string().min(1, "Prompt is required"),
   imageUrl: z.string().url("Must be a valid URL").optional().or(z.literal("")),
-  difficulty: z.enum(["EASY", "MEDIUM", "HARD"]),
+  difficulty: z.enum(["LOW", "MEDIUM", "HIGH"]),
 });
 
 const task2Schema = z.object({
   task: z.literal("TASK2"),
   promptText: z.string().min(1, "Prompt is required"),
-  difficulty: z.enum(["EASY", "MEDIUM", "HARD"]),
+  difficulty: z.enum(["LOW", "MEDIUM", "HIGH"]),
 });
 
 const formSchema = z.discriminatedUnion("task", [task1Schema, task2Schema]);
@@ -212,9 +212,9 @@ export const CreateWritingTaskDialog = ({
                       </SelectTrigger>
                     </FormControl>
                     <SelectContent>
-                      <SelectItem value="EASY">Easy</SelectItem>
+                      <SelectItem value="LOW">Easy</SelectItem>
                       <SelectItem value="MEDIUM">Medium</SelectItem>
-                      <SelectItem value="HARD">Hard</SelectItem>
+                      <SelectItem value="HIGH">Hard</SelectItem>
                     </SelectContent>
                   </Select>
                   <FormMessage />
