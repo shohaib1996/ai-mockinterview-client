@@ -85,7 +85,7 @@ const ContentPoolPage = () => {
   const handleDeleteConfirm = async () => {
     if (!deleteTarget) return;
     try {
-      await deleteSkillTest({ skill: deleteTarget.skill, id: deleteTarget.id }).unwrap();
+      await deleteSkillTest({ skill: deleteTarget.skill, id: deleteTarget.id, page, limit }).unwrap();
       toast.success("Test deleted");
     } catch (error: any) {
       console.error("Failed to delete test:", error);

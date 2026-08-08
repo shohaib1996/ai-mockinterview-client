@@ -16,7 +16,7 @@ const contentPoolApi = baseApi.injectEndpoints({
         method: "POST",
         data: { skill, difficulty },
       }),
-      invalidatesTags: [tagTypes.AdminDashboard],
+      invalidatesTags: [tagTypes.AdminDashboard, tagTypes.ContentPoolTests],
     }),
     getSkillTests: builder.query({
       query: ({ skill, page, limit, difficulty }) => ({
@@ -24,14 +24,31 @@ const contentPoolApi = baseApi.injectEndpoints({
         method: "GET",
         params: { page, limit, difficulty },
       }),
-      providesTags: [tagTypes.AdminDashboard],
+      providesTags: [tagTypes.ContentPoolTests],
     }),
     deleteSkillTest: builder.mutation({
       query: ({ skill, id }) => ({
         url: `/content-pool/${skill}/tests/${id}`,
         method: "DELETE",
       }),
+      // Counts card needs a refetch, but the tests list is patched
+      // optimistically below so deleting a row doesn't flash the whole
+      // table back to a loading state.
       invalidatesTags: [tagTypes.AdminDashboard],
+      async onQueryStarted({ skill, id, page, limit }, { dispatch, queryFulfilled }) {
+        const patchResult = dispatch(
+          contentPoolApi.util.updateQueryData("getSkillTests", { skill, page, limit }, (draft: any) => {
+            if (!draft?.data) return;
+            draft.data = draft.data.filter((t: { id: string }) => t.id !== id);
+            if (draft.meta) draft.meta.total = Math.max(0, draft.meta.total - 1);
+          })
+        );
+        try {
+          await queryFulfilled;
+        } catch {
+          patchResult.undo();
+        }
+      },
     }),
   }),
 });
