@@ -28,6 +28,7 @@ import {
   MessageCircle,
   Code,
   ClipboardCheck,
+  Database,
 } from "lucide-react";
 import {
   Sidebar,
@@ -83,6 +84,7 @@ const iconMap: Record<string, React.ComponentType<any>> = {
   MessageCircle: MessageCircle,
   Code: Code,
   ClipboardCheck: ClipboardCheck,
+  Database: Database,
 };
 
 type MenuItem = {

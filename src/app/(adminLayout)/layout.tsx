@@ -27,6 +27,7 @@ const AdminLayout = ({ children }: { children: React.ReactNode }) => {
       icon: "HelpCircle",
       url: "/dashboard/admin/questions",
     },
+    { title: "Content Pool", url: "/dashboard/admin/content-pool", icon: "Database" },
     { title: "Quiz", url: "/dashboard/admin/quiz", icon: "Brain" },
     { title: "All User", url: "/dashboard/admin/users", icon: "Users" },
   ]
