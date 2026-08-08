@@ -13,13 +13,8 @@ const AdminLayout = ({ children }: { children: React.ReactNode }) => {
       title: "IELTS Sessions",
       icon: "GraduationCap",
       children: [
-        {
-          title: "Create listening lesson",
-          url: "/dashboard/admin/ielts/listening",
-          icon: "Headphones",
-        },
-        { title: "Create reading lesson", url: "/dashboard/admin/ielts/reading", icon: "BookOpen" },
         { title: "Create writing lesson", url: "/dashboard/admin/ielts/writing", icon: "PenTool" },
+        { title: "Create speaking test", url: "/dashboard/admin/ielts/speaking", icon: "Mic" },
       ],
     },
     {
