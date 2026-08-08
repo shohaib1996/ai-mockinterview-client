@@ -253,6 +253,19 @@ const ReadingTestPage = ({ sessionId }: ReadingTestPageProps) => {
                               </Button>
                             ))}
                           </div>
+                        ) : question.type === "YES_NO_NOT_GIVEN" ? (
+                          <div className="grid grid-cols-3 gap-2">
+                            {["Yes", "No", "Not Given"].map((option) => (
+                              <Button
+                                key={option}
+                                type="button"
+                                variant={answers[question.id] === option ? "default" : "outline"}
+                                onClick={() => handleAnswerChange(question.id, option)}
+                              >
+                                {option}
+                              </Button>
+                            ))}
+                          </div>
                         ) : (
                           <Input
                             placeholder="Type your answer"

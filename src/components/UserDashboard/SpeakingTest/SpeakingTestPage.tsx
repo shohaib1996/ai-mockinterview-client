@@ -20,7 +20,7 @@ import { useSpeechToText } from "@/hooks/useSpeechToText";
 import { useTextToSpeech } from "@/hooks/useTextToSpeech";
 import { ChatBubble } from "@/components/UserDashboard/ChatBubble";
 
-type Phase = "part1" | "part2-prep" | "part2-speaking" | "part3" | "analyzing" | "done";
+type Phase = "part1" | "part2-prep" | "part2-speaking" | "part2-followup" | "part3" | "analyzing" | "done";
 
 interface Message {
   role: string;
@@ -71,12 +71,13 @@ const SpeakingTestPage = ({ sessionId }: SpeakingTestPageProps) => {
 
   const [phase, setPhase] = useState<Phase>("part1");
   const [part1Conversation, setPart1Conversation] = useState<Message[]>([]);
+  const [part2FollowUpConversation, setPart2FollowUpConversation] = useState<Message[]>([]);
   const [part3Conversation, setPart3Conversation] = useState<Message[]>([]);
   const [isAiResponding, setIsAiResponding] = useState(false);
   const [prepTimeLeft, setPrepTimeLeft] = useState(PREP_SECONDS);
   const [speakTimeLeft, setSpeakTimeLeft] = useState(PART2_SPEAKING_SECONDS);
   const [result, setResult] = useState<AnalyzeResult | null>(null);
-  const startedRef = useRef({ part1: false, part3: false });
+  const startedRef = useRef({ part1: false, part2Followup: false, part3: false });
   const part2TranscriptRef = useRef("");
 
   const scrollAreaRef = useRef<HTMLDivElement>(null);
@@ -98,6 +99,28 @@ const SpeakingTestPage = ({ sessionId }: SpeakingTestPageProps) => {
       speak(res.data.reply);
       if (res.data.isPartComplete) {
         setTimeout(() => setPhase("part2-prep"), 1500);
+      }
+    } catch (error) {
+      console.error("Failed to get examiner response:", error);
+      toast.error("Something went wrong. Please try again.");
+    } finally {
+      setIsAiResponding(false);
+    }
+  };
+
+  const handlePart2FollowUpAnswer = async (transcript: string) => {
+    if (!transcript.trim()) return;
+    const userMessage: Message = { role: "user", content: transcript };
+    const conversationForApi = [...part2FollowUpConversation, userMessage];
+    setPart2FollowUpConversation((prev) => [...prev, userMessage]);
+    setIsAiResponding(true);
+    try {
+      const res = await chatSpeakingTest({ sessionId, part: 2, conversation: conversationForApi }).unwrap();
+      const aiMessage: Message = { role: "assistant", content: res.data.reply };
+      setPart2FollowUpConversation((prev) => [...prev, aiMessage]);
+      speak(res.data.reply);
+      if (res.data.isPartComplete) {
+        setTimeout(() => setPhase("part3"), 1500);
       }
     } catch (error) {
       console.error("Failed to get examiner response:", error);
@@ -132,6 +155,7 @@ const SpeakingTestPage = ({ sessionId }: SpeakingTestPageProps) => {
   const handleTranscript = (transcript: string) => {
     if (phaseRef.current === "part1") handlePart1Answer(transcript);
     else if (phaseRef.current === "part2-speaking") part2TranscriptRef.current += ` ${transcript}`;
+    else if (phaseRef.current === "part2-followup") handlePart2FollowUpAnswer(transcript);
     else if (phaseRef.current === "part3") handlePart3Answer(transcript);
   };
 
@@ -154,6 +178,24 @@ const SpeakingTestPage = ({ sessionId }: SpeakingTestPageProps) => {
     })();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [speakingTest, isReviewMode]);
+
+  // Kick off the Part 2 rounding-off follow-up questions once the long turn ends.
+  useEffect(() => {
+    if (phase !== "part2-followup" || isReviewMode || startedRef.current.part2Followup) return;
+    startedRef.current.part2Followup = true;
+    (async () => {
+      setIsAiResponding(true);
+      try {
+        const res = await chatSpeakingTest({ sessionId, part: 2, conversation: [] }).unwrap();
+        const aiMessage: Message = { role: "assistant", content: res.data.reply };
+        setPart2FollowUpConversation([aiMessage]);
+        speak(res.data.reply);
+      } finally {
+        setIsAiResponding(false);
+      }
+    })();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [phase, isReviewMode]);
 
   // Kick off Part 3 the same way once we reach it.
   useEffect(() => {
@@ -197,7 +239,7 @@ const SpeakingTestPage = ({ sessionId }: SpeakingTestPageProps) => {
     } catch (error) {
       console.error("Failed to submit part 2:", error);
     }
-    setPhase("part3");
+    setPhase("part2-followup");
   };
   const finishPart2Ref = useRef(finishPart2);
   useEffect(() => {
@@ -244,7 +286,7 @@ const SpeakingTestPage = ({ sessionId }: SpeakingTestPageProps) => {
     if (scrollAreaRef.current) {
       scrollAreaRef.current.scrollTo({ top: scrollAreaRef.current.scrollHeight, behavior: "smooth" });
     }
-  }, [part1Conversation, part3Conversation]);
+  }, [part1Conversation, part2FollowUpConversation, part3Conversation]);
 
   if (!speakingTest) {
     return (
@@ -434,7 +476,19 @@ const SpeakingTestPage = ({ sessionId }: SpeakingTestPageProps) => {
     );
   }
 
-  const conversation = phase === "part1" ? part1Conversation : part3Conversation;
+  const conversation =
+    phase === "part1"
+      ? part1Conversation
+      : phase === "part2-followup"
+        ? part2FollowUpConversation
+        : part3Conversation;
+
+  const phaseLabel =
+    phase === "part1"
+      ? "Part 1: Introduction and Interview"
+      : phase === "part2-followup"
+        ? "Part 2: Rounding-off Questions"
+        : "Part 3: Two-Way Discussion";
 
   return (
     <Card className="min-h-screen rounded-none border-0 flex flex-col">
@@ -442,7 +496,7 @@ const SpeakingTestPage = ({ sessionId }: SpeakingTestPageProps) => {
         <div>
           <CardTitle>IELTS Speaking Test</CardTitle>
           <Badge variant="secondary" className="mt-1">
-            {phase === "part1" ? "Part 1: Introduction and Interview" : "Part 3: Two-Way Discussion"}
+            {phaseLabel}
           </Badge>
         </div>
         <Clock className="w-5 h-5 text-muted-foreground" />

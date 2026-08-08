@@ -7,7 +7,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
-import { Clock, Send, CheckCircle2, ChevronRight } from "lucide-react";
+import { Clock, Send, CheckCircle2, ChevronRight, Play, Volume2 } from "lucide-react";
 import {
   useGetListeningTestQuery,
   useSubmitListeningTestMutation,
@@ -16,7 +16,42 @@ import { useGetAllAnswersQuery } from "@/redux/api/answer/answerApi";
 import type { IQuestion } from "@/types";
 import { CheckCircle, XCircle } from "lucide-react";
 
-const TEST_DURATION_SECONDS = 40 * 60; // 30 min listening + review time
+const TEST_DURATION_SECONDS = 35 * 60; // ~30 min listening + a short review buffer
+
+// Real IELTS Listening plays each recording once, with no rewinding or scrubbing.
+// `key`-ing this per section (see usage below) resets its state automatically
+// whenever the section changes, since React remounts on a key change.
+const SinglePlayAudio = ({ src }: { src: string }) => {
+  const audioRef = useRef<HTMLAudioElement>(null);
+  const [status, setStatus] = useState<"ready" | "playing" | "ended">("ready");
+
+  const handlePlay = () => {
+    audioRef.current?.play();
+    setStatus("playing");
+  };
+
+  return (
+    <div className="flex items-center gap-3">
+      {/* eslint-disable-next-line jsx-a11y/media-has-caption */}
+      <audio ref={audioRef} src={src} onEnded={() => setStatus("ended")} />
+      {status === "ready" && (
+        <Button type="button" onClick={handlePlay} className="gap-2">
+          <Play className="w-4 h-4" /> Play Audio (plays once, as in the real test)
+        </Button>
+      )}
+      {status === "playing" && (
+        <div className="flex items-center gap-2 text-primary font-medium">
+          <Volume2 className="w-4 h-4 animate-pulse" /> Playing...
+        </div>
+      )}
+      {status === "ended" && (
+        <div className="flex items-center gap-2 text-muted-foreground text-sm">
+          <CheckCircle2 className="w-4 h-4" /> Audio finished — answer from memory, just like the real test
+        </div>
+      )}
+    </div>
+  );
+};
 
 interface ListeningTestPageProps {
   sessionId: string;
@@ -244,9 +279,7 @@ const ListeningTestPage = ({ sessionId }: ListeningTestPageProps) => {
 
             <Card>
               <CardContent className="pt-6">
-                <audio controls src={currentSection.audioUrl} className="w-full">
-                  Your browser does not support the audio element.
-                </audio>
+                <SinglePlayAudio key={currentSection.order} src={currentSection.audioUrl} />
               </CardContent>
             </Card>
 

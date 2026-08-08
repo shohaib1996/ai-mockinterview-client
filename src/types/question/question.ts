@@ -2,6 +2,7 @@ export type QuestionType =
   | "MCQ"
   | "OPEN_ENDED"
   | "TRUE_FALSE_NOT_GIVEN"
+  | "YES_NO_NOT_GIVEN"
   | "MATCHING"
   | "COMPLETION"
   | "SHORT_ANSWER";
