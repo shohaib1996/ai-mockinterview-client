@@ -41,7 +41,7 @@ const SKILLS: { skill: Skill; label: string; icon: React.ComponentType<{ classNa
 const DIFFICULTIES: Difficulty[] = ["LOW", "MEDIUM", "HIGH"];
 
 const ContentPoolPage = () => {
-  const { data, isLoading, refetch } = useGetPoolStatusQuery({});
+  const { data, isLoading } = useGetPoolStatusQuery({});
   const [generatePoolContent] = useGeneratePoolContentMutation();
   const [selectedDifficulty, setSelectedDifficulty] = useState<Record<Skill, Difficulty>>({
     IELTS_READING: "MEDIUM",
@@ -80,7 +80,6 @@ const ContentPoolPage = () => {
           ? `Generated ${res.data.generated} new ${selectedDifficulty[skill].toLowerCase()} test(s)`
           : "Pool is already sufficient at this difficulty"
       );
-      refetch();
     } catch (error) {
       console.error("Failed to trigger generation:", error);
       toast.error("Failed to trigger generation.");
