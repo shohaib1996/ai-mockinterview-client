@@ -184,6 +184,21 @@ const ReadingTestPage = ({ sessionId }: ReadingTestPageProps) => {
                   <CardContent className="prose dark:prose-invert max-w-none whitespace-pre-line">
                     {passage.content}
                   </CardContent>
+                  {(() => {
+                    const diagramUrl = passage.questions.find(
+                      (q: IQuestion) => q.type === "DIAGRAM_LABEL" && q.imageUrl
+                    )?.imageUrl;
+                    return diagramUrl ? (
+                      <CardContent className="border-t pt-4">
+                        {/* eslint-disable-next-line @next/next/no-img-element */}
+                        <img
+                          src={diagramUrl}
+                          alt="Diagram to label"
+                          className="w-full rounded-md border border-border bg-white"
+                        />
+                      </CardContent>
+                    ) : null;
+                  })()}
                 </Card>
 
                 <div className="space-y-4">

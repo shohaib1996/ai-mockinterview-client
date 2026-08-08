@@ -5,7 +5,8 @@ export type QuestionType =
   | "YES_NO_NOT_GIVEN"
   | "MATCHING"
   | "COMPLETION"
-  | "SHORT_ANSWER";
+  | "SHORT_ANSWER"
+  | "DIAGRAM_LABEL";
 
 export type SessionTypeQ =
   | "IELTS_LISTENING"
@@ -27,6 +28,7 @@ export interface IQuestion {
   options?: string[];
   correctAnswer?: string | string[];
   acceptableAnswers?: string[];
+  imageUrl?: string | null;
   difficulty: Difficulty;
   aiGenerated: boolean;
   createdAt: string;
