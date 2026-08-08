@@ -40,6 +40,7 @@ interface AnalyzeResult {
 
 const PREP_SECONDS = 60;
 const PART2_SPEAKING_SECONDS = 120;
+const PART_TIME_LIMIT_SECONDS = 5 * 60; // Parts 1 and 3 each run ~4-5 minutes in the real test
 
 const formatTime = (seconds: number) => {
   const m = Math.floor(seconds / 60);
@@ -76,6 +77,7 @@ const SpeakingTestPage = ({ sessionId }: SpeakingTestPageProps) => {
   const [isAiResponding, setIsAiResponding] = useState(false);
   const [prepTimeLeft, setPrepTimeLeft] = useState(PREP_SECONDS);
   const [speakTimeLeft, setSpeakTimeLeft] = useState(PART2_SPEAKING_SECONDS);
+  const [partTimeLeft, setPartTimeLeft] = useState(PART_TIME_LIMIT_SECONDS);
   const [result, setResult] = useState<AnalyzeResult | null>(null);
   const startedRef = useRef({ part1: false, part2Followup: false, part3: false });
   const part2TranscriptRef = useRef("");
@@ -214,6 +216,29 @@ const SpeakingTestPage = ({ sessionId }: SpeakingTestPageProps) => {
     })();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [phase, isReviewMode]);
+
+  // Part 1 and Part 3 each run ~4-5 minutes in the real test. This is a safety
+  // cap, not the primary way forward — normally the part ends when all
+  // pre-generated questions have been asked and answered.
+  useEffect(() => {
+    if (phase !== "part1" && phase !== "part3") return;
+    setPartTimeLeft(PART_TIME_LIMIT_SECONDS);
+    const interval = setInterval(() => {
+      setPartTimeLeft((prev) => {
+        if (prev <= 1) {
+          clearInterval(interval);
+          setPhase((current) => {
+            if (current === "part1") return "part2-prep";
+            if (current === "part3") return "analyzing";
+            return current;
+          });
+          return 0;
+        }
+        return prev - 1;
+      });
+    }, 1000);
+    return () => clearInterval(interval);
+  }, [phase]);
 
   // Part 2 prep countdown - silent, no mic active.
   useEffect(() => {
@@ -499,7 +524,16 @@ const SpeakingTestPage = ({ sessionId }: SpeakingTestPageProps) => {
             {phaseLabel}
           </Badge>
         </div>
-        <Clock className="w-5 h-5 text-muted-foreground" />
+        {phase === "part1" || phase === "part3" ? (
+          <div className="flex items-center gap-2 bg-muted px-4 py-2 rounded-lg">
+            <Clock className="w-4 h-4 text-primary" />
+            <span className="font-mono text-lg font-semibold text-foreground">
+              {formatTime(partTimeLeft)}
+            </span>
+          </div>
+        ) : (
+          <Clock className="w-5 h-5 text-muted-foreground" />
+        )}
       </CardHeader>
 
       <CardContent className="flex-grow flex flex-col p-6">
