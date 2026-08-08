@@ -45,6 +45,8 @@ const WritingTestPage = ({ sessionId }: WritingTestPageProps) => {
 
   const task1 = data?.data?.task1;
   const task2 = data?.data?.task2;
+  const session = data?.data?.session;
+  const isReviewMode = !!session?.endedAt;
 
   const handleSubmit = async () => {
     try {
@@ -65,7 +67,7 @@ const WritingTestPage = ({ sessionId }: WritingTestPageProps) => {
   });
 
   useEffect(() => {
-    if (result || !task1 || !task2) return;
+    if (result || !task1 || !task2 || isReviewMode) return;
     const interval = setInterval(() => {
       setTimeLeft((prev) => {
         if (prev <= 1) {
@@ -77,7 +79,7 @@ const WritingTestPage = ({ sessionId }: WritingTestPageProps) => {
       });
     }, 1000);
     return () => clearInterval(interval);
-  }, [result, task1, task2]);
+  }, [result, task1, task2, isReviewMode]);
 
   if (isLoading) {
     return (
@@ -121,6 +123,78 @@ const WritingTestPage = ({ sessionId }: WritingTestPageProps) => {
             </Button>
           </CardContent>
         </Card>
+      </div>
+    );
+  }
+
+  if (isReviewMode) {
+    return (
+      <div className="min-h-screen bg-background">
+        <header className="sticky top-0 z-50 bg-card/80 backdrop-blur-sm border-b border-border">
+          <div className="container mx-auto px-4 py-4 flex justify-between items-center">
+            <h1 className="text-xl font-serif font-bold text-foreground">
+              IELTS Academic Writing Test
+            </h1>
+            <Badge variant="secondary" className="text-sm">
+              Review — Band {session?.score?.toFixed(1) ?? "N/A"}
+            </Badge>
+          </div>
+        </header>
+
+        <main className="container mx-auto px-4 py-8 max-w-4xl space-y-10">
+          {[task1, task2].map((task, idx) =>
+            task ? (
+              <section key={idx} className="space-y-4">
+                <div className="flex items-center justify-between">
+                  <h2 className="text-lg font-serif font-bold">Task {idx + 1}</h2>
+                  <Badge variant="secondary">Band {task.score?.toFixed(1) ?? "N/A"}</Badge>
+                </div>
+                <Card>
+                  <CardContent className="pt-6 space-y-4">
+                    <p className="text-foreground">{task.promptText}</p>
+                    {task.imageUrl && (
+                      // eslint-disable-next-line @next/next/no-img-element
+                      <img
+                        src={task.imageUrl}
+                        alt={`Task ${idx + 1} chart`}
+                        className="rounded-md border border-border max-w-full"
+                      />
+                    )}
+                  </CardContent>
+                </Card>
+                <Card>
+                  <CardContent className="pt-6 whitespace-pre-line text-sm">
+                    {task.submittedText || "No response submitted."}
+                  </CardContent>
+                </Card>
+                <p className="text-sm text-muted-foreground text-right">{task.wordCount ?? 0} words</p>
+                {task.criteriaScores && (
+                  <div className="grid grid-cols-2 md:grid-cols-4 gap-3 text-sm">
+                    {Object.entries(task.criteriaScores as Record<string, number>).map(
+                      ([key, value]) => (
+                        <div key={key} className="p-3 bg-muted rounded-lg">
+                          <p className="text-muted-foreground capitalize">
+                            {key.replace(/([A-Z])/g, " $1")}
+                          </p>
+                          <p className="text-xl font-semibold">{value}</p>
+                        </div>
+                      )
+                    )}
+                  </div>
+                )}
+                {task.feedback && (
+                  <p className="text-sm text-muted-foreground">{task.feedback}</p>
+                )}
+              </section>
+            ) : null
+          )}
+
+          <div className="flex justify-center pt-4">
+            <Button size="lg" onClick={() => router.push("/dashboard/ielts/writing")} className="px-10 py-6 text-lg">
+              Back to Writing Practice
+            </Button>
+          </div>
+        </main>
       </div>
     );
   }

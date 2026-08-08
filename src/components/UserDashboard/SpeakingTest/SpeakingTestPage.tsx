@@ -15,6 +15,7 @@ import {
   useSubmitSpeakingPart2Mutation,
   useAnalyzeSpeakingTestMutation,
 } from "@/redux/api/speaking-test/speakingTestApi";
+import { useGetSingleSessionQuery } from "@/redux/api/session/sessionApi";
 import { useSpeechToText } from "@/hooks/useSpeechToText";
 import { useTextToSpeech } from "@/hooks/useTextToSpeech";
 import { ChatBubble } from "@/components/UserDashboard/ChatBubble";
@@ -59,6 +60,14 @@ const SpeakingTestPage = ({ sessionId }: SpeakingTestPageProps) => {
   const { isSpeaking, speak } = useTextToSpeech();
 
   const speakingTest = data?.data?.speakingTest;
+  const session = data?.data?.session;
+  const isReviewMode = !!session?.endedAt;
+
+  const { data: fullSessionData } = useGetSingleSessionQuery(sessionId, { skip: !isReviewMode });
+  const reviewConversation = fullSessionData?.data?.aiChatConversations?.[0]?.conversation ?? [];
+  const reviewFeedback = fullSessionData?.data?.feedback as
+    | { criteriaScores: AnalyzeResult["criteriaScores"]; feedback: string }
+    | undefined;
 
   const [phase, setPhase] = useState<Phase>("part1");
   const [part1Conversation, setPart1Conversation] = useState<Message[]>([]);
@@ -130,7 +139,7 @@ const SpeakingTestPage = ({ sessionId }: SpeakingTestPageProps) => {
 
   // Kick off Part 1 with the examiner's opening question once the test loads.
   useEffect(() => {
-    if (!speakingTest || startedRef.current.part1) return;
+    if (!speakingTest || isReviewMode || startedRef.current.part1) return;
     startedRef.current.part1 = true;
     (async () => {
       setIsAiResponding(true);
@@ -144,11 +153,11 @@ const SpeakingTestPage = ({ sessionId }: SpeakingTestPageProps) => {
       }
     })();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [speakingTest]);
+  }, [speakingTest, isReviewMode]);
 
   // Kick off Part 3 the same way once we reach it.
   useEffect(() => {
-    if (phase !== "part3" || startedRef.current.part3) return;
+    if (phase !== "part3" || isReviewMode || startedRef.current.part3) return;
     startedRef.current.part3 = true;
     (async () => {
       setIsAiResponding(true);
@@ -162,7 +171,7 @@ const SpeakingTestPage = ({ sessionId }: SpeakingTestPageProps) => {
       }
     })();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [phase]);
+  }, [phase, isReviewMode]);
 
   // Part 2 prep countdown - silent, no mic active.
   useEffect(() => {
@@ -241,6 +250,90 @@ const SpeakingTestPage = ({ sessionId }: SpeakingTestPageProps) => {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary" />
+      </div>
+    );
+  }
+
+  if (isReviewMode) {
+    const partLabel = (part: number) =>
+      part === 1 ? "Part 1: Introduction" : part === 2 ? "Part 2: Long Turn" : "Part 3: Discussion";
+
+    return (
+      <div className="min-h-screen bg-background">
+        <header className="sticky top-0 z-50 bg-card/80 backdrop-blur-sm border-b border-border">
+          <div className="container mx-auto px-4 py-4 flex justify-between items-center">
+            <h1 className="text-xl font-serif font-bold text-foreground">IELTS Speaking Test</h1>
+            <Badge variant="secondary" className="text-sm">
+              Review — Band {session?.score?.toFixed(1) ?? "N/A"}
+            </Badge>
+          </div>
+        </header>
+
+        <main className="container mx-auto px-4 py-8 max-w-3xl space-y-8">
+          {reviewFeedback && (
+            <Card>
+              <CardHeader>
+                <CardTitle>Results</CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div className="grid grid-cols-2 gap-3 text-sm">
+                  <div className="p-3 bg-muted rounded-lg">
+                    <p className="text-muted-foreground">Fluency &amp; Coherence</p>
+                    <p className="text-xl font-semibold">
+                      {reviewFeedback.criteriaScores.fluencyCoherence}
+                    </p>
+                  </div>
+                  <div className="p-3 bg-muted rounded-lg">
+                    <p className="text-muted-foreground">Lexical Resource</p>
+                    <p className="text-xl font-semibold">
+                      {reviewFeedback.criteriaScores.lexicalResource}
+                    </p>
+                  </div>
+                  <div className="p-3 bg-muted rounded-lg">
+                    <p className="text-muted-foreground">Grammatical Range</p>
+                    <p className="text-xl font-semibold">
+                      {reviewFeedback.criteriaScores.grammaticalRange}
+                    </p>
+                  </div>
+                  <div className="p-3 bg-muted rounded-lg">
+                    <p className="text-muted-foreground">Pronunciation*</p>
+                    <p className="text-xl font-semibold">
+                      {reviewFeedback.criteriaScores.pronunciation}
+                    </p>
+                  </div>
+                </div>
+                <p className="text-xs text-muted-foreground">
+                  *Pronunciation is estimated from the transcript only, not from audio analysis.
+                </p>
+                <p className="text-sm text-muted-foreground">{reviewFeedback.feedback}</p>
+              </CardContent>
+            </Card>
+          )}
+
+          <Card>
+            <CardHeader>
+              <CardTitle>Transcript</CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              {reviewConversation.map((msg: any, index: number) => (
+                <div key={index} className="space-y-1">
+                  {(index === 0 || reviewConversation[index - 1].part !== msg.part) && (
+                    <Badge variant="outline" className="text-xs">
+                      {partLabel(msg.part)}
+                    </Badge>
+                  )}
+                  <ChatBubble message={msg} />
+                </div>
+              ))}
+            </CardContent>
+          </Card>
+
+          <div className="flex justify-center">
+            <Button size="lg" onClick={() => router.push("/dashboard/ielts/speaking")} className="px-10 py-6 text-lg">
+              Back to Speaking Practice
+            </Button>
+          </div>
+        </main>
       </div>
     );
   }

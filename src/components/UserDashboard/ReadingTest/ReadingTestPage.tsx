@@ -13,7 +13,9 @@ import {
   useGetReadingTestQuery,
   useSubmitReadingTestMutation,
 } from "@/redux/api/reading-test/readingTestApi";
+import { useGetAllAnswersQuery } from "@/redux/api/answer/answerApi";
 import type { IQuestion } from "@/types";
+import { CheckCircle, XCircle } from "lucide-react";
 
 const TEST_DURATION_SECONDS = 60 * 60; // real Academic Reading test is 60 minutes
 
@@ -42,7 +44,21 @@ const ReadingTestPage = ({ sessionId }: ReadingTestPageProps) => {
   } | null>(null);
 
   const readingTest = data?.data?.readingTest;
+  const session = data?.data?.session;
+  const isReviewMode = !!session?.endedAt;
   const passages = useMemo(() => readingTest?.passages ?? [], [readingTest]);
+
+  const { data: answersData } = useGetAllAnswersQuery(
+    { sessionId },
+    { skip: !isReviewMode }
+  );
+  const answersMap = useMemo(() => {
+    const map: Record<string, { answerText: string; isCorrect: boolean }> = {};
+    (answersData?.data ?? []).forEach((a: any) => {
+      map[a.questionId] = { answerText: a.answerText, isCorrect: a.isCorrect };
+    });
+    return map;
+  }, [answersData]);
 
   const handleSubmit = async () => {
     const payload = Object.entries(answers).map(([questionId, answerText]) => ({
@@ -68,7 +84,7 @@ const ReadingTestPage = ({ sessionId }: ReadingTestPageProps) => {
   });
 
   useEffect(() => {
-    if (result || !readingTest) return;
+    if (result || !readingTest || isReviewMode) return;
     const interval = setInterval(() => {
       setTimeLeft((prev) => {
         if (prev <= 1) {
@@ -80,7 +96,7 @@ const ReadingTestPage = ({ sessionId }: ReadingTestPageProps) => {
       });
     }, 1000);
     return () => clearInterval(interval);
-  }, [result, readingTest]);
+  }, [result, readingTest, isReviewMode]);
 
   const handleAnswerChange = (questionId: string, value: string) => {
     setAnswers((prev) => ({ ...prev, [questionId]: value }));
@@ -132,15 +148,19 @@ const ReadingTestPage = ({ sessionId }: ReadingTestPageProps) => {
               {readingTest?.title ?? "IELTS Academic Reading Test"}
             </h1>
             <p className="text-sm text-muted-foreground">
-              {answeredCount}/{totalQuestions} questions answered
+              {isReviewMode
+                ? `Review — Band ${session?.score?.toFixed(1) ?? "N/A"}`
+                : `${answeredCount}/${totalQuestions} questions answered`}
             </p>
           </div>
-          <div className="flex items-center gap-2 bg-muted px-4 py-2 rounded-lg">
-            <Clock className="w-4 h-4 text-primary" />
-            <span className="font-mono text-lg font-semibold text-foreground">
-              {formatTime(timeLeft)}
-            </span>
-          </div>
+          {!isReviewMode && (
+            <div className="flex items-center gap-2 bg-muted px-4 py-2 rounded-lg">
+              <Clock className="w-4 h-4 text-primary" />
+              <span className="font-mono text-lg font-semibold text-foreground">
+                {formatTime(timeLeft)}
+              </span>
+            </div>
+          )}
         </div>
       </header>
 
@@ -182,7 +202,31 @@ const ReadingTestPage = ({ sessionId }: ReadingTestPageProps) => {
                           {question.text}
                         </p>
 
-                        {question.type === "MCQ" || question.type === "MATCHING" ? (
+                        {isReviewMode ? (
+                          <div className="space-y-2 text-sm">
+                            <div className="flex items-center gap-2">
+                              {answersMap[question.id]?.isCorrect ? (
+                                <CheckCircle className="h-4 w-4 text-green-600 shrink-0" />
+                              ) : (
+                                <XCircle className="h-4 w-4 text-red-600 shrink-0" />
+                              )}
+                              <span className="text-muted-foreground">
+                                Your answer:{" "}
+                                <span className="font-medium text-foreground">
+                                  {answersMap[question.id]?.answerText || "No answer"}
+                                </span>
+                              </span>
+                            </div>
+                            {!answersMap[question.id]?.isCorrect && (
+                              <p className="text-muted-foreground">
+                                Correct answer:{" "}
+                                <span className="font-medium text-green-600">
+                                  {question.correctAnswer}
+                                </span>
+                              </p>
+                            )}
+                          </div>
+                        ) : question.type === "MCQ" || question.type === "MATCHING" ? (
                           <div className="grid gap-2">
                             {question.options?.map((option, optionIndex) => (
                               <Button
@@ -226,10 +270,16 @@ const ReadingTestPage = ({ sessionId }: ReadingTestPageProps) => {
         </Tabs>
 
         <div className="flex justify-center mt-10">
-          <Button size="lg" onClick={handleSubmit} disabled={isSubmitting} className="px-10 py-6 text-lg">
-            {isSubmitting ? "Submitting..." : "Submit Reading Test"}
-            <Send className="w-4 h-4 ml-2" />
-          </Button>
+          {isReviewMode ? (
+            <Button size="lg" onClick={() => router.push("/dashboard/ielts/reading")} className="px-10 py-6 text-lg">
+              Back to Reading Practice
+            </Button>
+          ) : (
+            <Button size="lg" onClick={handleSubmit} disabled={isSubmitting} className="px-10 py-6 text-lg">
+              {isSubmitting ? "Submitting..." : "Submit Reading Test"}
+              <Send className="w-4 h-4 ml-2" />
+            </Button>
+          )}
         </div>
       </main>
     </div>

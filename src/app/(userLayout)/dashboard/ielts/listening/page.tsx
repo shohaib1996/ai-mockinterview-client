@@ -52,7 +52,7 @@ const ListeningSessions = () => {
   }
 
   const handleViewSession = (sessionId: string) => {
-    router.push(`/dashboard/ielts/listening/${sessionId}`);
+    router.push(`/dashboard/ielts/listening/test/${sessionId}`);
   };
 
   const router = useRouter(); // Add useRouter hook

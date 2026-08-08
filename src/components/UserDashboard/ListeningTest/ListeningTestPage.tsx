@@ -12,7 +12,9 @@ import {
   useGetListeningTestQuery,
   useSubmitListeningTestMutation,
 } from "@/redux/api/listening-test/listeningTestApi";
+import { useGetAllAnswersQuery } from "@/redux/api/answer/answerApi";
 import type { IQuestion } from "@/types";
+import { CheckCircle, XCircle } from "lucide-react";
 
 const TEST_DURATION_SECONDS = 40 * 60; // 30 min listening + review time
 
@@ -41,9 +43,23 @@ const ListeningTestPage = ({ sessionId }: ListeningTestPageProps) => {
   } | null>(null);
 
   const listeningTest = data?.data?.listeningTest;
+  const session = data?.data?.session;
+  const isReviewMode = !!session?.endedAt;
   const sections = useMemo(() => listeningTest?.sections ?? [], [listeningTest]);
   const currentSection = sections[sectionIndex];
   const isLastSection = sectionIndex === sections.length - 1;
+
+  const { data: answersData } = useGetAllAnswersQuery(
+    { sessionId },
+    { skip: !isReviewMode }
+  );
+  const answersMap = useMemo(() => {
+    const map: Record<string, { answerText: string; isCorrect: boolean }> = {};
+    (answersData?.data ?? []).forEach((a: any) => {
+      map[a.questionId] = { answerText: a.answerText, isCorrect: a.isCorrect };
+    });
+    return map;
+  }, [answersData]);
 
   const handleSubmit = async () => {
     const payload = Object.entries(answers).map(([questionId, answerText]) => ({
@@ -69,7 +85,7 @@ const ListeningTestPage = ({ sessionId }: ListeningTestPageProps) => {
   });
 
   useEffect(() => {
-    if (result || !listeningTest) return;
+    if (result || !listeningTest || isReviewMode) return;
     const interval = setInterval(() => {
       setTimeLeft((prev) => {
         if (prev <= 1) {
@@ -81,7 +97,7 @@ const ListeningTestPage = ({ sessionId }: ListeningTestPageProps) => {
       });
     }, 1000);
     return () => clearInterval(interval);
-  }, [result, listeningTest]);
+  }, [result, listeningTest, isReviewMode]);
 
   const handleAnswerChange = (questionId: string, value: string) => {
     setAnswers((prev) => ({ ...prev, [questionId]: value }));
@@ -120,6 +136,77 @@ const ListeningTestPage = ({ sessionId }: ListeningTestPageProps) => {
             </Button>
           </CardContent>
         </Card>
+      </div>
+    );
+  }
+
+  if (isReviewMode) {
+    return (
+      <div className="min-h-screen bg-background">
+        <header className="sticky top-0 z-50 bg-card/80 backdrop-blur-sm border-b border-border">
+          <div className="container mx-auto px-4 py-4 flex justify-between items-center">
+            <h1 className="text-xl font-serif font-bold text-foreground">
+              {listeningTest?.title ?? "IELTS Academic Listening Test"}
+            </h1>
+            <Badge variant="secondary" className="text-sm">
+              Review — Band {session?.score?.toFixed(1) ?? "N/A"}
+            </Badge>
+          </div>
+        </header>
+
+        <main className="container mx-auto px-4 py-8 max-w-4xl space-y-10">
+          {sections.map((section: any) => (
+            <div key={section.order} className="space-y-4">
+              <Badge variant="secondary" className="text-sm">
+                Section {section.order}: {section.title}
+              </Badge>
+              <Card>
+                <CardContent className="pt-6">
+                  <audio controls src={section.audioUrl} className="w-full">
+                    Your browser does not support the audio element.
+                  </audio>
+                </CardContent>
+              </Card>
+              <div className="space-y-4">
+                {section.questions.map((question: IQuestion, index: number) => (
+                  <Card key={question.id}>
+                    <CardHeader className="pb-3">
+                      <CardTitle className="text-base font-serif">Question {index + 1}</CardTitle>
+                    </CardHeader>
+                    <CardContent className="space-y-2 text-sm">
+                      <p className="text-foreground font-medium leading-relaxed">{question.text}</p>
+                      <div className="flex items-center gap-2">
+                        {answersMap[question.id]?.isCorrect ? (
+                          <CheckCircle className="h-4 w-4 text-green-600 shrink-0" />
+                        ) : (
+                          <XCircle className="h-4 w-4 text-red-600 shrink-0" />
+                        )}
+                        <span className="text-muted-foreground">
+                          Your answer:{" "}
+                          <span className="font-medium text-foreground">
+                            {answersMap[question.id]?.answerText || "No answer"}
+                          </span>
+                        </span>
+                      </div>
+                      {!answersMap[question.id]?.isCorrect && (
+                        <p className="text-muted-foreground">
+                          Correct answer:{" "}
+                          <span className="font-medium text-green-600">{question.correctAnswer}</span>
+                        </p>
+                      )}
+                    </CardContent>
+                  </Card>
+                ))}
+              </div>
+            </div>
+          ))}
+
+          <div className="flex justify-center pt-4">
+            <Button size="lg" onClick={() => router.push("/dashboard/ielts/listening")} className="px-10 py-6 text-lg">
+              Back to Listening Practice
+            </Button>
+          </div>
+        </main>
       </div>
     );
   }

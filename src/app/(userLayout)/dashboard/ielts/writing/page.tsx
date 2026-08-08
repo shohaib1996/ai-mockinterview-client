@@ -74,8 +74,7 @@ const WritingSessions = () => {
   };
 
   const handleViewSession = (sessionId: string) => {
-    // functionality to be added
-    router.push(`/dashboard/ielts/writing/${sessionId}`);
+    router.push(`/dashboard/ielts/writing/test/${sessionId}`);
   };
 
   const handleCreateSession = async () => {
