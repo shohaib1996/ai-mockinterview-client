@@ -21,10 +21,24 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { RefreshCw, Headphones, BookOpen, PenTool, Mic } from "lucide-react";
+import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
+import { CustomPagination } from "@/components/Common/CustomPagination/CustomPagination";
+import { RefreshCw, Headphones, BookOpen, PenTool, Mic, Trash2 } from "lucide-react";
 import {
   useGetPoolStatusQuery,
   useGeneratePoolContentMutation,
+  useGetSkillTestsQuery,
+  useDeleteSkillTestMutation,
 } from "@/redux/api/content-pool/contentPoolApi";
 import { format } from "date-fns";
 
@@ -50,6 +64,37 @@ const ContentPoolPage = () => {
     IELTS_SPEAKING: "MEDIUM",
   });
   const [generatingSkill, setGeneratingSkill] = useState<Skill | null>(null);
+  const [activeTab, setActiveTab] = useState<Skill>("IELTS_READING");
+  const [page, setPage] = useState(1);
+  const [limit, setLimit] = useState(10);
+  const [deleteTarget, setDeleteTarget] = useState<{ skill: Skill; id: string; title: string } | null>(
+    null
+  );
+
+  const { data: testsData, isFetching: isFetchingTests } = useGetSkillTestsQuery({
+    skill: activeTab,
+    page,
+    limit,
+  });
+  const [deleteSkillTest, { isLoading: isDeleting }] = useDeleteSkillTestMutation();
+
+  const handleTabChange = (value: string) => {
+    setActiveTab(value as Skill);
+    setPage(1);
+  };
+
+  const handleDeleteConfirm = async () => {
+    if (!deleteTarget) return;
+    try {
+      await deleteSkillTest({ skill: deleteTarget.skill, id: deleteTarget.id }).unwrap();
+      toast.success("Test deleted");
+    } catch (error: any) {
+      console.error("Failed to delete test:", error);
+      toast.error(error?.data?.message || "Failed to delete test.");
+    } finally {
+      setDeleteTarget(null);
+    }
+  };
 
   const countsFor = (skill: Skill): Record<Difficulty, number> => {
     const key =
@@ -95,8 +140,8 @@ const ContentPoolPage = () => {
       <div>
         <h1 className="text-3xl font-bold text-foreground mb-2">Content Pool</h1>
         <p className="text-muted-foreground">
-          AI-generated IELTS tests are topped up automatically every 6 hours. Use this page to
-          check pool health or force a top-up manually.
+          AI-generated IELTS tests are no longer topped up automatically — generate content here
+          manually as needed, and delete tests you no longer want to keep.
         </p>
       </div>
 
@@ -167,6 +212,88 @@ const ContentPoolPage = () => {
 
       <Card>
         <CardHeader>
+          <CardTitle>Manage Tests</CardTitle>
+          <CardDescription>Browse and delete individual generated tests</CardDescription>
+        </CardHeader>
+        <CardContent>
+          <Tabs value={activeTab} onValueChange={handleTabChange}>
+            <TabsList className="mb-4">
+              {SKILLS.map(({ skill, label }) => (
+                <TabsTrigger key={skill} value={skill}>
+                  {label}
+                </TabsTrigger>
+              ))}
+            </TabsList>
+
+            {SKILLS.map(({ skill }) => (
+              <TabsContent key={skill} value={skill} className="space-y-4">
+                <Table>
+                  <TableHeader>
+                    <TableRow>
+                      <TableHead>Title</TableHead>
+                      <TableHead>Difficulty</TableHead>
+                      <TableHead>Created</TableHead>
+                      <TableHead className="text-right">Actions</TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    {isFetchingTests ? (
+                      <TableRow>
+                        <TableCell colSpan={4} className="text-center py-8">
+                          <div className="flex items-center justify-center">
+                            <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-primary" />
+                          </div>
+                        </TableCell>
+                      </TableRow>
+                    ) : (testsData?.data ?? []).length === 0 ? (
+                      <TableRow>
+                        <TableCell colSpan={4} className="text-center py-8 text-muted-foreground">
+                          No tests generated yet for this skill.
+                        </TableCell>
+                      </TableRow>
+                    ) : (
+                      testsData.data.map((test: any) => (
+                        <TableRow key={test.id}>
+                          <TableCell className="max-w-md truncate">{test.title}</TableCell>
+                          <TableCell>{test.difficulty}</TableCell>
+                          <TableCell className="text-muted-foreground text-xs">
+                            {format(new Date(test.createdAt), "MMM dd, yyyy HH:mm")}
+                          </TableCell>
+                          <TableCell className="text-right">
+                            <Button
+                              size="icon"
+                              variant="ghost"
+                              className="text-destructive hover:text-destructive"
+                              onClick={() => setDeleteTarget({ skill, id: test.id, title: test.title })}
+                              title="Delete test"
+                            >
+                              <Trash2 className="h-4 w-4" />
+                            </Button>
+                          </TableCell>
+                        </TableRow>
+                      ))
+                    )}
+                  </TableBody>
+                </Table>
+
+                {testsData?.meta && testsData.meta.total > 0 && (
+                  <CustomPagination
+                    meta={testsData.meta}
+                    onPageChange={setPage}
+                    onLimitChange={(newLimit) => {
+                      setLimit(newLimit);
+                      setPage(1);
+                    }}
+                  />
+                )}
+              </TabsContent>
+            ))}
+          </Tabs>
+        </CardContent>
+      </Card>
+
+      <Card>
+        <CardHeader>
           <CardTitle>Recent Generation Activity</CardTitle>
           <CardDescription>Last 20 automated or manual generation attempts</CardDescription>
         </CardHeader>
@@ -209,6 +336,28 @@ const ContentPoolPage = () => {
           )}
         </CardContent>
       </Card>
+
+      <AlertDialog open={!!deleteTarget} onOpenChange={(open) => !open && setDeleteTarget(null)}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Delete this test?</AlertDialogTitle>
+            <AlertDialogDescription>
+              &quot;{deleteTarget?.title}&quot; will be permanently deleted. This can&apos;t be undone.
+              If any user has already started a session with this test, deletion will be blocked.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogAction
+              onClick={handleDeleteConfirm}
+              disabled={isDeleting}
+              className="bg-destructive text-white hover:bg-destructive/90"
+            >
+              {isDeleting ? "Deleting..." : "Delete"}
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 };

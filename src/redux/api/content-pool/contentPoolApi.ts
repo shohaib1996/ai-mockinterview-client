@@ -18,7 +18,27 @@ const contentPoolApi = baseApi.injectEndpoints({
       }),
       invalidatesTags: [tagTypes.AdminDashboard],
     }),
+    getSkillTests: builder.query({
+      query: ({ skill, page, limit, difficulty }) => ({
+        url: `/content-pool/${skill}/tests`,
+        method: "GET",
+        params: { page, limit, difficulty },
+      }),
+      providesTags: [tagTypes.AdminDashboard],
+    }),
+    deleteSkillTest: builder.mutation({
+      query: ({ skill, id }) => ({
+        url: `/content-pool/${skill}/tests/${id}`,
+        method: "DELETE",
+      }),
+      invalidatesTags: [tagTypes.AdminDashboard],
+    }),
   }),
 });
 
-export const { useGetPoolStatusQuery, useGeneratePoolContentMutation } = contentPoolApi;
+export const {
+  useGetPoolStatusQuery,
+  useGeneratePoolContentMutation,
+  useGetSkillTestsQuery,
+  useDeleteSkillTestMutation,
+} = contentPoolApi;
