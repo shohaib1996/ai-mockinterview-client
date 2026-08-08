@@ -115,18 +115,14 @@ const ContentPoolPage = () => {
   const handleGenerate = async (skill: Skill) => {
     setGeneratingSkill(skill);
     try {
-      const res = await generatePoolContent({
+      await generatePoolContent({
         skill,
         difficulty: selectedDifficulty[skill],
       }).unwrap();
-      toast.success(
-        res.data?.generated
-          ? `Generated ${res.data.generated} new ${selectedDifficulty[skill].toLowerCase()} test(s)`
-          : "Pool is already sufficient at this difficulty"
-      );
-    } catch (error) {
+      toast.success(`Generated 1 new ${selectedDifficulty[skill].toLowerCase()} test`);
+    } catch (error: any) {
       console.error("Failed to trigger generation:", error);
-      toast.error("Failed to trigger generation.");
+      toast.error(error?.data?.message || "Failed to generate test.");
     } finally {
       setGeneratingSkill(null);
     }
