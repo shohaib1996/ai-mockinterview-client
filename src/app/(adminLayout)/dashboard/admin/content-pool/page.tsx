@@ -4,7 +4,6 @@ import { useState } from "react";
 import { toast } from "sonner";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
 import {
   Select,
@@ -132,8 +131,6 @@ const ContentPoolPage = () => {
       setGeneratingSkill(null);
     }
   };
-
-  const recentLogs = data?.data?.recentLogs ?? [];
 
   return (
     <div className="p-6 space-y-6">
@@ -289,51 +286,6 @@ const ContentPoolPage = () => {
               </TabsContent>
             ))}
           </Tabs>
-        </CardContent>
-      </Card>
-
-      <Card>
-        <CardHeader>
-          <CardTitle>Recent Generation Activity</CardTitle>
-          <CardDescription>Last 20 automated or manual generation attempts</CardDescription>
-        </CardHeader>
-        <CardContent>
-          {recentLogs.length === 0 ? (
-            <p className="text-sm text-muted-foreground py-6 text-center">
-              No generation activity yet.
-            </p>
-          ) : (
-            <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead>Skill</TableHead>
-                  <TableHead>Difficulty</TableHead>
-                  <TableHead>Status</TableHead>
-                  <TableHead>Error</TableHead>
-                  <TableHead>When</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {recentLogs.map((log: any) => (
-                  <TableRow key={log.id}>
-                    <TableCell>{log.skill.replace(/_/g, " ")}</TableCell>
-                    <TableCell>{log.difficulty}</TableCell>
-                    <TableCell>
-                      <Badge variant={log.status === "SUCCESS" ? "default" : "destructive"}>
-                        {log.status}
-                      </Badge>
-                    </TableCell>
-                    <TableCell className="max-w-xs truncate text-muted-foreground text-xs">
-                      {log.errorMessage || "—"}
-                    </TableCell>
-                    <TableCell className="text-muted-foreground text-xs">
-                      {format(new Date(log.createdAt), "MMM dd, yyyy HH:mm")}
-                    </TableCell>
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>
-          )}
         </CardContent>
       </Card>
 
