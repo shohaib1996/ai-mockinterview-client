@@ -4,11 +4,15 @@
       "Bash(cd \"D:\\\\Web Development\\\\ai-mock-interview\\\\ai-mock-interview-backend\" && npx tsc --noEmit 2>&1 | head -80)",
       "Read(//d/Web Development/ai-mock-interview/ai-mock-interview-backend/**)",
       "Read(//d/Web Development/ai-mock-interview/ai-mock-interview-backend/src/app/modules/userDashboard/**)",
-      "Bash(git commit *)"
+      "Bash(git commit *)",
+      "Read(//d/Web Development/ai-mock-interview/ai-mock-interview-backend/src/**)",
+      "Read(//d/Web Development/ai-mock-interview/ai-mock-interview-backend/src/app/routes/**)"
     ],
     "additionalDirectories": [
       "D:\\Web Development\\ai-mock-interview\\ai-mock-interview-backend\\src\\app\\jobs",
-      "D:\\Web Development\\ai-mock-interview\\ai-mock-interview-backend\\src\\app"
+      "D:\\Web Development\\ai-mock-interview\\ai-mock-interview-backend\\src\\app",
+      "D:\\Web Development\\ai-mock-interview\\ai-mock-interview-backend\\src\\app\\modules\\speakingTest",
+      "D:\\Web Development\\ai-mock-interview\\ai-mock-interview-backend\\src\\app\\routes"
     ]
   }
 }
