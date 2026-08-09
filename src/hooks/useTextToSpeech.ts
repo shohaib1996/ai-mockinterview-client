@@ -4,14 +4,35 @@ import { useState, useEffect, useRef } from 'react';
 
 export const useTextToSpeech = () => {
   const [isSpeaking, setIsSpeaking] = useState(false);
+  const [isMuted, setIsMuted] = useState(false);
   const synthRef = typeof window !== 'undefined' ? window.speechSynthesis : null;
   // Chrome has a long-standing bug where it silently drops an utterance if
   // nothing holds a JS reference to it while speaking - a bare local
   // variable can get garbage-collected mid-utterance. Keep it here instead.
   const utteranceRef = useRef<SpeechSynthesisUtterance | null>(null);
+  // speak() is called from async callbacks (API responses, kickoff effects)
+  // where a stale closure over isMuted could still fire speech right after
+  // muting - read the latest value via a ref instead.
+  const isMutedRef = useRef(false);
+
+  const cancel = () => {
+    if (synthRef && synthRef.speaking) {
+      synthRef.cancel();
+      setIsSpeaking(false);
+    }
+  };
+
+  const toggleMute = () => {
+    setIsMuted((prev) => {
+      const next = !prev;
+      isMutedRef.current = next;
+      if (next) cancel();
+      return next;
+    });
+  };
 
   const speak = (text: string) => {
-    if (!synthRef || !text) return;
+    if (!synthRef || !text || isMutedRef.current) return;
 
     const queueUtterance = () => {
       const utterance = new SpeechSynthesisUtterance(text);
@@ -62,18 +83,12 @@ export const useTextToSpeech = () => {
     }
   };
 
-  const cancel = () => {
-    if (synthRef && synthRef.speaking) {
-      synthRef.cancel();
-      setIsSpeaking(false);
-    }
-  };
-
   useEffect(() => {
     return () => {
       cancel();
     };
-  }, [cancel]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
-  return { isSpeaking, speak, cancel };
+  return { isSpeaking, isMuted, speak, cancel, toggleMute };
 };

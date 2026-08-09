@@ -8,7 +8,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { Mic, MicOff, Clock, CheckCircle2 } from "lucide-react";
+import { Mic, MicOff, Clock, CheckCircle2, Volume2, VolumeX } from "lucide-react";
 import {
   useGetSpeakingTestQuery,
   useChatSpeakingTestMutation,
@@ -58,7 +58,7 @@ const SpeakingTestPage = ({ sessionId }: SpeakingTestPageProps) => {
   const [chatSpeakingTest] = useChatSpeakingTestMutation();
   const [submitSpeakingPart2] = useSubmitSpeakingPart2Mutation();
   const [analyzeSpeakingTest] = useAnalyzeSpeakingTestMutation();
-  const { isSpeaking, speak } = useTextToSpeech();
+  const { isSpeaking, isMuted, speak, toggleMute } = useTextToSpeech();
 
   const speakingTest = data?.data?.speakingTest;
   const session = data?.data?.session;
@@ -524,16 +524,26 @@ const SpeakingTestPage = ({ sessionId }: SpeakingTestPageProps) => {
             {phaseLabel}
           </Badge>
         </div>
-        {phase === "part1" || phase === "part3" ? (
-          <div className="flex items-center gap-2 bg-muted px-4 py-2 rounded-lg">
-            <Clock className="w-4 h-4 text-primary" />
-            <span className="font-mono text-lg font-semibold text-foreground">
-              {formatTime(partTimeLeft)}
-            </span>
-          </div>
-        ) : (
-          <Clock className="w-5 h-5 text-muted-foreground" />
-        )}
+        <div className="flex items-center gap-2">
+          <Button
+            variant="outline"
+            size="icon"
+            onClick={toggleMute}
+            title={isMuted ? "Unmute examiner voice" : "Mute examiner voice"}
+          >
+            {isMuted ? <VolumeX className="w-4 h-4" /> : <Volume2 className="w-4 h-4" />}
+          </Button>
+          {phase === "part1" || phase === "part3" ? (
+            <div className="flex items-center gap-2 bg-muted px-4 py-2 rounded-lg">
+              <Clock className="w-4 h-4 text-primary" />
+              <span className="font-mono text-lg font-semibold text-foreground">
+                {formatTime(partTimeLeft)}
+              </span>
+            </div>
+          ) : (
+            <Clock className="w-5 h-5 text-muted-foreground" />
+          )}
+        </div>
       </CardHeader>
 
       <CardContent className="flex-grow flex flex-col p-6">
