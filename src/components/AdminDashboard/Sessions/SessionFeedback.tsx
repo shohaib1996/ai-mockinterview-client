@@ -3,12 +3,14 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { MessageCircle, Lightbulb } from "lucide-react"
+import { getFeedbackText } from "@/lib/getFeedbackText"
 
 interface SessionFeedbackProps {
   feedback: string | null
 }
 
-export function SessionFeedback({ feedback }: SessionFeedbackProps) {
+export function SessionFeedback({ feedback: rawFeedback }: SessionFeedbackProps) {
+  const feedback = getFeedbackText(rawFeedback)
   if (!feedback) {
     return (
       <Card>

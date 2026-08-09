@@ -24,6 +24,7 @@ import { Plus, Eye } from "lucide-react"
 import { format } from "date-fns"
 import { useAppSelector } from "@/redux/hooks/hooks"
 import { toast } from "sonner"
+import { getFeedbackText } from "@/lib/getFeedbackText"
 
 const SpeakingSessions = () => {
   const router = useRouter()
@@ -134,16 +135,18 @@ const SpeakingSessions = () => {
     {
       key: "feedback",
       header: "Feedback",
-      render: (session) =>
-        session.feedback ? (
-          <CustomTooltip content={session?.feedback}>
+      render: (session) => {
+        const feedbackText = getFeedbackText(session?.feedback)
+        return feedbackText ? (
+          <CustomTooltip content={feedbackText}>
             <span className="cursor-help text-muted-foreground">
-              {truncateText(session?.feedback)}
+              {truncateText(feedbackText)}
             </span>
           </CustomTooltip>
         ) : (
           <span className="text-muted-foreground">N/A</span>
-        ),
+        )
+      },
     },
   ]
 
