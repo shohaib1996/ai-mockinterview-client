@@ -1,6 +1,6 @@
 "use client"
 
-import { BookOpen, Brain, Target, TrendingUp } from "lucide-react";
+import { Headphones, Mic, PenTool, BookOpenCheck } from "lucide-react";
 import { motion } from "framer-motion";
 import { Card, CardContent } from "@/components/ui/card";
 
@@ -16,38 +16,38 @@ const HowItWorks = () => {
             transition={{ duration: 0.8 }}
             viewport={{ once: true }}
           >
-            <h2 className="text-4xl font-bold mb-4">How It Works</h2>
+            <h2 className="text-4xl font-bold mb-4">Every module, scored like the real exam</h2>
             <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
-              Our AI-powered platform adapts to your learning style and provides
-              personalized guidance
+              Full-length practice across all four IELTS skills, each graded against the real
+              band-score rubric.
             </p>
           </motion.div>
 
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
             {[
               {
-                icon: Brain,
-                title: "AI Assessment",
+                icon: Headphones,
+                title: "Listening",
                 description:
-                  "Advanced AI analyzes your performance and identifies areas for improvement",
+                  "Four timed sections with authentic accents, scored the moment you finish.",
               },
               {
-                icon: Target,
-                title: "Personalized Plan",
+                icon: BookOpenCheck,
+                title: "Reading",
                 description:
-                  "Custom study plans tailored to your current level and target score",
+                  "Three passages with real question types and strict time management.",
               },
               {
-                icon: BookOpen,
-                title: "Mock Tests",
+                icon: PenTool,
+                title: "Writing",
                 description:
-                  "Realistic practice tests that simulate the actual IELTS exam experience",
+                  "Task 1 and Task 2, scored against all four official band criteria.",
               },
               {
-                icon: TrendingUp,
-                title: "Progress Tracking",
+                icon: Mic,
+                title: "Speaking",
                 description:
-                  "Real-time analytics to monitor your improvement and adjust strategies",
+                  "A live AI conversation partner with pronunciation and fluency feedback.",
               },
             ].map((feature, index) => (
               <motion.div
@@ -57,10 +57,10 @@ const HowItWorks = () => {
                 transition={{ duration: 0.6, delay: index * 0.1 }}
                 viewport={{ once: true }}
               >
-                <Card className="h-full hover:shadow-lg transition-shadow bg-accent">
+                <Card className="h-full hover:shadow-lg hover:shadow-[#06D6A0]/10 hover:-translate-y-1 transition-all duration-300 bg-accent">
                   <CardContent className="p-6 text-center">
-                    <div className="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-4">
-                      <feature.icon className="w-8 h-8 text-[#1D2B64] dark:text-white" />
+                    <div className="w-16 h-16 bg-[#06D6A0]/10 rounded-full flex items-center justify-center mx-auto mb-4">
+                      <feature.icon className="w-8 h-8 text-[#1D2B64] dark:text-[#06D6A0]" />
                     </div>
                     <h3 className="text-xl font-semibold mb-3">
                       {feature.title}

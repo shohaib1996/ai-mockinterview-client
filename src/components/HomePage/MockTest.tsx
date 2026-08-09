@@ -9,12 +9,13 @@ import {
   MessageSquare,
 } from "lucide-react"
 import { motion } from "framer-motion"
+import Link from "next/link"
 import { Button } from "../ui/button"
 
 const MockTest = () => {
   return (
     <div>
-       <section className="py-20 px-4 bg-background dark:bg-gray-800">
+       <section id="mocktest" className="py-20 px-4 bg-background dark:bg-gray-800">
         <div className="container mx-auto">
           <div className="grid lg:grid-cols-2 gap-16 items-center">
             <motion.div
@@ -49,10 +50,14 @@ const MockTest = () => {
                   </motion.div>
                 ))}
               </div>
-              <Button size="lg" className="bg-[#1C398E] text-primary-foreground dark:text-white hover:bg-primary/90">
-                Try Free Mock Test
-                <ArrowRight className="w-5 h-5 ml-2" />
-              </Button>
+              <Link href="/login">
+                <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.97 }} className="inline-block">
+                  <Button size="lg" className="bg-[#1C398E] text-white hover:bg-[#152c73] group">
+                    Try Free Mock Test
+                    <ArrowRight className="w-5 h-5 ml-2 transition-transform group-hover:translate-x-1" />
+                  </Button>
+                </motion.div>
+              </Link>
             </motion.div>
 
             <motion.div

@@ -11,31 +11,38 @@ const testimonials = [
     name: 'Sarah Johnson',
     role: 'Medical Student',
     score: '8.5',
-    image: 'https://images.pexels.com/photos/774909/pexels-photo-774909.jpeg?auto=compress&cs=tinysrgb&w=150',
+    color: '#06D6A0',
     content: 'The AI feedback was incredibly detailed and helped me identify my weak points. I improved my score from 6.5 to 8.5 in just 3 months!',
   },
   {
     name: 'Ahmed Hassan',
     role: 'Software Engineer',
     score: '9.0',
-    image: 'https://images.pexels.com/photos/1043471/pexels-photo-1043471.jpeg?auto=compress&cs=tinysrgb&w=150',
+    color: '#1C398E',
     content: 'The personalized study plan and mock tests were exactly what I needed. The speaking practice with AI was particularly helpful.',
   },
   {
     name: 'Maria Garcia',
     role: 'Business Analyst',
     score: '8.0',
-    image: 'https://images.pexels.com/photos/1181686/pexels-photo-1181686.jpeg?auto=compress&cs=tinysrgb&w=150',
+    color: '#0EA5E9',
     content: 'Outstanding platform! The instant feedback and progress tracking kept me motivated throughout my preparation journey.',
   },
   {
     name: 'David Chen',
     role: 'Graduate Student',
     score: '8.5',
-    image: 'https://images.pexels.com/photos/1043474/pexels-photo-1043474.jpeg?auto=compress&cs=tinysrgb&w=150',
+    color: '#7C3AED',
     content: 'The AI-powered analysis was spot-on. It identified patterns in my writing that I never noticed and helped me improve significantly.',
   },
 ];
+
+const getInitials = (name: string) =>
+  name
+    .split(' ')
+    .map((part) => part[0])
+    .join('')
+    .toUpperCase();
 
 export const TestimonialsSection: React.FC = () => {
   const ref = useRef(null);
@@ -51,7 +58,7 @@ export const TestimonialsSection: React.FC = () => {
   };
 
   return (
-    <section className="py-20 bg-white dark:bg-gray-800" ref={ref}>
+    <section id="testimonials" className="py-20 bg-white dark:bg-gray-800" ref={ref}>
       <div className="container mx-auto px-4">
         <motion.div
           initial={{ opacity: 0, y: 30 }}
@@ -88,13 +95,14 @@ export const TestimonialsSection: React.FC = () => {
                     IELTS {testimonials[currentIndex].score}
                   </motion.div>
 
-                  {/* Profile image */}
-                  <motion.img
-                    src={testimonials[currentIndex].image}
-                    alt={testimonials[currentIndex]?.name}
-                    className="w-20 h-20 rounded-full mx-auto mb-6 object-cover"
+                  {/* Profile avatar (initials, generated per student) */}
+                  <motion.div
+                    className="w-20 h-20 rounded-full mx-auto mb-6 flex items-center justify-center text-white text-xl font-bold shadow-lg"
+                    style={{ backgroundColor: testimonials[currentIndex].color }}
                     whileHover={{ scale: 1.1 }}
-                  />
+                  >
+                    {getInitials(testimonials[currentIndex].name)}
+                  </motion.div>
 
                   {/* Stars */}
                   <div className="flex justify-center mb-6">

@@ -1,6 +1,7 @@
 "use client";
 import { motion, useInView } from "framer-motion";
 import { useRef, useEffect, useState } from "react";
+import { TrendingUp, Award, Clock, Users } from "lucide-react";
 
 export const AiPerformanceShowcase: React.FC = () => {
   const ref = useRef(null);
@@ -11,7 +12,6 @@ export const AiPerformanceShowcase: React.FC = () => {
     timesSaved: 0,
     studentsHelped: 0,
   });
-  console.log(animatedStats)
 
   const finalStats = {
     accuracy: 96,
@@ -21,40 +21,39 @@ export const AiPerformanceShowcase: React.FC = () => {
   };
 
   useEffect(() => {
-    if (isInView) {
-      const timer = setTimeout(() => {
-        setAnimatedStats(finalStats);
-      }, 500);
-      return () => clearTimeout(timer);
-    }
-  }, [isInView, finalStats]);
+    if (!isInView) return;
+    const duration = 1400;
+    const start = performance.now();
 
-  // const statsData = [
-  //   {
-  //     icon: TrendingUp,
-  //     label: "Average Accuracy",
-  //     value: animatedStats.accuracy,
-  //     suffix: "%",
-  //   },
-  //   {
-  //     icon: Award,
-  //     label: "Score Improvement",
-  //     value: animatedStats.improvement,
-  //     suffix: "%",
-  //   },
-  //   {
-  //     icon: Clock,
-  //     label: "Hours Saved",
-  //     value: animatedStats.timesSaved,
-  //     suffix: "h",
-  //   },
-  //   {
-  //     icon: Users,
-  //     label: "Students Helped",
-  //     value: animatedStats.studentsHelped,
-  //     suffix: "+",
-  //   },
-  // ];
+    const tick = (now: number) => {
+      const progress = Math.min((now - start) / duration, 1);
+      const eased = 1 - Math.pow(1 - progress, 3);
+      setAnimatedStats({
+        accuracy: Math.round(finalStats.accuracy * eased),
+        improvement: Math.round(finalStats.improvement * eased),
+        timesSaved: Math.round(finalStats.timesSaved * eased),
+        studentsHelped: Math.round(finalStats.studentsHelped * eased),
+      });
+      if (progress < 1) requestAnimationFrame(tick);
+    };
+
+    const frame = requestAnimationFrame(tick);
+    return () => cancelAnimationFrame(frame);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isInView]);
+
+  const statsData = [
+    { icon: TrendingUp, label: "Average Accuracy", value: animatedStats.accuracy, suffix: "%" },
+    { icon: Award, label: "Score Improvement", value: animatedStats.improvement, suffix: "%" },
+    { icon: Clock, label: "Hours Saved", value: animatedStats.timesSaved, suffix: "h" },
+    {
+      icon: Users,
+      label: "Students Helped",
+      value: animatedStats.studentsHelped,
+      suffix: "+",
+      format: (v: number) => v.toLocaleString(),
+    },
+  ];
 
   return (
     <section className="py-20 bg-blue-900 dark:bg-blue-950" ref={ref}>
@@ -63,7 +62,7 @@ export const AiPerformanceShowcase: React.FC = () => {
           initial={{ opacity: 0, y: 30 }}
           animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 30 }}
           transition={{ duration: 0.6 }}
-          className="text-center mb-16"
+          className="text-center mb-12"
         >
           <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-white mb-6">
             AI Performance Showcase
@@ -72,6 +71,29 @@ export const AiPerformanceShowcase: React.FC = () => {
             See how our AI technology is revolutionizing IELTS preparation with
             measurable results
           </p>
+        </motion.div>
+
+        <motion.div
+          className="grid grid-cols-2 md:grid-cols-4 gap-6 max-w-4xl mx-auto mb-16"
+          initial={{ opacity: 0, y: 20 }}
+          animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
+          transition={{ duration: 0.6, delay: 0.15 }}
+        >
+          {statsData.map((stat) => (
+            <div
+              key={stat.label}
+              className="text-center bg-white/5 border border-white/10 rounded-xl px-4 py-6"
+            >
+              <div className="w-11 h-11 bg-[#06D6A0]/20 rounded-full flex items-center justify-center mx-auto mb-3">
+                <stat.icon className="w-5 h-5 text-[#06D6A0]" />
+              </div>
+              <div className="text-2xl md:text-3xl font-bold text-white mb-1">
+                {stat.format ? stat.format(stat.value) : stat.value}
+                {stat.suffix}
+              </div>
+              <div className="text-blue-200 text-xs md:text-sm">{stat.label}</div>
+            </div>
+          ))}
         </motion.div>
 
         {/* Dashboard Image with Scattered Gradient Shadow */}

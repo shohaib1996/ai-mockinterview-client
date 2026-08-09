@@ -2,12 +2,22 @@
 
 import { motion } from "framer-motion";
 import Image from "next/image";
+import Link from "next/link";
 import logo from "../../../public/logo.png"
 import { Facebook, InstagramIcon, Linkedin } from "lucide-react";
 import { Meteors } from "../ui/meteors";
 
 export default function Footer() {
-  const footerLinks = ["Home", "About", "Contact"];
+  const footerLinks = [
+    { label: "How it works", href: "/#how" },
+    { label: "Dashboards", href: "/#dashboards" },
+    { label: "Mock tests", href: "/#mocktest" },
+    { label: "Testimonials", href: "/#testimonials" },
+  ];
+  const companyLinks = [
+    { label: "About", href: "/about" },
+    { label: "Contact", href: "/contact" },
+  ];
 
   return (
     <footer className="bg-gray-900 text-white relative overflow-hidden">
@@ -23,7 +33,9 @@ export default function Footer() {
               viewport={{ once: true }}
             >
               <Image src={logo} alt="logo" width={50} height={50} />
-              <span className="text-white font-bold text-xl">LinguaAI</span>
+              <span className="text-white font-bold text-xl">
+                IELTS<span className="text-[#06D6A0]">Zen</span>AI
+              </span>
             </motion.div>
 
             <motion.p
@@ -44,28 +56,41 @@ export default function Footer() {
             transition={{ duration: 0.6, delay: 0.2 }}
             viewport={{ once: true }}
           >
-            <h3 className="font-semibold text-lg mb-4">Pages</h3>
+            <h3 className="font-semibold text-lg mb-4">Product</h3>
             <ul className="space-y-3">
               {footerLinks.map((link) => (
-                <li key={link}>
-                  <a
-                    href="#"
+                <li key={link.label}>
+                  <Link
+                    href={link.href}
                     className="text-gray-400 hover:text-green-400 transition-colors"
                   >
-                    {link}
-                  </a>
+                    {link.label}
+                  </Link>
                 </li>
               ))}
             </ul>
           </motion.div>
 
-          {/* Social Media Section */}
+          {/* Company + Social Section */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.3 }}
             viewport={{ once: true }}
           >
+            <h3 className="font-semibold text-lg mb-4">Company</h3>
+            <ul className="space-y-3 mb-6">
+              {companyLinks.map((link) => (
+                <li key={link.label}>
+                  <Link
+                    href={link.href}
+                    className="text-gray-400 hover:text-green-400 transition-colors"
+                  >
+                    {link.label}
+                  </Link>
+                </li>
+              ))}
+            </ul>
             <h3 className="font-semibold text-lg mb-4">Follow Us</h3>
             <div className="flex space-x-4">
               <div className="w-10 h-10 bg-gray-800 rounded-full flex items-center justify-center hover:bg-green-400 hover:text-black transition-colors cursor-pointer">
@@ -90,7 +115,7 @@ export default function Footer() {
           viewport={{ once: true }}
         >
           <p className="text-gray-400 text-sm">
-            Copyright © {new Date().getFullYear()} LinguaAI. All rights reserved.
+            Copyright © {new Date().getFullYear()} IELTSZen AI. All rights reserved.
           </p>
         </motion.div>
         <Meteors number={20} />

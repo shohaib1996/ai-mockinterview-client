@@ -1,5 +1,6 @@
 "use client";
 
+import { motion } from "framer-motion";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -35,9 +36,11 @@ export default function Navbar() {
   }, []);
 
   const navItems = [
-    { label: "Home", hasDropdown: false },
-    { label: "About", hasDropdown: false },
-    { label: "Contact", hasDropdown: false },
+    { label: "How it works", href: "/#how" },
+    { label: "Dashboards", href: "/#dashboards" },
+    { label: "Mock test", href: "/#mocktest" },
+    { label: "About", href: "/about" },
+    { label: "Contact", href: "/contact" },
   ];
 
   const handleLogout = () => {
@@ -60,23 +63,23 @@ export default function Navbar() {
           <Link href="/">
             <div className="flex items-center space-x-2">
               <Image alt="logo" src={logo} width={50} height={50} />
-              <span className="text-white font-bold text-xl">LinguaAI</span>
+              <span className="text-white font-bold text-xl">
+                IELTS<span className="text-[#06D6A0]">Zen</span>AI
+              </span>
             </div>
           </Link>
 
           {/* Navigation Items */}
           <div className="hidden md:flex items-center space-x-8">
             {navItems.map((item) => (
-              <div key={item.label} className="relative group">
-                <Link
-                  href={`${
-                    item.label === "Home" ? "/" : `/${item.label.toLowerCase()}`
-                  }`}
-                  className="text-gray-300 hover:text-white transition-colors"
-                >
-                  <span>{item.label}</span>
-                </Link>
-              </div>
+              <Link
+                key={item.label}
+                href={item.href}
+                className="group relative text-gray-300 hover:text-white transition-colors text-sm font-medium"
+              >
+                <span>{item.label}</span>
+                <span className="absolute -bottom-1 left-0 h-0.5 w-0 bg-[#06D6A0] transition-all duration-300 group-hover:w-full" />
+              </Link>
             ))}
           </div>
 
@@ -130,12 +133,12 @@ export default function Navbar() {
                   >
                     <DropdownMenuItem>Dashboard</DropdownMenuItem>
                   </Link>
-                  <DropdownMenuItem className="blcok md:hidden lg:hidden">
-                    About
-                  </DropdownMenuItem>
-                  <DropdownMenuItem className="blcok md:hidden lg:hidden">
-                    Contact
-                  </DropdownMenuItem>
+                  <Link href="/about" className="block md:hidden lg:hidden">
+                    <DropdownMenuItem>About</DropdownMenuItem>
+                  </Link>
+                  <Link href="/contact" className="block md:hidden lg:hidden">
+                    <DropdownMenuItem>Contact</DropdownMenuItem>
+                  </Link>
                   <DropdownMenuItem onClick={handleLogout}>
                     Logout
                   </DropdownMenuItem>
@@ -143,9 +146,11 @@ export default function Navbar() {
               </DropdownMenu>
             ) : (
               <Link href="/login">
-                <Button className="bg-green-400 text-black hover:bg-green-300 font-semibold">
-                  Get started
-                </Button>
+                <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.97 }}>
+                  <Button className="bg-[#06D6A0] text-black hover:bg-[#05b98f] font-semibold shadow-[0_0_0_rgba(6,214,160,0.4)] hover:shadow-[0_0_20px_rgba(6,214,160,0.5)] transition-shadow">
+                    Get started
+                  </Button>
+                </motion.div>
               </Link>
             )}
           </div>

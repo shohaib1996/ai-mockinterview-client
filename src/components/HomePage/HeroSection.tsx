@@ -79,14 +79,26 @@ const HeroSection = () => {
                 </div>
               </motion.div>
 
+              <motion.div
+                className="inline-flex items-center gap-2 mb-5 px-3 py-1 rounded-full border border-[#06D6A0]/40 bg-[#06D6A0]/10"
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6 }}
+              >
+                <span className="w-1.5 h-1.5 rounded-full bg-[#06D6A0] animate-pulse" />
+                <span className="text-xs font-semibold tracking-wide uppercase text-[#06D6A0]">
+                  AI-Powered IELTS Prep
+                </span>
+              </motion.div>
               <motion.h1
                 className="text-5xl md:text-6xl font-bold mb-6 text-white text-balance"
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.8, delay: 0.2 }}
               >
-                AI-Powered <span className="text-[#06D6A0]">IELTS</span>{" "}
-                Preparation
+                Train sharper.
+                <br />
+                Score higher<span className="text-[#06D6A0]">.</span>
               </motion.h1>
               <motion.p
                 className="text-lg text-gray-300 mb-8 max-w-xl text-pretty"
@@ -99,17 +111,45 @@ const HeroSection = () => {
                 achieve your dream IELTS score with confidence
               </motion.p>
               <motion.div
+                className="flex flex-wrap items-center gap-4"
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.8, delay: 0.6 }}
               >
                 <Link href="/login">
-                  <Button
-                    size="lg"
-                    className="bg-[#06D6A0] text-black hover:bg-green-300 text-lg px-8 py-3 font-semibold"
+                  <motion.div
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.97 }}
+                    animate={{
+                      boxShadow: [
+                        "0 0 0px rgba(6,214,160,0.0)",
+                        "0 0 26px rgba(6,214,160,0.55)",
+                        "0 0 0px rgba(6,214,160,0.0)",
+                      ],
+                    }}
+                    transition={{
+                      boxShadow: { duration: 2.8, repeat: Infinity, ease: "easeInOut" },
+                    }}
+                    className="rounded-md"
                   >
-                    Test Now
-                  </Button>
+                    <Button
+                      size="lg"
+                      className="bg-[#06D6A0] text-black hover:bg-[#05b98f] text-lg px-8 py-3 font-semibold"
+                    >
+                      Start Free Mock Test
+                    </Button>
+                  </motion.div>
+                </Link>
+                <Link href="#mocktest">
+                  <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.97 }}>
+                    <Button
+                      size="lg"
+                      variant="outline"
+                      className="text-lg px-8 py-3 font-semibold border-white/30 text-white bg-transparent hover:bg-white/10 hover:text-white"
+                    >
+                      See how it works
+                    </Button>
+                  </motion.div>
                 </Link>
               </motion.div>
             </motion.div>
