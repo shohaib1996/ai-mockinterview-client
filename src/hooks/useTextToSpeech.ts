@@ -13,23 +13,35 @@ export const useTextToSpeech = () => {
   const speak = (text: string) => {
     if (!synthRef || !text) return;
 
-    const doSpeak = () => {
-      // Reset any stuck state and "wake up" the engine - on some browsers
-      // (esp. Chrome) the very first utterance in a session is silently
-      // dropped otherwise, especially when triggered without a direct
-      // click (e.g. an auto-kickoff effect on page load).
-      synthRef.cancel();
-
+    const queueUtterance = () => {
       const utterance = new SpeechSynthesisUtterance(text);
       utteranceRef.current = utterance;
       utterance.onstart = () => setIsSpeaking(true);
       utterance.onend = () => setIsSpeaking(false);
       utterance.onerror = (event) => {
-        console.error('Speech synthesis error', event.error);
+        // "interrupted"/"canceled" just mean a newer utterance preempted
+        // this one (or, on Chrome, that cancel() and speak() raced) - not
+        // a real failure, so don't log it as an error.
+        if (event.error !== 'interrupted' && event.error !== 'canceled') {
+          console.error('Speech synthesis error', event.error);
+        }
         setIsSpeaking(false);
       };
 
       synthRef.speak(utterance);
+    };
+
+    const doSpeak = () => {
+      if (synthRef.speaking || synthRef.pending) {
+        // Something's already in flight - cancel it, but calling speak()
+        // in the same tick as cancel() is a well-documented Chrome race
+        // that interrupts the NEW utterance too. Defer to the next tick
+        // so the cancellation actually finishes first.
+        synthRef.cancel();
+        setTimeout(queueUtterance, 50);
+      } else {
+        queueUtterance();
+      }
     };
 
     // Voices load asynchronously; speaking before they're ready is a common
