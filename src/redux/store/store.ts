@@ -29,8 +29,6 @@ export const makeStore = () => {
   return { store, persistor };
 };
 
-export const { store } = makeStore();
-
 export type AppStore = ReturnType<typeof makeStore>['store'];
 export type AppPersistor = ReturnType<typeof makeStore>['persistor'];
 export type RootState = ReturnType<AppStore['getState']>;
