@@ -52,6 +52,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import Link from "next/link";
 import { Button } from "../../ui/button";
 import { ModeToggle } from "../../ThemeProvider/ModeToggle";
@@ -208,7 +209,7 @@ export function AppSidebar({ items }: AppSidebarProps) {
                 variant="ghost"
                 className="flex items-center gap-2 justify-start w-full min-w-0 p-2 h-auto"
               >
-                <Avatar>
+                <Avatar className="shrink-0">
                   <AvatarImage
                     src={user?.avatarUrl || "https://github.com/shadcn.png"}
                     alt={user?.name || "User"}
@@ -217,13 +218,25 @@ export function AppSidebar({ items }: AppSidebarProps) {
                     {user?.name ? user?.name.charAt(0).toUpperCase() : "U"}
                   </AvatarFallback>
                 </Avatar>
-                <div className="flex flex-col items-start flex-1 min-w-0">
-                  <span className="text-sm font-medium truncate w-full">
-                    {user?.name || "User"}
-                  </span>
-                  <span className="text-xs text-muted-foreground truncate w-full">
-                    {user?.email || "user@example.com"}
-                  </span>
+                <div className="flex flex-col items-start overflow-hidden">
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <span className="text-sm font-medium truncate max-w-[140px]">
+                        {user?.name || "User"}
+                      </span>
+                    </TooltipTrigger>
+                    <TooltipContent side="right">{user?.name || "User"}</TooltipContent>
+                  </Tooltip>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <span className="text-xs text-muted-foreground truncate max-w-[140px]">
+                        {user?.email || "user@example.com"}
+                      </span>
+                    </TooltipTrigger>
+                    <TooltipContent side="right">
+                      {user?.email || "user@example.com"}
+                    </TooltipContent>
+                  </Tooltip>
                 </div>
                 <Settings className="w-4 h-4 text-muted-foreground shrink-0" />
               </Button>
