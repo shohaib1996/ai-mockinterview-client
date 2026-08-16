@@ -19,6 +19,14 @@ const usersApi = baseApi.injectEndpoints({
       }),
       invalidatesTags: [tagTypes.Users, tagTypes.UserDashboard],
     }),
+    googleLogin: builder.mutation({
+      query: (data: { idToken: string }) => ({
+        url: "/users/google",
+        method: "POST",
+        data,
+      }),
+      invalidatesTags: [tagTypes.Users, tagTypes.UserDashboard],
+    }),
     getUsers: builder.query({
       query: (args) => ({
         url: "/users",
@@ -64,6 +72,7 @@ const usersApi = baseApi.injectEndpoints({
 export const {
   useRegisterUserMutation,
   useLoginUserMutation,
+  useGoogleLoginMutation,
   useGetUsersQuery,
   useRoleToggleMutation,
   useGetProfileQuery,

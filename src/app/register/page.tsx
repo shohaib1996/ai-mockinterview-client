@@ -12,9 +12,12 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { Separator } from "@/components/ui/separator";
 import { Eye, EyeOff } from "lucide-react";
-import { useRegisterUserMutation } from "@/redux/api/user/usersApi";
+import { GoogleLogin, type CredentialResponse } from "@react-oauth/google";
+import { useGoogleLoginMutation, useRegisterUserMutation } from "@/redux/api/user/usersApi";
 import { useAppDispatch } from "@/redux/hooks/hooks";
+import { login } from "@/redux/feature/auth/authSlice";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { toast } from "sonner";
@@ -28,6 +31,7 @@ export default function RegisterPage() {
   const [showPassword, setShowPassword] = useState(false);
   const [registerUser, { isLoading, isError, error }] =
     useRegisterUserMutation();
+  const [googleLogin] = useGoogleLoginMutation();
   const dispatch = useAppDispatch();
   const router = useRouter();
 
@@ -41,6 +45,25 @@ export default function RegisterPage() {
       }
     } catch (err) {
       console.error("Failed to register:", err);
+    }
+  };
+
+  const handleGoogleSuccess = async (credentialResponse: CredentialResponse) => {
+    if (!credentialResponse.credential) {
+      console.error("Google did not return a credential");
+      return;
+    }
+    try {
+      const res = await googleLogin({ idToken: credentialResponse.credential }).unwrap();
+      dispatch(login({ user: res.data.user, token: res.data.accessToken }));
+      toast.success("Signed up with Google");
+      if (res.data.user.role === "ADMIN") {
+        router.push("/dashboard/admin");
+      } else {
+        router.push("/dashboard/user");
+      }
+    } catch (err) {
+      console.error("Failed to sign up with Google:", err);
     }
   };
 
@@ -77,6 +100,28 @@ export default function RegisterPage() {
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
+            <div className="flex justify-center">
+              <GoogleLogin
+                onSuccess={handleGoogleSuccess}
+                onError={() => console.error("Google login failed")}
+                theme="outline"
+                shape="rectangular"
+                text="signup_with"
+                width={380}
+              />
+            </div>
+
+            <div className="relative">
+              <div className="absolute inset-0 flex items-center">
+                <Separator />
+              </div>
+              <div className="relative flex justify-center text-xs uppercase">
+                <span className="bg-background px-2 text-muted-foreground">
+                  Or continue with email
+                </span>
+              </div>
+            </div>
+
             <form onSubmit={handleSubmit} className="space-y-4">
               <div className="space-y-2">
                 <Label htmlFor="name">Name</Label>
