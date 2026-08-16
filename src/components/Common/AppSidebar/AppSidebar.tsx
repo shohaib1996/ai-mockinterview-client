@@ -206,7 +206,7 @@ export function AppSidebar({ items }: AppSidebarProps) {
             <DropdownMenuTrigger asChild>
               <Button
                 variant="ghost"
-                className="flex items-center gap-2 justify-start w-full p-2 h-auto"
+                className="flex items-center gap-2 justify-start w-full min-w-0 p-2 h-auto"
               >
                 <Avatar>
                   <AvatarImage
@@ -218,21 +218,21 @@ export function AppSidebar({ items }: AppSidebarProps) {
                   </AvatarFallback>
                 </Avatar>
                 <div className="flex flex-col items-start flex-1 min-w-0">
-                  <span className="text-sm font-medium truncate">
+                  <span className="text-sm font-medium truncate w-full">
                     {user?.name || "User"}
                   </span>
-                  <span className="text-xs text-muted-foreground truncate">
+                  <span className="text-xs text-muted-foreground truncate w-full">
                     {user?.email || "user@example.com"}
                   </span>
                 </div>
-                <Settings className="w-4 h-4 text-muted-foreground" />
+                <Settings className="w-4 h-4 text-muted-foreground shrink-0" />
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end" className="w-56">
               <DropdownMenuLabel>My Account</DropdownMenuLabel>
-              <DropdownMenuItem className="flex flex-col items-start">
-                <span className="font-medium">{user?.name || "User"}</span>
-                <span className="text-xs text-muted-foreground">
+              <DropdownMenuItem className="flex flex-col items-start min-w-0">
+                <span className="font-medium truncate w-full">{user?.name || "User"}</span>
+                <span className="text-xs text-muted-foreground truncate w-full">
                   {user?.email || "user@example.com"}
                 </span>
               </DropdownMenuItem>
@@ -278,9 +278,9 @@ export function AppSidebar({ items }: AppSidebarProps) {
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end" className="w-56">
               <DropdownMenuLabel>My Account</DropdownMenuLabel>
-              <DropdownMenuItem className="flex flex-col items-start">
-                <span className="font-medium">{user?.name || "User"}</span>
-                <span className="text-xs text-muted-foreground">
+              <DropdownMenuItem className="flex flex-col items-start min-w-0">
+                <span className="font-medium truncate w-full">{user?.name || "User"}</span>
+                <span className="text-xs text-muted-foreground truncate w-full">
                   {user?.email || "user@example.com"}
                 </span>
               </DropdownMenuItem>
